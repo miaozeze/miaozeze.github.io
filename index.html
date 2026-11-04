@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸页与灰烬 | 芥川庄园</title>
     <style>
+        /* === 基础页面 === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
             font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
@@ -18,6 +19,23 @@
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
 
+        /* 👇 新增：灰烬飘浮特效 👇 */
+        .ash-particle {
+            position: fixed; bottom: -10px;
+            background: #b8a57e; border-radius: 50%;
+            pointer-events: none; z-index: 5; /* 层级在卡片下方 */
+            opacity: 0;
+            filter: blur(0.5px); /* 微微模糊，更像真实的灰烬 */
+            animation: floatUp linear forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.5; } /* 灰烬的透明度 */
+            90% { opacity: 0.1; }
+            100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+        }
+
+        /* 右上角控制栏 */
         .top-right-controls {
             position: fixed; top: 30px; right: 40px;
             display: flex; gap: 20px; align-items: center; z-index: 100;
@@ -45,6 +63,7 @@
         }
         @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
 
+        /* === 欢迎信封 === */
         #welcome-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
@@ -82,6 +101,7 @@
         .open-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); box-shadow: 0 0 20px rgba(158,138,99,0.2); }
         .env-footer { margin-top: 3rem; font-size: 0.75rem; color: #5a4a2e; letter-spacing: 0.1rem; font-family: "Courier New", monospace; }
 
+        /* === 主界面 === */
         #main-screen {
             position: absolute; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
@@ -123,6 +143,7 @@
         .reread-btn { font-size: 0.85rem; color: #8a6e3e; letter-spacing: 0.2rem; text-decoration: none; transition: all 0.3s; padding: 5px; cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important; }
         .reread-btn:hover { color: #f5e6c8; text-shadow: 0 0 10px rgba(245,230,200,0.3); }
 
+        /* === 弹窗 === */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 200;
@@ -190,7 +211,7 @@
                 纸页正在泛黄，灰烬仍有温热。<br>
                 请在此落款，或推开这扇尘封的门。
             </div>
-            <!-- 这里改成了点击触发拆信和雨声 -->
+            <!-- 点击拆信，触发音效和跳转 -->
             <a href="javascript:void(0);" onclick="playRainAndGo()" class="open-btn">[ 拆 开 信 件 ]</a>
             <div class="env-footer">From Akutagawa Manor</div>
         </div>
@@ -245,43 +266,48 @@
     </div>
 
     <script>
-        // === 音频核心逻辑 ===
-        // 首页的音频对象
+        // === 音频核心逻辑（点击拆信后播放并跳转） ===
         const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2514/2514-preview.mp3');
         bgAudio.loop = true;
         bgAudio.volume = 0;
 
         function playRainAndGo() {
-            // 点击拆信，触发音频播放（绕过浏览器拦截）
             bgAudio.play().then(() => {
-                // 音量渐入
                 let vol = 0;
                 let fadeIn = setInterval(() => {
                     if (vol < 0.15) { vol += 0.01; bgAudio.volume = vol; } 
                     else { clearInterval(fadeIn); }
                 }, 50);
 
-                // 告诉下一个页面，音乐已经开启
                 sessionStorage.setItem('rainPlaying', 'true');
-
-                // 延迟 600 毫秒跳转，让玩家先听到一点雨声前奏
-                setTimeout(() => {
-                    window.location.href = 'prologue.html';
-                }, 600);
-
+                setTimeout(() => { window.location.href = 'prologue.html'; }, 600);
             }).catch(err => {
-                // 如果浏览器极其严格还是拦截了，直接跳转
-                console.log("Autoplay blocked, jumping directly.");
                 window.location.href = 'prologue.html';
             });
         }
 
+        // === 时间 ===
         function updateTime() {
             const now = new Date();
             document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         }
         setInterval(updateTime, 1000); updateTime();
 
+        // === 灰烬飘浮特效 ===
+        function createAsh() {
+            const ash = document.createElement('div'); 
+            ash.className = 'ash-particle';
+            const size = Math.random() * 3 + 1; // 灰烬极小，1-4像素
+            ash.style.width = size + 'px'; 
+            ash.style.height = size + 'px';
+            ash.style.left = Math.random() * 100 + 'vw'; // 随机横向位置
+            ash.style.animationDuration = (Math.random() * 5 + 6) + 's'; // 飘浮时间 6-11秒，极其缓慢
+            document.body.appendChild(ash); 
+            setTimeout(() => { ash.remove(); }, 11000);
+        }
+        setInterval(createAsh, 400); // 每0.4秒产生一颗
+
+        // === 页面状态记忆 ===
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const char = urlParams.get('char'); const open = urlParams.get('open');
@@ -297,6 +323,7 @@
 
         function leaveManor() { document.getElementById('welcome-screen').classList.remove('hidden'); closeModal(); }
 
+        // === 鼠标光标拖尾 ===
         let lastTrailTime = 0;
         document.addEventListener('mousemove', function(e) {
             const now = Date.now();
@@ -309,6 +336,7 @@
             document.body.appendChild(particle); setTimeout(() => { particle.remove(); }, 800);
         }
 
+        // === 角色数据 ===
         const characters = {
             edmund: { file: "FILE NO. 01 // FINANCE", name: "埃德蒙", title: "Chief Butler / LSE Alumnus", quote: `大小姐，如果是来查账，文件在左手边第二格。至于莉薇娅小姐那边，我保证连一颗土豆的账都没算错。当然，如果您是来替她讨说法的，这就去给您泡杯红茶，我们慢慢谈。`, story: `<p class="story-p">账房里亮着一盏黄铜台灯，桌上放着一杯喝了一半的冰咖啡，杯壁凝着细小的水珠。埃德蒙正低头核对一份采买单，金丝眼镜的链子垂在燕尾服上。</p><p class="story-p">“大小姐，如果是来核对下个月的采买单，文件在左手边第二格。”他温声开口，连头都没抬，“当然，如果您是来替莉薇娅小姐查岗的，请容我提醒一句，厨房的采买权我可从来没碰过。”</p><p class="story-p">你走过去，刚想伸手碰桌上那叠发票，他却先一步将单子抽走，换了张空白的纸推到你面前。</p><p class="story-p">“这些账面上的窟窿，我来填就好。”他抬起头，眼里带着一点笑意，“不过，如果您只是想找个地方躲清静，抽屉里有新买的漫画，我也刚好想尝尝您上次提过的那家虾饺外卖。莉薇娅小姐那边……我会说，是我觉得大小姐最近太累了。”</p><p class="story-p">他稍微靠近了一点，似乎在确认你嘴角的弧度，随后又立刻退了半步。</p><p class="story-p">“大小姐，失礼了。需要我帮您联系星野少爷，让他把监控挪开几分钟吗？”</p>` },
             livia: { file: "FILE NO. 02 // KITCHEN", name: "莉薇娅", title: "Exclusive Maid / Yorkshire", quote: `如果您是来偷吃冷肉的，请回吧。大小姐不应该在这个时间出现在厨房。牛奶在炉子上，自己去拿。还有，如果打翻了，明早就自己去把地板擦干净。别指望我会给您加糖，那会弄坏您的牙齿，我可不想在您的医疗档案上再添一笔。`, story: `<p class="story-p">凌晨两点，厨房里依然亮着一盏暖黄色的壁灯。莉薇娅穿着那身永远一丝不苟的维多利亚式长裙，正在用一块洁白的软布，近乎强迫症般擦拭着一把银勺。</p><p class="story-p">听到你的脚步声，她微微侧过头，深紫色的眼眸在灯下显得格外清冷：“如果您是来偷吃冷肉的，请回吧。大小姐不应该在这个时间出现在厨房。”</p><p class="story-p">嘴上虽然刻薄，她却已经转身从炉子上端下了一个温着的白瓷杯，里面是热气腾腾的牛奶。她将杯子放在桌面上。</p><p class="story-p">“牛奶里放了少许蜂蜜，这是最后一次。明天开始，您得按时吃晚饭。”她立在桌旁，双手交叠在围裙前，下巴微微抬起，像是一个守卫着自己领地，又忍不住对主人心软的骑士。</p>` },
