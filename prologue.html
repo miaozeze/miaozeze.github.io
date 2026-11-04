@@ -20,19 +20,39 @@
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
 
-        /* 👇 修复版：雨丝特效（层级提至最高，调亮加粗） 👇 */
+        /* 左上角的时间与温度 */
+        .hud-info {
+            position: fixed; top: 30px; left: 40px;
+            font-family: "Courier New", monospace;
+            color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem;
+            pointer-events: none; z-index: 100;
+            display: flex; gap: 15px; align-items: center;
+        }
+        .hud-info span { border-bottom: 1px solid rgba(138, 110, 62, 0.3); padding-bottom: 3px; }
+
+        /* 音频开关按钮 */
+        .audio-btn {
+            position: fixed; top: 30px; right: 40px;
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 20px; color: #9e8a63; font-size: 0.85rem; letter-spacing: 0.2rem;
+            border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8);
+            border-radius: 4px; cursor: pointer; z-index: 100; transition: all 0.3s;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .audio-btn:hover { color: #f5e6c8; border-color: #8a6e3e; }
+
+        /* 雨丝特效 */
         .rain-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 99; /* 层级高于所有内容，防止被遮挡 */
+            pointer-events: none; z-index: 99;
             overflow: hidden;
         }
         .rain-drop {
-            position: absolute; top: -100px; width: 2px; height: 80px; /* 调粗变长 */
-            background: linear-gradient(to bottom, transparent, rgba(245, 230, 200, 0.6)); /* 调亮 */
+            position: absolute; top: -100px; width: 2px; height: 80px;
+            background: linear-gradient(to bottom, transparent, rgba(245, 230, 200, 0.6));
             animation: fall linear forwards;
         }
         @keyframes fall { to { transform: translateY(110vh); } }
-        /* 👆 雨丝特效结束 👆 */
         
         .cursor-trail {
             position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
@@ -49,7 +69,7 @@
         
         .cover-box {
             border: 1px solid #3a3024; padding: 4rem 3rem; max-width: 600px; width: 85%; text-align: center;
-            background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(5px); /* 增加磨砂透明 */
+            background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(5px);
             box-shadow: 0 20px 50px rgba(0,0,0,0.9);
             position: relative; z-index: 2;
         }
@@ -76,7 +96,7 @@
             max-width: 680px; width: 85%; margin: 0 auto; padding: 6rem 0;
             opacity: 0; transform: translateY(30px); pointer-events: none;
             transition: opacity 1.5s ease, transform 1.5s ease;
-            position: relative; z-index: 2; /* 文字在雨丝之下，但清晰可见 */
+            position: relative; z-index: 2; 
         }
 
         .chapter-heading { text-align: center; font-size: 1.8rem; color: #f5e6c8; letter-spacing: 0.3rem; margin-bottom: 3.5rem; font-weight: normal; }
@@ -110,7 +130,16 @@
     </style>
 </head>
 <body>
-    <!-- 动态生成的雨滴层（现在覆盖在最上面） -->
+    <!-- 左上角的时间与温度 -->
+    <div class="hud-info">
+        <span id="current-time">00:00</span>
+        <span>13°C 阴雨</span>
+    </div>
+
+    <!-- 背景音开关 -->
+    <div class="audio-btn" id="audio-btn" onclick="toggleAudio()">♪ 聆听庄园</div>
+
+    <!-- 动态生成的雨滴层 -->
     <div class="rain-bg" id="rain-bg"></div>
 
     <!-- 第一屏：扉页 -->
@@ -181,6 +210,36 @@
     </div>
 
     <script>
+        // === 音频控制（音量已调低至 20%） ===
+        const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2514/2514-preview.mp3');
+        bgAudio.loop = true;
+        bgAudio.volume = 0.2;
+        let isPlaying = false;
+
+        function toggleAudio() {
+            const btn = document.getElementById('audio-btn');
+            if (isPlaying) {
+                bgAudio.pause();
+                btn.innerHTML = '♪ 聆听庄园';
+                isPlaying = false;
+            } else {
+                bgAudio.play();
+                btn.innerHTML = '■ 关闭雨声';
+                isPlaying = true;
+            }
+        }
+
+        // === 时间 ===
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // 返回逻辑
         const urlParams = new URLSearchParams(window.location.search);
         const fromChar = urlParams.get('from');
         if (fromChar && fromChar !== 'global') {
@@ -206,11 +265,11 @@
                 drop.style.left = Math.random() * 100 + 'vw';
                 drop.style.animationDuration = (Math.random() * 0.7 + 0.5) + 's';
                 drop.style.opacity = Math.random() * 0.5 + 0.2;
-                drop.style.height = (Math.random() * 40 + 40) + 'px'; // 长度范围 40-80px
+                drop.style.height = (Math.random() * 40 + 40) + 'px';
                 
                 rainBg.appendChild(drop);
                 setTimeout(() => { drop.remove(); }, 1500);
-            }, 30); // 雨丝密集了一点
+            }, 30);
         }
         createRain();
 
