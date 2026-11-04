@@ -3,64 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>纸页与灰烬 | 芥川庄园</title>
+    <title>档案卷宗 | 纸页与灰烬</title>
     <style>
-        /* 页面基础设置：纯黑背景，全局居中 */
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #050505;
-            color: #d1d1d1;
-            font-family: "Songti SC", "Noto Serif SC", "SimSun", serif;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            user-select: none;
+            margin: 0; padding: 0; background-color: #0c0c0c; color: #a8a8a8;
+            /* 使用等宽字体模拟打字机 */
+            font-family: "Courier New", Courier, monospace;
+            height: 100vh; display: flex; justify-content: center; align-items: center;
         }
-
-        /* 纯视觉的按钮样式（无跳转） */
-        .fake-btn {
-            display: inline-block;
-            color: #d1d1d1; 
-            text-decoration: none; 
-            border: 1px solid #555; 
-            padding: 10px 20px; 
-            font-size: 0.9rem; 
-            transition: all 0.3s ease;
-            cursor: default; /* 鼠标放上去不会变成小手，表示不是链接 */
+        .dossier {
+            max-width: 650px; width: 90%; padding: 3rem;
+            background: #111; border-top: 4px solid #333; border-bottom: 1px solid #222;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            position: relative;
         }
+        /* 机密印章 */
+        .stamp {
+            position: absolute; top: 20px; right: 20px;
+            border: 2px solid #5a2a2a; color: #5a2a2a;
+            padding: 5px 10px; font-weight: bold; font-size: 1.2rem;
+            transform: rotate(15deg); letter-spacing: 0.2rem; opacity: 0.7;
+        }
+        .header { border-bottom: 1px dashed #333; padding-bottom: 1rem; margin-bottom: 2rem; color: #666; font-size: 0.9rem; }
+        .title { font-size: 2.2rem; color: #d1d1d1; letter-spacing: 0.2rem; margin-bottom: 0.5rem; }
+        .subtitle { font-size: 0.9rem; color: #555; letter-spacing: 0.1rem; margin-bottom: 2rem; }
+        .content { line-height: 1.8; font-size: 1rem; color: #999; margin-bottom: 3rem; }
+        .content span { color: #ccc; background: #222; padding: 0 5px; }
         
-        /* 悬停时的微光效果 */
-        .fake-btn:hover {
-            border-color: #fff;
-            color: #fff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.15);
-            background-color: rgba(255,255,255,0.03);
+        /* 打字机风格按钮 */
+        .btn-group { display: flex; gap: 20px; flex-wrap: wrap; }
+        .type-btn {
+            background: transparent; border: 1px solid #444; color: #a8a8a8;
+            padding: 10px 20px; font-family: inherit; font-size: 0.9rem;
+            cursor: crosshair; transition: all 0.2s;
         }
+        .type-btn:hover { background: #222; color: #fff; border-color: #888; }
     </style>
 </head>
 <body>
-
-    <!-- 档案室边框盒子 -->
-    <div style="border: 1px solid #333; padding: 4rem 5rem; text-align: center; background: #080808; max-width: 600px; width: 85%;">
+    <div class="dossier">
+        <div class="stamp">机密</div>
+        <div class="header">FILE NO. 1904 // SUBJECT: ASHES</div>
+        <div class="title">纸页与灰烬</div>
+        <div class="subtitle">PAGES AND ASHES</div>
         
-        <h1 style="font-size: 2.5rem; letter-spacing: 0.5rem; color: #fff; margin-bottom: 1rem; font-weight: normal; margin-top: 0;">纸页与灰烬</h1>
-        <p style="letter-spacing: 0.2rem; color: #666; font-size: 0.8rem; margin-bottom: 3rem;">PAGES AND ASHES</p>
-        
-        <p style="color: #999; font-size: 0.9rem; line-height: 2; margin-bottom: 3rem;">
-            档案已解密。<br>
-            请选择您的身份，进入芥川庄园。
-        </p>
-
-        <!-- 纯装饰的入口选项 -->
-        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
-            <span class="fake-btn">[ 敲响账房的门 ]</span>
-            <span class="fake-btn">[ 前往厨房 ]</span>
+        <div class="content">
+            记录显示，奥斯汀家族的旧宅已完全烧毁。<br>
+            幸存者：<span>莉薇娅</span>（女仆）。<br>
+            资金流向：<span>埃德蒙</span>（管家）负责平账。<br><br>
+            请选择您要查阅的当事人。
         </div>
 
-        <p style="margin-top: 4rem; font-size: 0.75rem; color: #444;">“无论您选择哪边，今晚的牛奶都不会少。”</p>
+        <div class="btn-group">
+            <span class="type-btn">> 调取账房记录</span>
+            <span class="type-btn">> 询问厨房事宜</span>
+        </div>
     </div>
-
 </body>
 </html>
