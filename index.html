@@ -3,60 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>档案卷宗 | 纸页与灰烬</title>
+    <title>芥川庄园邀请函</title>
     <style>
         body {
-            margin: 0; padding: 0; background-color: #0c0c0c; color: #a8a8a8;
-            /* 使用等宽字体模拟打字机 */
-            font-family: "Courier New", Courier, monospace;
+            margin: 0; padding: 0; background-color: #050505; color: #c9bda5; /* 偏暗的香槟金/米色 */
+            font-family: "Songti SC", "Noto Serif SC", serif;
             height: 100vh; display: flex; justify-content: center; align-items: center;
+            /* 模拟羊皮纸或暗色纹理背景 */
+            background-image: radial-gradient(circle at center, #111 0%, #050505 100%);
         }
-        .dossier {
-            max-width: 650px; width: 90%; padding: 3rem;
-            background: #111; border-top: 4px solid #333; border-bottom: 1px solid #222;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        .invitation {
+            border: 1px solid #8a6e3e; /* 暗金色边框 */
+            padding: 2rem; max-width: 600px; width: 85%; text-align: center;
             position: relative;
         }
-        /* 机密印章 */
-        .stamp {
-            position: absolute; top: 20px; right: 20px;
-            border: 2px solid #5a2a2a; color: #5a2a2a;
-            padding: 5px 10px; font-weight: bold; font-size: 1.2rem;
-            transform: rotate(15deg); letter-spacing: 0.2rem; opacity: 0.7;
+        /* 内层细线框 */
+        .inner-border {
+            border: 1px dashed #4a3c22; padding: 3rem 2rem;
         }
-        .header { border-bottom: 1px dashed #333; padding-bottom: 1rem; margin-bottom: 2rem; color: #666; font-size: 0.9rem; }
-        .title { font-size: 2.2rem; color: #d1d1d1; letter-spacing: 0.2rem; margin-bottom: 0.5rem; }
-        .subtitle { font-size: 0.9rem; color: #555; letter-spacing: 0.1rem; margin-bottom: 2rem; }
-        .content { line-height: 1.8; font-size: 1rem; color: #999; margin-bottom: 3rem; }
-        .content span { color: #ccc; background: #222; padding: 0 5px; }
+        .title {
+            font-size: 2.8rem; color: #e8d5b5; letter-spacing: 0.6rem;
+            margin-bottom: 1rem; margin-top: 0; font-weight: normal;
+            text-shadow: 0 0 10px rgba(232, 213, 181, 0.2); /* 微微的烫金发光 */
+        }
+        .divider {
+            color: #8a6e3e; font-size: 1.2rem; margin: 1.5rem 0; letter-spacing: 0.5rem;
+        }
+        .text {
+            color: #a89573; font-size: 1rem; line-height: 2; letter-spacing: 0.1rem;
+            margin-bottom: 2.5rem;
+        }
         
-        /* 打字机风格按钮 */
-        .btn-group { display: flex; gap: 20px; flex-wrap: wrap; }
-        .type-btn {
-            background: transparent; border: 1px solid #444; color: #a8a8a8;
-            padding: 10px 20px; font-family: inherit; font-size: 0.9rem;
-            cursor: crosshair; transition: all 0.2s;
+        /* 复古的文本按钮 */
+        .btn {
+            display: inline-block; border-bottom: 1px solid #8a6e3e;
+            padding: 5px 10px; color: #e8d5b5; cursor: pointer;
+            transition: all 0.3s; font-size: 1.1rem;
         }
-        .type-btn:hover { background: #222; color: #fff; border-color: #888; }
+        .btn:hover { color: #fff; border-bottom-color: #fff; text-shadow: 0 0 8px #fff; }
+        .btn-space { margin: 0 15px; }
     </style>
 </head>
 <body>
-    <div class="dossier">
-        <div class="stamp">机密</div>
-        <div class="header">FILE NO. 1904 // SUBJECT: ASHES</div>
-        <div class="title">纸页与灰烬</div>
-        <div class="subtitle">PAGES AND ASHES</div>
-        
-        <div class="content">
-            记录显示，奥斯汀家族的旧宅已完全烧毁。<br>
-            幸存者：<span>莉薇娅</span>（女仆）。<br>
-            资金流向：<span>埃德蒙</span>（管家）负责平账。<br><br>
-            请选择您要查阅的当事人。
-        </div>
+    <div class="invitation">
+        <div class="inner-border">
+            <h1 class="title">纸页与灰烬</h1>
+            <div class="divider">✦ ❦ ✦</div>
+            
+            <div class="text">
+                致 芥川庄园的贵客：<br>
+                昨夜的雷雨已歇，茶点已备好。<br>
+                无论您是来找人算账，还是来寻一口热汤。
+            </div>
 
-        <div class="btn-group">
-            <span class="type-btn">> 调取账房记录</span>
-            <span class="type-btn">> 询问厨房事宜</span>
+            <div>
+                <span class="btn">拜访账房</span>
+                <span class="btn btn-space">前往厨房</span>
+            </div>
         </div>
     </div>
 </body>
