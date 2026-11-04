@@ -16,42 +16,42 @@
         
         /* === 邀请函主界面 === */
         .invitation {
-            border: 1px solid #3a2e1b; padding: 2rem; max-width: 600px; width: 85%; text-align: center;
+            border: 1px solid #3a2e1b; padding: 2rem 3rem; max-width: 550px; width: 85%; text-align: center;
             position: relative; background: #050505; z-index: 1;
             transition: border-color 0.6s ease, box-shadow 0.6s ease;
         }
+        .invitation:hover { border-color: #8a6e3e; box-shadow: 0 0 30px rgba(138, 110, 62, 0.05); }
         
-        /* 鼠标悬停在主界面时，边框会有极微弱的微光 */
-        .invitation:hover {
-            border-color: #8a6e3e;
-            box-shadow: 0 0 30px rgba(138, 110, 62, 0.05);
-        }
-
         .inner-border {
-            border: 1px dashed #2a2213; padding: 3.5rem 2rem;
+            border: 1px dashed #2a2213; padding: 3rem 2rem;
             display: flex; flex-direction: column; align-items: center;
             transition: border-color 0.6s ease;
         }
         .invitation:hover .inner-border { border-color: #4a3c22; }
 
-        /* 英文水印抬头 */
         .watermark {
             letter-spacing: 0.6rem; color: #4a3c22; font-size: 0.75rem; 
             margin-top: 0; margin-bottom: 1.5rem; text-transform: uppercase;
         }
+        .divider { color: #8a6e3e; font-size: 1.2rem; margin-top: 0; margin-bottom: 2rem; letter-spacing: 0.5rem; }
+        .main-text { color: #a89573; font-size: 0.95rem; line-height: 2.2; letter-spacing: 0.15rem; margin-bottom: 2.5rem; }
         
-        .divider { color: #8a6e3e; font-size: 1.2rem; margin-top: 0; margin-bottom: 2.5rem; letter-spacing: 0.5rem; }
-        
-        .main-text { color: #a89573; font-size: 1rem; line-height: 2.2; letter-spacing: 0.15rem; margin-bottom: 3.5rem; }
-        
-        .btn-group { display: flex; gap: 30px; justify-content: center; }
-        
-        .btn {
-            border-bottom: 1px solid #4a3c22; padding: 5px 10px; color: #a89573; cursor: pointer;
-            transition: all 0.4s; font-size: 1.05rem; letter-spacing: 0.15rem;
-            position: relative;
+        /* === 升级版：档案目录式按钮（纵向排列） === */
+        .btn-group { 
+            display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; 
         }
-        .btn:hover { color: #fff; border-bottom-color: #e8d5b5; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .btn {
+            display: flex; justify-content: space-between; align-items: center;
+            width: 80%; padding: 12px 20px; border: 1px solid #2a2213;
+            color: #a89573; cursor: pointer; transition: all 0.4s; font-size: 1rem; letter-spacing: 0.1rem;
+            background: rgba(255,255,255,0.01);
+        }
+        .btn:hover { 
+            color: #fff; border-color: #8a6e3e; background: rgba(138,110,62,0.05); 
+            box-shadow: 0 0 15px rgba(138,110,62,0.1); padding-left: 25px; /* 悬停时文字微微右移 */
+        }
+        .btn .num { color: #4a3c22; font-size: 0.8rem; font-family: "Courier New", monospace; }
+        .btn:hover .num { color: #8a6e3e; }
 
         /* === 弹窗背景遮罩 === */
         .modal-overlay {
@@ -62,9 +62,9 @@
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
-        /* === 角色专属档案卡（进阶设计） === */
+        /* === 角色专属档案卡 === */
         .character-card {
-            background: #0a0a0a; border: 1px solid #4a3c22; padding: 3rem;
+            background: #0a0a0a; border: 1px solid #4a3c22; padding: 3rem 2.5rem;
             max-width: 500px; width: 85%; text-align: center; position: relative;
             transform: scale(0.95) translateY(10px); 
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -72,40 +72,22 @@
         }
         .modal-overlay.active .character-card { transform: scale(1) translateY(0); }
 
-        /* 档案编号 */
-        .file-number {
-            position: absolute; top: 15px; left: 20px;
-            font-size: 0.7rem; color: #4a3c22; letter-spacing: 0.1rem;
-        }
-
-        /* 右上角关闭 */
-        .close-btn {
-            position: absolute; top: 12px; right: 20px; color: #4a3c22; font-size: 1.5rem; cursor: pointer;
-            transition: color 0.3s;
-        }
+        .file-number { position: absolute; top: 15px; left: 20px; font-size: 0.7rem; color: #4a3c22; letter-spacing: 0.1rem; }
+        .close-btn { position: absolute; top: 12px; right: 20px; color: #4a3c22; font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
         .close-btn:hover { color: #e8d5b5; }
 
-        /* 角色姓名与头衔 */
-        .char-name { font-size: 2rem; color: #e8d5b5; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; }
+        .char-name { font-size: 1.8rem; color: #e8d5b5; letter-spacing: 0.3rem; margin-bottom: 0.5rem; font-weight: normal; }
         .char-title { 
-            font-family: "Courier New", Courier, monospace; /* 这里用打字机字体，更有档案感 */
-            font-size: 0.75rem; color: #8a6e3e; letter-spacing: 0.15rem; 
-            margin-bottom: 2.5rem; text-transform: uppercase; 
+            font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #8a6e3e; 
+            letter-spacing: 0.15rem; margin-bottom: 2rem; text-transform: uppercase; 
         }
-        
-        /* 角色台词（打字机打字效果排版） */
         .char-quote { 
-            font-size: 1.05rem; color: #a89573; line-height: 1.8; margin-bottom: 3rem; 
+            font-size: 1rem; color: #a89573; line-height: 1.8; margin-bottom: 2.5rem; 
             text-align: left; padding-left: 15px; border-left: 1px solid #333; 
-            font-family: "Songti SC", serif;
         }
-
-        /* 底部退回按钮 */
         .back-btn {
-            display: inline-block;
-            font-size: 0.85rem; color: #666; cursor: pointer;
-            letter-spacing: 0.15rem; transition: color 0.3s;
-            border: 1px solid #222; padding: 8px 15px;
+            display: inline-block; font-size: 0.8rem; color: #666; cursor: pointer;
+            letter-spacing: 0.15rem; transition: color 0.3s; border: 1px solid #222; padding: 8px 15px;
         }
         .back-btn:hover { color: #e8d5b5; border-color: #8a6e3e; background: rgba(138,110,62,0.05); }
     </style>
@@ -115,20 +97,30 @@
     <!-- 主界面 -->
     <div class="invitation">
         <div class="inner-border">
-            <!-- 纯英文水印 -->
             <p class="watermark">P A G E S &nbsp; A N D &nbsp; A S H E S</p>
-            
             <div class="divider">✦ ❦ ✦</div>
             
             <div class="main-text">
                 致 芥川庄园的贵客：<br>
                 昨夜的雷雨已歇，茶点已备好。<br>
-                无论您是来找人算账，还是来寻一口热汤。
+                请选择您要翻阅的档案。
             </div>
 
+            <!-- 升级版：目录按钮 -->
             <div class="btn-group">
-                <span class="btn" onclick="openModal('edmund')">拜访账房</span>
-                <span class="btn" onclick="openModal('livia')">前往厨房</span>
+                <span class="btn" onclick="openModal('edmund')">
+                    <span>拜访账房</span>
+                    <span class="num">[ 01 ]</span>
+                </span>
+                <span class="btn" onclick="openModal('livia')">
+                    <span>前往厨房</span>
+                    <span class="num">[ 02 ]</span>
+                </span>
+                <!-- 新增：星野雫的入口 -->
+                <span class="btn" onclick="openModal('shizuku')">
+                    <span>探访研究室</span>
+                    <span class="num">[ 03 ]</span>
+                </span>
             </div>
         </div>
     </div>
@@ -136,22 +128,19 @@
     <!-- 弹窗层 -->
     <div class="modal-overlay" id="modal">
         <div class="character-card">
-            <!-- 档案编号装饰 -->
             <div class="file-number" id="m-file"></div>
             <div class="close-btn" onclick="closeModal()">×</div>
             
-            <!-- 角色信息 -->
             <h2 class="char-name" id="m-name"></h2>
             <div class="char-title" id="m-title"></div>
             <div class="char-quote" id="m-quote"></div>
             
-            <!-- 退回按钮 -->
             <div class="back-btn" onclick="closeModal()">[ 合上卷宗 ]</div>
         </div>
     </div>
 
     <script>
-        // 角色数据配置
+        // === 角色数据库 ===
         const characters = {
             edmund: {
                 file: "FILE NO. 01 // FINANCE",
@@ -164,6 +153,13 @@
                 name: "莉薇娅",
                 title: "Exclusive Maid / Yorkshire",
                 quote: `（厨房里弥漫着烤饼干的香气，她正冷着脸擦拭银器，看到你推门，手上的动作顿了一下）<br><br>“您又错过晚饭了。牛奶在炉子上，自己拿，别烫着。还有，别指望我会给您加糖。”`
+            },
+            // 新增的星野雫数据
+            shizuku: {
+                file: "FILE NO. 03 // RESEARCH",
+                name: "星野雫",
+                title: "Resident Researcher / Tech Advisor",
+                quote: `（研究室里散落着精密的零件和图纸，他正对着模型计算，听到门响，他立刻停下手里的活，长发下的眉眼弯了弯，笑得温和）<br><br>“大小姐，实验数据刚好记录完。红茶和刚烤好的饼干在桌上，您先坐。如果是关于飞机的驾驶问题，或者庄园的技术维护，我随时可以。但如果是埃德蒙先生让您来劝我……换上那套衣服的，请容我礼貌地拒绝。”`
             }
         };
 
@@ -181,11 +177,8 @@
             document.getElementById('modal').classList.remove('active');
         }
 
-        // 点击遮罩层（非卡片区域）也可以关闭
         document.getElementById('modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
+            if (e.target === this) { closeModal(); }
         });
     </script>
 </body>
