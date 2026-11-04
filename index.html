@@ -255,7 +255,8 @@
             
             <div class="card-actions">
                 <span class="action-btn" onclick="closeModal()">[ 合上卷宗 ]</span>
-                <span class="action-btn primary" id="btn-story" onclick="toggleStory()">[ 阅读属于她的故事 ]</span>
+                <!-- 👇 这里改成了超链接，直接指向 prologue.html -->
+                <a href="prologue.html" class="action-btn primary" id="btn-story">[ 翻开序章 ]</a>
             </div>
         </div>
     </div>
@@ -297,54 +298,26 @@
                 file: "FILE NO. 01 // FINANCE",
                 name: "埃德蒙",
                 title: "Chief Butler / LSE Alumnus",
-                quote: `大小姐，如果是来查账，文件在左手边第二格。至于莉薇娅小姐那边，我保证连一颗土豆的账都没算错。当然，如果您是来替她讨说法的，这就去给您泡杯红茶，我们慢慢谈。`,
-                story: `
-                    <p class="story-p">账房里亮着一盏黄铜台灯，桌上放着一杯喝了一半的冰咖啡，杯壁凝着细小的水珠。埃德蒙正低头核对一份采买单，金丝眼镜的链子垂在燕尾服上。</p>
-                    <p class="story-p">“大小姐，如果是来核对下个月的采买单，文件在左手边第二格。”他温声开口，连头都没抬，“当然，如果您是来替莉薇娅小姐查岗的，请容我提醒一句，厨房的采买权我可从来没碰过。”</p>
-                    <p class="story-p">你走过去，刚想伸手碰桌上那叠发票，他却先一步将单子抽走，换了张空白的纸推到你面前。</p>
-                    <p class="story-p">“这些账面上的窟窿，我来填就好。”他抬起头，眼里带着一点笑意，“不过，如果您只是想找个地方躲清静，抽屉里有新买的漫画，我也刚好想尝尝您上次提过的那家虾饺外卖。莉薇娅小姐那边……我会说，是我觉得大小姐最近太累了。”</p>
-                    <p class="story-p">他稍微靠近了一点，似乎在确认你嘴角的弧度，随后又立刻退了半步。</p>
-                    <p class="story-p">“大小姐，失礼了。需要我帮您联系星野少爷，让他把监控挪开几分钟吗？”</p>
-                `
+                quote: `大小姐，如果是来查账，文件在左手边第二格。至于莉薇娅小姐那边，我保证连一颗土豆的账都没算错。当然，如果您是来替她讨说法的，这就去给您泡杯红茶，我们慢慢谈。`
             },
             livia: {
                 file: "FILE NO. 02 // KITCHEN",
                 name: "莉薇娅",
                 title: "Exclusive Maid / Yorkshire",
-                // 新改的台词，更长、更有压迫感、更毒舌
-                quote: `如果您是来偷吃冷肉的，请回吧。大小姐不应该在这个时间出现在厨房。牛奶在炉子上，自己去拿。还有，如果打翻了，明早就自己去把地板擦干净。别指望我会给您加糖，那会弄坏您的牙齿，我可不想在您的医疗档案上再添一笔。`,
-                story: `
-                    <p class="story-p">凌晨两点，厨房里依然亮着一盏暖黄色的壁灯。莉薇娅穿着那身永远一丝不苟的维多利亚式长裙，正在用一块洁白的软布，近乎强迫症般擦拭着一把银勺。</p>
-                    <p class="story-p">听到你的脚步声，她微微侧过头，深紫色的眼眸在灯下显得格外清冷：“如果您是来偷吃冷肉的，请回吧。大小姐不应该在这个时间出现在厨房。”</p>
-                    <p class="story-p">嘴上虽然刻薄，她却已经转身从炉子上端下了一个温着的白瓷杯，里面是热气腾腾的牛奶。她将杯子放在桌面上。</p>
-                    <p class="story-p">“牛奶里放了少许蜂蜜，这是最后一次。明天开始，您得按时吃晚饭。”她立在桌旁，双手交叠在围裙前，下巴微微抬起，像是一个守卫着自己领地，又忍不住对主人心软的骑士。</p>
-                `
+                quote: `如果您是来偷吃冷肉的，请回吧。大小姐不应该在这个时间出现在厨房。牛奶在炉子上，自己去拿。还有，如果打翻了，明早就自己去把地板擦干净。别指望我会给您加糖，那会弄坏您的牙齿，我可不想在您的医疗档案上再添一笔。`
             },
             shizuku: {
                 file: "FILE NO. 03 // RESEARCH",
                 name: "星野雫",
                 title: "Resident Researcher / Tech Advisor",
-                quote: `大小姐，实验数据刚好记录完。红茶和刚烤好的饼干在桌上，您先坐。如果是关于飞机的驾驶问题，或者庄园的技术维护，我随时可以。但如果是埃德蒙先生让您来劝我……换上那套衣服的，请容我礼貌地拒绝。`,
-                story: `
-                    <p class="story-p">研究室里的白炽灯有些刺眼，空气里混杂着淡淡的机油味与红茶的香气。工作台上散落着精密的齿轮和图纸，看似杂乱，实则按照某种严密的逻辑排列。星野雫正坐在高脚凳上，低着头，手里拿着一把极细的镊子。</p>
-                    <p class="story-p">听到脚步声，他停下手里的活。那头乌黑的长发被一根素色发绳松松垮垮地绑着，几缕碎发垂在苍白消瘦的颈侧。一米八的个子，黑色的长袖上衣穿在他身上却显得空荡荡的，仿佛一阵风就能吹倒，体重恐怕连五十五公斤都不到。</p>
-                    <p class="story-p">“大小姐，您怎么来了。”他的声音很轻，带着一种雌雄莫辨的温和。他转过身，动作自然地拉了一下右侧的袖子，遮住了手臂内侧那朵若隐若现的兰花素描。左手食指上那枚素银的单身戒在灯光下闪过一丝冷光。</p>
-                    <p class="story-p">还没等你开口，他已经端起了旁边温着的红茶递到你面前，旁边的小碟子里还放着几块烤得恰到好处的饼干。</p>
-                    <p class="story-p">“实验数据刚好记录完。红茶和饼干是刚弄好的，您先坐。如果是关于飞机的驾驶问题，或者庄园的监控维护，我随时可以处理。”</p>
-                    <p class="story-p">你看着他清瘦的脸庞和眼底淡淡的青黑，忍不住提起了那个只有你能使用的特权——去换上那套裙子。</p>
-                    <p class="story-p">星野雫拿着镊子的手微微一顿。他垂下眼睫，似乎有些无奈，轻轻叹了口气。</p>
-                    <p class="story-p">“如果是埃德蒙先生让您来当说客的……请您转告他，他在账房里是不是又闲得发慌了。”他抬起头，目光温和地看着你，最终化作一声妥协，“不过，既然是大小姐的请求……等我把这些零件归位，就去换上。您先把饼干吃了，别放凉了。”</p>
-                    <p class="story-p">他转过身，重新面对那张乱中有序的工作台，背影单薄，却莫名给人一种极度可靠的安全感。因为他把所有的柔软都给了你，把所有的锋芒都藏在了那件黑色长袖之下。</p>
-                `
+                quote: `大小姐，实验数据刚好记录完。红茶和刚烤好的饼干在桌上，您先坐。如果是关于飞机的驾驶问题，或者庄园的技术维护，我随时可以。但如果是埃德蒙先生让您来劝我……换上那套衣服的，请容我礼貌地拒绝。`
             }
         };
 
         let currentCharId = null;
-        let isShowingStory = false;
 
         function openModal(id) {
             currentCharId = id;
-            isShowingStory = false;
             const data = characters[id];
             
             document.getElementById('m-file').innerText = data.file;
@@ -352,38 +325,10 @@
             document.getElementById('m-title').innerText = data.title;
             document.getElementById('m-content').innerHTML = data.quote;
             
-            const btnStory = document.getElementById('btn-story');
-            if (id === 'livia') {
-                 btnStory.innerText = "[ 阅读属于她的故事 ]";
-            } else {
-                 btnStory.innerText = "[ 阅读属于他的故事 ]";
-            }
+            // 为了统一样式，按钮现在都叫“翻开序章”
+            document.getElementById('btn-story').innerText = "[ 翻开序章 ]";
             
             document.getElementById('modal').classList.add('active');
-        }
-
-        function toggleStory() {
-            if (!currentCharId) return;
-            
-            const data = characters[currentCharId];
-            const contentBox = document.getElementById('m-content');
-            const btnStory = document.getElementById('btn-story');
-            
-            contentBox.style.opacity = 0;
-            
-            setTimeout(() => {
-                if (isShowingStory) {
-                    contentBox.innerHTML = data.quote;
-                    btnStory.innerText = (currentCharId === 'livia') ? "[ 阅读属于她的故事 ]" : "[ 阅读属于他的故事 ]";
-                    isShowingStory = false;
-                } else {
-                    contentBox.innerHTML = data.story;
-                    btnStory.innerText = "[ 返回档案首页 ]";
-                    isShowingStory = true;
-                }
-                contentBox.style.opacity = 1;
-                contentBox.scrollTop = 0; 
-            }, 300);
         }
 
         function closeModal() { 
