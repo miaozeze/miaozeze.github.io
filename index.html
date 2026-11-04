@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸页与灰烬 | 芥川庄园</title>
     <style>
-        /* === 1. 自定义羽毛笔鼠标指针 === */
+        /* === 基础页面（加入微弱的舞台聚光灯效果） === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #d1c5a8;
             font-family: "Songti SC", "Noto Serif SC", serif;
@@ -13,26 +13,8 @@
             background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 70%);
             overflow: hidden;
             
-            /* 使用 SVG 绘制一个金色的羽毛笔作为鼠标指针 */
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 3v12l-9 9-9-9V3h18z"/><path d="M3 3l9 9 9-9"/><path d="M12 12v9"/></svg>') 0 0, auto;
-        }
-
-        /* 可选：当鼠标悬停在按钮上时，变成“查看”的小手 */
-        .btn, .back-btn, .close-btn {
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 12 12, pointer !important;
-        }
-
-        /* === 2. 鼠标跟随的微弱聚光灯（煤油灯效果） === */
-        #cursor-glow {
-            position: fixed;
-            top: 0; left: 0;
-            width: 400px; height: 400px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(232, 213, 181, 0.05) 0%, transparent 60%);
-            pointer-events: none; /* 防止遮挡点击事件 */
-            transform: translate(-50%, -50%);
-            z-index: 0;
-            transition: opacity 0.3s;
+            /* 🎯 羽毛笔光标（默认状态） */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
         
         /* === 邀请函主界面 === */
@@ -51,6 +33,7 @@
         }
         .invitation:hover .inner-border { border-color: #5a4a2e; }
 
+        /* 英文水印抬头 */
         .watermark {
             letter-spacing: 0.5rem; color: #6b5a3e; font-size: 0.7rem; 
             margin-top: 0; margin-bottom: 3rem; text-transform: uppercase;
@@ -58,11 +41,13 @@
         }
         .invitation:hover .watermark { color: #9e8a63; }
         
+        /* 正文文字 */
         .main-text { 
             color: #b8a57e; font-size: 0.95rem; line-height: 2.2; 
             letter-spacing: 0.15rem; margin-bottom: 3rem; 
         }
         
+        /* === 档案目录式按钮 === */
         .btn-group { 
             display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; 
         }
@@ -74,8 +59,12 @@
             font-size: 0.95rem; letter-spacing: 0.15rem;
             background: rgba(255,255,255,0.02);
             overflow: hidden;
+            
+            /* 🔍 放大镜光标（悬停按钮时） */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         
+        /* 悬停时左侧亮起的标签线 */
         .btn::before {
             content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 3px;
             background-color: #e8d5b5; transform: scaleY(0); transition: transform 0.3s ease;
@@ -113,7 +102,12 @@
         .modal-overlay.active .character-card { transform: scale(1) translateY(0); }
 
         .file-number { position: absolute; top: 15px; left: 20px; font-size: 0.75rem; color: #6b5a3e; letter-spacing: 0.15rem; font-family: "Courier New", monospace; }
-        .close-btn { position: absolute; top: 12px; right: 20px; color: #6b5a3e; font-size: 1.5rem; transition: color 0.3s; }
+        
+        .close-btn { 
+            position: absolute; top: 12px; right: 20px; color: #6b5a3e; font-size: 1.5rem; transition: color 0.3s; 
+            /* 放大镜光标 */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
         .close-btn:hover { color: #e8d5b5; }
 
         .char-name { font-size: 2rem; color: #e8d5b5; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; }
@@ -125,21 +119,22 @@
             font-size: 1rem; color: #c9bda5; line-height: 1.9; margin-bottom: 3rem; 
             text-align: left; padding-left: 15px; border-left: 2px solid #3a3024; 
         }
+        
         .back-btn {
             display: inline-block; font-size: 0.8rem; color: #9e8a63;
             letter-spacing: 0.15rem; transition: all 0.3s; border: 1px solid #3a3024; padding: 8px 20px;
+            /* 放大镜光标 */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .back-btn:hover { color: #fff; border-color: #8a6e3e; background: rgba(138,110,62,0.1); }
     </style>
 </head>
 <body>
 
-    <!-- 鼠标跟随的光晕 -->
-    <div id="cursor-glow"></div>
-
     <!-- 主界面 -->
     <div class="invitation">
         <div class="inner-border">
+            <!-- 纯英文水印 -->
             <p class="watermark">P A G E S &nbsp; A N D &nbsp; A S H E S</p>
             
             <div class="main-text">
@@ -180,21 +175,7 @@
     </div>
 
     <script>
-        // === 鼠标跟随光晕的 JS 逻辑 ===
-        const glow = document.getElementById('cursor-glow');
-        
-        document.addEventListener('mousemove', (e) => {
-            // 让光晕平滑跟随鼠标
-            glow.style.left = e.clientX + 'px';
-            glow.style.top = e.clientY + 'px';
-        });
-
-        // 鼠标移出窗口时隐藏光晕
-        document.addEventListener('mouseleave', () => { glow.style.opacity = '0'; });
-        document.addEventListener('mouseenter', () => { glow.style.opacity = '1'; });
-
-
-        // === 弹窗逻辑 ===
+        // === 角色数据库 ===
         const characters = {
             edmund: {
                 file: "FILE NO. 01 // FINANCE",
@@ -230,8 +211,11 @@
             document.getElementById('modal').classList.remove('active');
         }
 
+        // 点击遮罩层（非卡片区域）也可以关闭
         document.getElementById('modal').addEventListener('click', function(e) {
-            if (e.target === this) { closeModal(); }
+            if (e.target === this) {
+                closeModal();
+            }
         });
     </script>
 </body>
