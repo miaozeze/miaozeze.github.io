@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸页与灰烬 | 芥川庄园</title>
     <style>
-        /* === 基础页面 === */
+        /* === 基础页面（提亮至深空灰，增加环境光） === */
         body {
-            margin: 0; padding: 0; background-color: #121212; color: #e8d5b5;
+            margin: 0; padding: 0; background-color: #1a1a1a; color: #e8d5b5;
             font-family: "Songti SC", "Noto Serif SC", serif;
             height: 100vh; display: flex; justify-content: center; align-items: center;
-            background-image: radial-gradient(circle at center, #2a2a2a 0%, #111 80%);
+            /* 更加明亮的中心光晕 */
+            background-image: radial-gradient(circle at center, #333333 0%, #151515 70%);
             overflow: hidden;
             
             /* 🖋️ 极简羽毛笔光标 */
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
         
         /* === 鼠标拖尾光效粒子 === */
@@ -36,62 +37,54 @@
 
         /* === 邀请函主界面 === */
         .invitation {
-            border: 1px solid #4a3c22; padding: 3rem 3rem; max-width: 480px; width: 85%; text-align: center;
-            position: relative; background: rgba(26, 26, 26, 0.85); z-index: 1;
+            border: 1px solid #5a4a2e; padding: 3rem 3rem; max-width: 480px; width: 85%; text-align: center;
+            position: relative; background: rgba(30, 30, 30, 0.85); z-index: 1;
             transition: all 0.6s ease;
             box-shadow: 0 15px 50px rgba(0,0,0,0.9);
         }
-        .invitation:hover { border-color: #8a6e3e; box-shadow: 0 15px 50px rgba(0,0,0,0.9), 0 0 20px rgba(138,110,62,0.15); }
+        .invitation:hover { border-color: #9e8a63; box-shadow: 0 15px 50px rgba(0,0,0,0.9), 0 0 25px rgba(158,138,99,0.2); }
         
         .inner-border {
-            border: 1px dashed #4a3c22; padding: 2.5rem 1rem;
+            border: 1px dashed #5a4a2e; padding: 2.5rem 1rem;
             display: flex; flex-direction: column; align-items: center;
             transition: border-color 0.6s ease;
         }
-        .invitation:hover .inner-border { border-color: #6b5a3e; }
+        .invitation:hover .inner-border { border-color: #8a6e3e; }
 
-        /* === 独特排版：诗意错落的英文水印 === */
+        /* === 极致错位：碎片化解构英文 === */
         .watermark-container {
             width: 100%;
+            height: 70px; /* 给绝对定位留出空间 */
+            position: relative;
             margin-top: 0;
-            margin-bottom: 3.5rem;
-            padding: 0 2rem; /* 给左右留出呼吸空间 */
-        }
-        /* 第一行 */
-        .w-row-1 {
-            display: flex;
-            justify-content: center;
-            align-items: baseline;
-            gap: 1.5rem; /* PAGES 和 AND 的间距 */
-        }
-        /* 第二行 */
-        .w-row-2 {
-            text-align: right;
-            margin-top: 0.5rem;
-            padding-right: 2rem; /* 往左收一点，显得更错落 */
+            margin-bottom: 3rem;
         }
         
-        /* 英文文字基础样式 */
         .w-text {
-            color: #8a6e3e;
+            color: #b8a57e; /* 提亮香槟金 */
             font-size: 0.75rem;
-            letter-spacing: 0.5rem;
-            transition: color 0.6s ease;
+            letter-spacing: 0.6rem;
+            transition: color 0.6s ease, transform 0.6s ease;
+            position: absolute;
             text-transform: uppercase;
         }
-        /* AND 字号更小一点 */
-        .w-small {
-            font-size: 0.6rem;
-            letter-spacing: 0.4rem;
-            color: #6b5a3e;
-        }
 
-        .invitation:hover .w-text { color: #e8d5b5; }
-        .invitation:hover .w-small { color: #8a6e3e; }
+        /* 精准还原截图的散落位置 */
+        .w-pages { top: 0; left: 10%; }
+        .w-and { top: -10px; left: 42%; font-size: 0.65rem; color: #9e8a63; letter-spacing: 0.4rem; }
+        .w-as { top: 5px; right: 12%; }
+        .w-hes { top: 25px; left: 48%; }
+
+        /* 悬停时的微动效果 */
+        .invitation:hover .w-text { color: #f5e6c8; }
+        .invitation:hover .w-pages { transform: translateY(-3px); }
+        .invitation:hover .w-and { transform: translateY(3px); }
+        .invitation:hover .w-as { transform: translateY(-3px); }
+        .invitation:hover .w-hes { transform: translateY(3px); }
         
         /* 正文文字 */
         .main-text { 
-            color: #d1c5a8; font-size: 1rem; line-height: 2.2; 
+            color: #e0d0b0; font-size: 1rem; line-height: 2.2; 
             letter-spacing: 0.15rem; margin-bottom: 3rem; 
         }
         
@@ -102,13 +95,13 @@
         .btn {
             position: relative;
             display: flex; justify-content: space-between; align-items: center;
-            width: 85%; padding: 14px 20px; border: 1px solid #4a3c22;
+            width: 85%; padding: 14px 20px; border: 1px solid #5a4a2e;
             color: #e8d5b5; transition: all 0.4s ease; 
             font-size: 0.95rem; letter-spacing: 0.15rem;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255,255,255,0.04);
             overflow: hidden;
             /* 🔍 放大镜光标 */
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         
         .btn::before {
@@ -117,13 +110,13 @@
         }
         
         .btn:hover { 
-            color: #fff; border-color: #8a6e3e; background: rgba(138,110,62,0.1); 
-            padding-left: 25px; box-shadow: 0 0 20px rgba(138,110,62,0.2);
+            color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.15); 
+            padding-left: 25px; box-shadow: 0 0 20px rgba(158,138,99,0.2);
         }
         .btn:hover::before { transform: scaleY(1); } 
 
         .btn .num { 
-            color: #8a6e3e; font-size: 0.8rem; font-family: "Courier New", monospace; 
+            color: #9e8a63; font-size: 0.8rem; font-family: "Courier New", monospace; 
             transition: color 0.3s;
         }
         .btn:hover .num { color: #fff; }
@@ -131,7 +124,7 @@
         /* === 弹窗背景遮罩 === */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 10;
         }
@@ -139,38 +132,38 @@
 
         /* === 角色专属档案卡 === */
         .character-card {
-            background: #1a1a1a; border: 1px solid #8a6e3e; padding: 3rem 2.5rem;
+            background: #222; border: 1px solid #9e8a63; padding: 3rem 2.5rem;
             max-width: 480px; width: 85%; text-align: center; position: relative;
             transform: scale(0.95) translateY(15px); 
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 25px 70px rgba(0,0,0,0.95), 0 0 40px rgba(138,110,62,0.15);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.95), 0 0 40px rgba(158,138,99,0.2);
         }
         .modal-overlay.active .character-card { transform: scale(1) translateY(0); }
 
-        .file-number { position: absolute; top: 15px; left: 20px; font-size: 0.75rem; color: #8a6e3e; letter-spacing: 0.15rem; font-family: "Courier New", monospace; }
+        .file-number { position: absolute; top: 15px; left: 20px; font-size: 0.75rem; color: #9e8a63; letter-spacing: 0.15rem; font-family: "Courier New", monospace; }
         
         .close-btn { 
-            position: absolute; top: 12px; right: 20px; color: #8a6e3e; font-size: 1.5rem; transition: color 0.3s; 
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+            position: absolute; top: 12px; right: 20px; color: #9e8a63; font-size: 1.5rem; transition: color 0.3s; 
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
-        .close-btn:hover { color: #f5e6c8; }
+        .close-btn:hover { color: #fff; }
 
         .char-name { font-size: 2rem; color: #f5e6c8; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; }
         .char-title { 
-            font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #b8a57e; 
+            font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #c9bda5; 
             letter-spacing: 0.15rem; margin-bottom: 2.5rem; text-transform: uppercase; 
         }
         .char-quote { 
             font-size: 1rem; color: #e8d5b5; line-height: 1.9; margin-bottom: 3rem; 
-            text-align: left; padding-left: 15px; border-left: 2px solid #4a3c22; 
+            text-align: left; padding-left: 15px; border-left: 2px solid #5a4a2e; 
         }
         
         .back-btn {
-            display: inline-block; font-size: 0.8rem; color: #b8a57e;
-            letter-spacing: 0.15rem; transition: all 0.3s; border: 1px solid #4a3c22; padding: 8px 20px;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+            display: inline-block; font-size: 0.8rem; color: #c9bda5;
+            letter-spacing: 0.15rem; transition: all 0.3s; border: 1px solid #5a4a2e; padding: 8px 20px;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
-        .back-btn:hover { color: #fff; border-color: #8a6e3e; background: rgba(138,110,62,0.15); }
+        .back-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.15); }
     </style>
 </head>
 <body>
@@ -179,15 +172,12 @@
     <div class="invitation">
         <div class="inner-border">
             
-            <!-- 按照你的要求重排的英文水印 -->
+            <!-- 碎片化解构排版 -->
             <div class="watermark-container">
-                <div class="w-row-1">
-                    <span class="w-text">P A G E S</span>
-                    <span class="w-text w-small">A N D</span>
-                </div>
-                <div class="w-row-2">
-                    <span class="w-text">A S H E S</span>
-                </div>
+                <span class="w-text w-pages">P A G E S</span>
+                <span class="w-text w-and">A N D</span>
+                <span class="w-text w-as">A S</span>
+                <span class="w-text w-hes">H E S</span>
             </div>
             
             <div class="main-text">
