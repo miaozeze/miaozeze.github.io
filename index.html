@@ -208,6 +208,7 @@
                 纸页正在泛黄，灰烬仍有温热。<br>
                 请在此落款，或推开这扇尘封的门。
             </div>
+            <!-- 👇 核心：跳转序章的按钮 -->
             <a href="javascript:void(0);" onclick="goToPrologue()" class="open-btn">[ 拆 开 信 件 ]</a>
             <div class="env-footer">From Akutagawa Manor</div>
         </div>
@@ -243,6 +244,7 @@
                 </div>
 
                 <div class="reread-divider"></div>
+                <!-- 如果你想让这段跳转同时也带有音效，可以改成 <a href="prologue.html" onclick="playPaperSound()"> -->
                 <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
             </div>
         </div>
@@ -267,7 +269,42 @@
 
     <script>
         // ==========================================
-        // 👇 音效：把卷宗放回书架（仅在合上卷宗时触发）
+        // 👇 音效一：纸张摩擦声（翻页/拆信） 👇
+        // ==========================================
+        function playPaperSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume(); 
+
+                const bufferSize = audioCtx.sampleRate * 0.15; 
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
+
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1500; 
+                filter.Q.value = 0.5; 
+
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.02); 
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+
+                source.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                source.start();
+            } catch (e) {}
+        }
+
+        // ==========================================
+        // 👇 音效二：把卷宗放回书架（合上卷宗） 👇
         // ==========================================
         function playBookOnShelfSound() {
             try {
@@ -278,7 +315,6 @@
 
                 const now = audioCtx.currentTime;
 
-                // 1. 摩擦声
                 const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.3, audioCtx.sampleRate);
                 const slideData = slideBuffer.getChannelData(0);
                 for (let i = 0; i < slideData.length; i++) { slideData[i] = Math.random() * 2 - 1; }
@@ -286,19 +322,15 @@
                 slideSource.buffer = slideBuffer;
                 const slideFilter = audioCtx.createBiquadFilter();
                 slideFilter.type = 'bandpass';
-                slideFilter.frequency.value = 800;
-                slideFilter.Q.value = 1.5;
+                slideFilter.frequency.value = 800; slideFilter.Q.value = 1.5;
                 const slideGain = audioCtx.createGain();
                 slideGain.gain.setValueAtTime(0, now);
                 slideGain.gain.linearRampToValueAtTime(0.1, now + 0.1);
                 slideGain.gain.linearRampToValueAtTime(0.2, now + 0.25);
                 slideGain.gain.linearRampToValueAtTime(0, now + 0.3);
-                slideSource.connect(slideFilter);
-                slideFilter.connect(slideGain);
-                slideGain.connect(audioCtx.destination);
+                slideSource.connect(slideFilter); slideFilter.connect(slideGain); slideGain.connect(audioCtx.destination);
                 slideSource.start(now);
 
-                // 2. 撞击木板声
                 setTimeout(() => {
                     const thudBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
                     const thudData = thudBuffer.getChannelData(0);
@@ -306,34 +338,35 @@
                     const thudSource = audioCtx.createBufferSource();
                     thudSource.buffer = thudBuffer;
                     const thudFilter = audioCtx.createBiquadFilter();
-                    thudFilter.type = 'lowpass';
-                    thudFilter.frequency.value = 300;
+                    thudFilter.type = 'lowpass'; thudFilter.frequency.value = 300;
                     const thudGain = audioCtx.createGain();
                     thudGain.gain.setValueAtTime(0, audioCtx.currentTime);
                     thudGain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.01);
                     thudGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                    thudSource.connect(thudFilter);
-                    thudFilter.connect(thudGain);
-                    thudGain.connect(audioCtx.destination);
+                    thudSource.connect(thudFilter); thudFilter.connect(thudGain); thudGain.connect(audioCtx.destination);
                     thudSource.start();
                 }, 260);
             } catch (e) {}
         }
 
-        // === 核心跳转逻辑（静音） ===
+        // ==========================================
+        // 👇 核心跳转逻辑 👇
+        // ==========================================
         function goToPrologue() {
+            playPaperSound(); // 拆信有声音
             sessionStorage.setItem('rainPlaying', 'true');
-            setTimeout(() => { window.location.href = 'prologue.html'; }, 300);
+            // 延迟一点点，确保拆信的声音能出来，然后跳转
+            setTimeout(() => { window.location.href = 'prologue.html'; }, 350); 
         }
 
         function leaveManor() {
-            // 这里去掉了音效，直接安静退回
+            // 离开庄园保持安静
             document.getElementById('welcome-screen').classList.remove('hidden');
             closeModal();
             sessionStorage.removeItem('rainPlaying');
         }
 
-        // === 其他逻辑（时间、灰烬、状态记忆等） ===
+        // === 其他逻辑 ===
         function updateTime() {
             const now = new Date();
             document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
