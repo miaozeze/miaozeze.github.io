@@ -47,7 +47,7 @@
 
         /* 音频开关按钮 */
         .audio-btn {
-            position: fixed; top: 30px; right: 160px; /* 放在离开庄园旁边 */
+            position: fixed; top: 30px; right: 160px;
             display: flex; align-items: center; gap: 8px;
             padding: 10px 20px; color: #9e8a63; font-size: 0.85rem; letter-spacing: 0.2rem;
             border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8);
@@ -284,10 +284,10 @@
     </div>
 
     <script>
-        // === 音频控制 ===
-        // 注意：这里用的是一个开源的雨声 mp3 测试链接，如果你想换成你自己的声音，把下面的 URL 改掉即可
-        const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2515/2515-preview.mp3');
-        bgAudio.loop = true; // 循环播放
+        // === 音频控制（音量已调低至 20%） ===
+        const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2514/2514-preview.mp3');
+        bgAudio.loop = true;
+        bgAudio.volume = 0.2; 
         let isPlaying = false;
 
         function toggleAudio() {
@@ -310,7 +310,7 @@
             const size = Math.random() * 3 + 1;
             ash.style.width = size + 'px'; ash.style.height = size + 'px';
             ash.style.left = Math.random() * 100 + 'vw';
-            ash.style.animationDuration = (Math.random() * 5 + 5) + 's'; // 5-10秒飘完
+            ash.style.animationDuration = (Math.random() * 5 + 5) + 's';
             document.body.appendChild(ash);
             setTimeout(() => { ash.remove(); }, 10000);
         }
