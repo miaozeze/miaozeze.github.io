@@ -12,24 +12,23 @@
             min-height: 100vh; overflow-x: hidden;
             
             background-image: 
-                radial-gradient(circle at center, #1c1c1c 0%, #0a0a0a 70%),
+                radial-gradient(circle at center, #151515 0%, #050505 80%),
                 url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>');
             background-blend-mode: overlay;
             
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
 
-        /* 👇 新增：背景微光细雨特效 👇 */
+        /* 👇 修复版：雨丝特效（层级提至最高，调亮加粗） 👇 */
         .rain-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 0; overflow: hidden;
+            pointer-events: none; z-index: 99; /* 层级高于所有内容，防止被遮挡 */
+            overflow: hidden;
         }
         .rain-drop {
-            position: absolute; top: -100px; width: 1px; height: 60px;
-            background: linear-gradient(to bottom, transparent, rgba(245, 230, 200, 0.25));
+            position: absolute; top: -100px; width: 2px; height: 80px; /* 调粗变长 */
+            background: linear-gradient(to bottom, transparent, rgba(245, 230, 200, 0.6)); /* 调亮 */
             animation: fall linear forwards;
         }
         @keyframes fall { to { transform: translateY(110vh); } }
@@ -42,9 +41,6 @@
         }
         @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
 
-        /* ==========================================
-           第一屏：极简黑金扉页（封面）
-           ========================================== */
         #cover-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
             display: flex; justify-content: center; align-items: center;
@@ -53,7 +49,8 @@
         
         .cover-box {
             border: 1px solid #3a3024; padding: 4rem 3rem; max-width: 600px; width: 85%; text-align: center;
-            background: #0a0a0a; box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(5px); /* 增加磨砂透明 */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
             position: relative; z-index: 2;
         }
         .cover-box::before {
@@ -73,17 +70,13 @@
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .btn-open:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); box-shadow: 0 0 20px rgba(158,138,99,0.2); }
-
         .quote-text { margin-top: 4rem; font-size: 0.85rem; color: #4a3c22; font-style: italic; letter-spacing: 0.1rem; }
 
-        /* ==========================================
-           第二屏：序章正文
-           ========================================== */
         #story-screen {
             max-width: 680px; width: 85%; margin: 0 auto; padding: 6rem 0;
             opacity: 0; transform: translateY(30px); pointer-events: none;
             transition: opacity 1.5s ease, transform 1.5s ease;
-            position: relative; z-index: 2; /* 让文字在雨丝之上 */
+            position: relative; z-index: 2; /* 文字在雨丝之下，但清晰可见 */
         }
 
         .chapter-heading { text-align: center; font-size: 1.8rem; color: #f5e6c8; letter-spacing: 0.3rem; margin-bottom: 3.5rem; font-weight: normal; }
@@ -117,7 +110,7 @@
     </style>
 </head>
 <body>
-    <!-- 动态生成的雨滴层 -->
+    <!-- 动态生成的雨滴层（现在覆盖在最上面） -->
     <div class="rain-bg" id="rain-bg"></div>
 
     <!-- 第一屏：扉页 -->
@@ -188,7 +181,6 @@
     </div>
 
     <script>
-        // 状态记忆
         const urlParams = new URLSearchParams(window.location.search);
         const fromChar = urlParams.get('from');
         if (fromChar && fromChar !== 'global') {
@@ -197,7 +189,6 @@
             document.getElementById('back-btn').href = `index.html?open=true`;
         }
 
-        // 翻页
         function openPrologue() {
             const cover = document.getElementById('cover-screen');
             const story = document.getElementById('story-screen');
@@ -206,31 +197,23 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // === 动态生成雨丝 ===
+        // 生成雨丝
         function createRain() {
             const rainBg = document.getElementById('rain-bg');
-            // 每 40 毫秒生成一滴雨
             setInterval(() => {
                 const drop = document.createElement('div');
                 drop.className = 'rain-drop';
-                // 随机横向位置
                 drop.style.left = Math.random() * 100 + 'vw';
-                // 随机下落速度（0.5秒到1.2秒之间）
                 drop.style.animationDuration = (Math.random() * 0.7 + 0.5) + 's';
-                // 随机透明度
-                drop.style.opacity = Math.random() * 0.4 + 0.1;
-                // 随机长度
-                drop.style.height = (Math.random() * 40 + 20) + 'px';
+                drop.style.opacity = Math.random() * 0.5 + 0.2;
+                drop.style.height = (Math.random() * 40 + 40) + 'px'; // 长度范围 40-80px
                 
                 rainBg.appendChild(drop);
-                
-                // 动画结束后移除
                 setTimeout(() => { drop.remove(); }, 1500);
-            }, 40);
+            }, 30); // 雨丝密集了一点
         }
-        createRain(); // 启动雨丝
+        createRain();
 
-        // 星光拖尾
         let lastTrailTime = 0;
         document.addEventListener('mousemove', function(e) {
             const now = Date.now();
