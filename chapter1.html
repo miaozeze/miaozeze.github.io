@@ -18,7 +18,6 @@
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
 
-        /* 左上角时间温度 */
         .hud-info {
             position: fixed; top: 30px; left: 40px;
             font-family: "Courier New", monospace; color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem;
@@ -26,7 +25,6 @@
         }
         .hud-info span { border-bottom: 1px solid rgba(138, 110, 62, 0.3); padding-bottom: 3px; }
 
-        /* 音频按钮 */
         .audio-btn {
             position: fixed; top: 30px; right: 40px;
             display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -43,12 +41,10 @@
         .audio-btn.playing { animation: none; background: transparent; border-color: #5a4a2e; color: #9e8a63; }
         .audio-btn:hover { color: #fff; background: rgba(158,138,99,0.3); }
 
-        /* 视觉雨丝 */
         .rain-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 99; overflow: hidden; }
         .rain-drop { position: absolute; top: -100px; width: 2px; height: 80px; background: linear-gradient(to bottom, transparent, rgba(245, 230, 200, 0.6)); animation: fall linear forwards; }
         @keyframes fall { to { transform: translateY(110vh); } }
         
-        /* 光标星尘 */
         .cursor-trail {
             position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
             pointer-events: none; z-index: 9999; box-shadow: 0 0 10px 2px rgba(245, 230, 200, 0.8);
@@ -69,7 +65,6 @@
             content: '✦ ❦ ✦'; display: block; font-size: 0.9rem; color: #5a4a2e; margin-top: 1.5rem; letter-spacing: 0.5rem; 
         }
 
-        /* 滚动淡入特效 */
         .story-p { 
             font-size: 1.05rem; line-height: 2.4; letter-spacing: 0.08rem; 
             color: #d1c5a8; text-indent: 2em; margin-bottom: 2rem; text-align: justify;
@@ -78,7 +73,6 @@
         }
         .story-p.visible { opacity: 1; transform: translateY(0); }
 
-        /* 特殊排版：回忆中的绝望与对话 */
         .memory-dialogue {
             text-indent: 0;
             color: #e8d5b5;
@@ -95,18 +89,17 @@
         }
         .memory-dialogue.visible { opacity: 1; transform: translateY(0); }
         
-        /* 分割线 */
         .time-skip { 
             text-align: center; color: #5a4a2e; font-size: 0.85rem; letter-spacing: 0.5rem; margin: 3rem 0; 
         }
 
-        /* 底部按钮区 */
         .bottom-actions { 
             display: flex; 
             justify-content: center; 
             margin-top: 6rem; 
             padding-bottom: 4rem;
         }
+        
         .action-btn {
             padding: 12px 30px; border: 1px solid #5a4a2e; color: #9e8a63;
             text-decoration: none; font-size: 0.9rem; letter-spacing: 0.2rem; transition: all 0.3s;
@@ -212,13 +205,82 @@
         <p class="story-p">哪怕是变成一团灰烬，她也要做最傲骨铮铮的那一把。</p>
 
         <div class="bottom-actions">
-            <!-- 只保留回到档案室的按钮 -->
-            <a href="index.html?open=true" class="action-btn">[ 回到档案室 ]</a>
+            <!-- 👇 核心修改：用 JS 触发“合书音效 + 延迟跳转” -->
+            <span class="action-btn" onclick="closeBookAndGoBack()">[ 回到档案室 ]</span>
         </div>
     </div>
 
     <script>
-        // === 核心：跨页面无缝音频接力 ===
+        // ==========================================
+        // 👇 音效：合上厚书（低频闷响 + 纸张收拢）
+        // ==========================================
+        function playBookCloseSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                // 1. 低频闷响
+                const lowBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.3, audioCtx.sampleRate);
+                const lowData = lowBuffer.getChannelData(0);
+                for (let i = 0; i < lowData.length; i++) { lowData[i] = Math.random() * 2 - 1; }
+                
+                const lowSource = audioCtx.createBufferSource();
+                lowSource.buffer = lowBuffer;
+                const lowFilter = audioCtx.createBiquadFilter();
+                lowFilter.type = 'lowpass';
+                lowFilter.frequency.value = 500; 
+
+                const lowGain = audioCtx.createGain();
+                lowGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                lowGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.01); 
+                lowGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); 
+
+                lowSource.connect(lowFilter);
+                lowFilter.connect(lowGain);
+                lowGain.connect(audioCtx.destination);
+                lowSource.start();
+
+                // 2. 高频纸张收拢声
+                const highBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
+                const highData = highBuffer.getChannelData(0);
+                for (let i = 0; i < highData.length; i++) { highData[i] = Math.random() * 2 - 1; }
+
+                const highSource = audioCtx.createBufferSource();
+                highSource.buffer = highBuffer;
+                const highFilter = audioCtx.createBiquadFilter();
+                highFilter.type = 'highpass';
+                highFilter.filter = 1500; 
+                highFilter.frequency.value = 1500; 
+
+                const highGain = audioCtx.createGain();
+                highGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                highGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.02); 
+                highGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+                highSource.connect(highFilter);
+                highFilter.connect(highGain);
+                highGain.connect(audioCtx.destination);
+                
+                setTimeout(() => { highSource.start(); }, 50);
+            } catch (e) {}
+        }
+
+        // ==========================================
+        // 👇 核心：延迟跳转，确保音效播完
+        // ==========================================
+        function closeBookAndGoBack() {
+            // 1. 播放合书音效
+            playBookCloseSound();
+            
+            // 2. 延迟 400 毫秒再跳转（让声音完全释放）
+            setTimeout(() => {
+                window.location.href = "index.html?open=true";
+            }, 400);
+        }
+
+        // === 其他逻辑（音频控制、时间、雨丝、滚动淡入） ===
         const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2514/2514-preview.mp3');
         bgAudio.loop = true;
         bgAudio.volume = 0; 
@@ -226,8 +288,7 @@
         const targetVolume = 0.15; 
 
         function fadeInAudio() {
-            let vol = 0;
-            bgAudio.volume = 0;
+            let vol = 0; bgAudio.volume = 0;
             let fadeIn = setInterval(() => {
                 if (vol < targetVolume) { vol += 0.01; bgAudio.volume = vol; } 
                 else { clearInterval(fadeIn); }
@@ -245,17 +306,11 @@
         function toggleAudio() {
             const btn = document.getElementById('audio-btn');
             if (isPlaying) {
-                fadeOutAudio();
-                btn.innerHTML = '♪ 开启雨声';
-                btn.classList.remove('playing');
-                isPlaying = false;
+                fadeOutAudio(); btn.innerHTML = '♪ 开启雨声'; btn.classList.remove('playing'); isPlaying = false;
                 sessionStorage.setItem('rainPlaying', 'false'); 
             } else {
                 bgAudio.play().then(() => {
-                    fadeInAudio();
-                    btn.innerHTML = '■ 关闭雨声';
-                    btn.classList.add('playing');
-                    isPlaying = true;
+                    fadeInAudio(); btn.innerHTML = '■ 关闭雨声'; btn.classList.add('playing'); isPlaying = true;
                     sessionStorage.setItem('rainPlaying', 'true'); 
                 }).catch(err => console.log(err));
             }
@@ -266,19 +321,11 @@
                 bgAudio.volume = targetVolume;
                 bgAudio.play().then(() => {
                     const btn = document.getElementById('audio-btn');
-                    btn.innerHTML = '■ 关闭雨声';
-                    btn.classList.add('playing');
-                    isPlaying = true;
+                    btn.innerHTML = '■ 关闭雨声'; btn.classList.add('playing'); isPlaying = true;
                 }).catch(e => {
-                    console.log("浏览器拦截了自动播放");
                     const btn = document.getElementById('audio-btn');
-                    btn.innerHTML = '♪ 开启雨声';
-                    btn.classList.remove('playing');
+                    btn.innerHTML = '♪ 开启雨声'; btn.classList.remove('playing');
                 });
-            } else {
-                const btn = document.getElementById('audio-btn');
-                btn.innerHTML = '♪ 开启雨声';
-                btn.classList.remove('playing');
             }
         });
 
