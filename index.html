@@ -167,31 +167,26 @@
         .char-name { font-size: 2rem; color: #f5e6c8; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; }
         .char-title { font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #c9bda5; letter-spacing: 0.15rem; margin-bottom: 2.5rem; text-transform: uppercase; }
         
-        /* 优化了正文框的字体渲染 */
         .char-content-box {
             font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", Georgia, serif;
             font-size: 1.05rem; 
             color: #d1c5a8; 
             line-height: 2.1; 
             margin-bottom: 2rem; 
-            text-align: left; /* 改为左对齐，消除字距拉伸 */
+            text-align: left;
             padding-left: 15px; 
             border-left: 2px solid #5a4a2e;
             max-height: 300px; 
             overflow-y: auto; 
             transition: opacity 0.3s ease;
-            letter-spacing: 0.02rem; /* 减小字距 */
+            letter-spacing: 0.02rem;
         }
         .char-content-box::-webkit-scrollbar { width: 4px; }
         .char-content-box::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
         .char-content-box::-webkit-scrollbar-thumb { background: #5a4a2e; border-radius: 2px; }
         .char-content-box::-webkit-scrollbar-thumb:hover { background: #9e8a63; }
 
-        /* 优化了段落的间距，取消首行缩进 */
-        .story-p {
-            margin-top: 0;
-            margin-bottom: 1.2em;
-        }
+        .story-p { margin-top: 0; margin-bottom: 1.2em; }
 
         .card-actions { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .action-btn {
@@ -258,6 +253,11 @@
 
                 <div class="reread-divider"></div>
                 <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
+                
+                <!-- 👇 新增：暗格入口 -->
+                <div style="margin-top: 15px;">
+                    <a href="treasure.html" class="reread-btn" style="font-size: 0.7rem; color: #3a3024;">[ 开启不存在的暗格 ]</a>
+                </div>
             </div>
         </div>
     </div>
