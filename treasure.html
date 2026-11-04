@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>未被焚毁的往昔 | 纸页与灰烬</title>
+    <style>
+        body { 
+            margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5; 
+            font-family: Georgia, "Noto Serif SC", "Songti SC", serif; 
+            overflow-x: hidden; min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at center, #151515 0%, #050505 80%),
+                url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>');
+            background-blend-mode: overlay;
+            transition: opacity 0.6s ease, filter 0.6s ease;
+            /* 自定义鼠标：古典放大镜 */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16" y1="16" x2="21" y2="21"/></svg>') 11 11, auto;
+        }
+
+        /* 离开时的视觉过渡 */
+        body.leaving {
+            opacity: 0;
+            filter: blur(10px) brightness(0);
+            pointer-events: none;
+        }
+
+        /* 顶部与返回按钮 */
+        .hud-info {
+            position: fixed; top: 30px; left: 40px;
+            font-family: "Courier New", monospace; color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem;
+            pointer-events: none; z-index: 100; display: flex; gap: 15px; align-items: center;
+        }
+        .hud-info span { border-bottom: 1px solid rgba(138, 110, 62, 0.3); padding-bottom: 3px; }
+
+        .back-btn-top {
+            position: fixed; top: 30px; right: 40px;
+            padding: 10px 24px; color: #e8d5b5; font-size: 0.85rem; letter-spacing: 0.2rem;
+            border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8);
+            border-radius: 4px; text-decoration: none; z-index: 102; transition: all 0.3s ease;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .back-btn-top:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.2); }
+
+        .room-container { max-width: 1000px; margin: 0 auto; padding: 8rem 0 4rem; text-align: center; position: relative; z-index: 10; }
+        
+        .room-title { 
+            font-size: 2rem; color: #f5e6c8; letter-spacing: 0.4rem; margin-bottom: 5rem; font-weight: normal; 
+        }
+
+        /* 3D 翻转排版 */
+        .flip-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; perspective: 1000px; }
+        
+        .flip-card { width: 280px; height: 380px; cursor: pointer; }
+        .flip-card-inner {
+            position: relative; width: 100%; height: 100%; text-align: center;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+
+        .flip-front, .flip-back {
+            position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden;
+            border: 1px solid #3a3024; background: #151515;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
+        }
+
+        /* 正面 */
+        .flip-front img { width: 100%; height: 240px; object-fit: cover; border: 1px solid #2a2218; margin-bottom: 20px; filter: sepia(20%) grayscale(10%); transition: filter 0.3s; }
+        .flip-front:hover img { filter: sepia(0) grayscale(0); }
+        .flip-front .name { font-size: 1.15rem; color: #e8d5b5; letter-spacing: 0.1rem; }
+
+        /* 背面 */
+        .flip-back { background: #0f0f0f; transform: rotateY(180deg); border-color: #9e8a63; justify-content: flex-start; padding-top: 3rem;}
+        .flip-back .owner { font-family: "Courier New", monospace; color: #8a6e3e; font-size: 0.85rem; margin-bottom: 1.5rem; letter-spacing: 0.2rem; border-bottom: 1px dashed #3a3024; padding-bottom: 10px; width: 80%; }
+        .flip-back .quote { font-size: 0.95rem; color: #c9bda5; line-height: 2; font-style: italic; padding: 0 10px; text-align: left; text-indent: 2em;}
+        .flip-back .click-hint { position: absolute; bottom: 25px; font-size: 0.75rem; color: #5a4a2e; letter-spacing: 0.1rem; }
+
+        /* 弹窗样式 */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; z-index: 200; transition: opacity 0.4s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .item-card { 
+            background: #151515; border: 1px solid #9e8a63; padding: 3rem 2.5rem; max-width: 480px; width: 90%; text-align: center; position: relative; 
+            box-shadow: 0 25px 70px rgba(0,0,0,0.95), inset 0 0 20px rgba(0,0,0,0.5);
+            transform: scale(0.95); transition: transform 0.4s ease;
+        }
+        .modal-overlay.active .item-card { transform: scale(1); }
+
+        .close-btn { 
+            position: absolute; top: 15px; right: 20px; color: #9e8a63; font-size: 1.5rem; cursor: pointer; transition: color 0.3s; 
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .close-btn:hover { color: #fff; }
+        
+        .item-img-container { display: none; height: 200px; margin-bottom: 1.5rem; border: 1px solid #3a3024; }
+        .item-img-big { width: 100%; height: 100%; object-fit: cover; filter: sepia(20%); }
+        
+        .item-name { font-size: 1.6rem; color: #f5e6c8; margin-bottom: 0.5rem; letter-spacing: 0.1rem; }
+        .item-owner { font-family: "Courier New", monospace; color: #8a6e3e; font-size: 0.8rem; margin-bottom: 1.5rem; letter-spacing: 0.15rem; }
+        
+        .item-story { 
+            font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", Georgia, serif;
+            font-size: 1rem; color: #a89573; line-height: 2.1; text-align: justify; 
+            max-height: 40vh; overflow-y: auto; border-left: 2px solid #5a4a2e; padding-left: 15px; padding-right: 10px;
+        }
+        .item-story::-webkit-scrollbar { width: 4px; }
+        .item-story::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        .item-story::-webkit-scrollbar-thumb { background: #5a4a2e; border-radius: 2px; }
+        
+        .back-btn { 
+            display: inline-block; padding: 10px 24px; border: 1px solid #5a4a2e; color: #9e8a63; cursor: pointer; margin-top: 25px; transition: all 0.3s; letter-spacing: 0.15rem;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .back-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); }
+
+        /* 空气中的微尘 */
+        .dust-mote {
+            position: fixed; background-color: rgba(245, 230, 200, 0.4); border-radius: 50%;
+            pointer-events: none; z-index: 2;
+            box-shadow: 0 0 4px rgba(245, 230, 200, 0.2);
+            animation: floatDust linear infinite;
+        }
+        @keyframes floatDust {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            20% { opacity: 0.8; }
+            80% { opacity: 0.3; }
+            100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
+        }
+
+        /* 鼠标拖尾 */
+        .cursor-trail {
+            position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
+            pointer-events: none; z-index: 9999; box-shadow: 0 0 10px 2px rgba(245, 230, 200, 0.8);
+            animation: fadeOutTrail 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        @keyframes fadeOutTrail { 
+            0% { transform: scale(1) translateY(0); opacity: 1; } 
+            100% { transform: scale(0) translateY(15px); opacity: 0; } 
+        }
+    </style>
+</head>
+<body>
+    <div class="hud-info">
+        <span id="current-time">00:00</span>
+        <span>密室温度 12°C</span>
+    </div>
+
+    <a href="javascript:void(0)" onclick="leaveVault()" class="back-btn-top">⎋ [ 离开暗格 ]</a>
+
+    <div class="room-container">
+        <h1 class="room-title">未被焚毁的往昔</h1>
+        
+        <div class="flip-grid">
+            <!-- 莉薇娅 -->
+            <div class="flip-card" onclick="openItem('livia')">
+                <div class="flip-card-inner">
+                    <div class="flip-front">
+                        <img src="https://miaozeze.github.io/pocket_watch_1x1_under_300kb.jpg" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%\' height=\'100%\'><rect width=\'100%\' height=\'100%\' fill=\'%230a0a0a\'/><text x=\'50%\' y=\'50%\' fill=\'%235a4a2e\' font-family=\'serif\' font-size=\'14\' text-anchor=\'middle\'>[ 怀表 ]</text></svg>'">
+                        <div class="name">阿尔弗雷德的怀表</div>
+                    </div>
+                    <div class="flip-back">
+                        <div class="owner">OWNER: LIVIA</div>
+                        <div class="quote">“把背挺直，莉薇娅。女仆的仪态不能乱。”</div>
+                        <div class="click-hint">点击查看完整档案</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 埃德蒙 -->
+            <div class="flip-card" onclick="openItem('edmund')">
+                <div class="flip-card-inner">
+                    <div class="flip-front">
+                        <img src="https://miaozeze.github.io/watch.jpg" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%\' height=\'100%\'><rect width=\'100%\' height=\'100%\' fill=\'%230a0a0a\'/><text x=\'50%\' y=\'50%\' fill=\'%235a4a2e\' font-family=\'serif\' font-size=\'14\' text-anchor=\'middle\'>[ 银链怀表 ]</text></svg>'">
+                        <div class="name">银链怀表</div>
+                    </div>
+                    <div class="flip-back">
+                        <div class="owner">OWNER: EDMUND</div>
+                        <div class="quote">只要秒针还在走，他就能笑眯眯地用那点藏在镜片后的算计，把庄园里的烂摊子抹平。</div>
+                        <div class="click-hint">点击查看完整档案</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 星野雫 -->
+            <div class="flip-card" onclick="openItem('shizuku')">
+                <div class="flip-card-inner">
+                    <div class="flip-front">
+                        <img src="https://miaozeze.github.io/ring_under_300kb.jpg" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'100%\' height=\'100%\'><rect width=\'100%\' height=\'100%\' fill=\'%230a0a0a\'/><text x=\'50%\' y=\'50%\' fill=\'%235a4a2e\' font-family=\'serif\' font-size=\'14\' text-anchor=\'middle\'>[ 单身戒 ]</text></svg>'">
+                        <div class="name">素银单身戒</div>
+                    </div>
+                    <div class="flip-back">
+                        <div class="owner">OWNER: SHIZUKU</div>
+                        <div class="quote">“这枚戴在左手食指上的单身戒，就是他无声的防御。”</div>
+                        <div class="click-hint">点击查看完整档案</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="item-card">
+            <div class="close-btn" onclick="closeModal()">×</div>
+            <div class="item-img-container" id="m-img-container"><img id="m-img" class="item-img-big"></div>
+            <h2 class="item-name" id="m-name"></h2>
+            <div class="item-owner" id="m-owner"></div>
+            <div class="item-story" id="m-story"></div>
+            <span class="back-btn" onclick="closeModal()">[ 收起档案 ]</span>
+        </div>
+    </div>
+
+    <script>
+        // 时间显示
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+        setInterval(updateTime, 1000); updateTime();
+
+        // === 生成空气中的微尘 ===
+        function createDust() {
+            const dust = document.createElement('div');
+            dust.className = 'dust-mote';
+            const size = Math.random() * 2 + 1;
+            dust.style.width = size + 'px';
+            dust.style.height = size + 'px';
+            dust.style.left = Math.random() * 100 + 'vw';
+            dust.style.bottom = '-10px';
+            dust.style.animationDuration = (Math.random() * 8 + 10) + 's';
+            document.body.appendChild(dust);
+            setTimeout(() => { dust.remove(); }, 20000);
+        }
+        setInterval(createDust, 400);
+
+        // === 鼠标拖尾 ===
+        let lastTrailTime = 0;
+        document.addEventListener('mousemove', function(e) {
+            const now = Date.now();
+            if (now - lastTrailTime > 30) { 
+                const particle = document.createElement('div');
+                particle.className = 'cursor-trail';
+                const offsetX = (Math.random() - 0.5) * 8;
+                const offsetY = (Math.random() - 0.5) * 8;
+                particle.style.left = (e.clientX + offsetX) + 'px';
+                particle.style.top = (e.clientY + offsetY) + 'px';
+                const size = Math.random() * 4 + 2; 
+                particle.style.width = size + 'px'; 
+                particle.style.height = size + 'px';
+                document.body.appendChild(particle);
+                setTimeout(() => { particle.remove(); }, 800);
+                lastTrailTime = now; 
+            }
+        });
+
+        // === 退场音效：机关合拢 / 沉重石门声 ===
+        function playVaultCloseSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const now = audioCtx.currentTime;
+
+                // 1. 石墙摩擦声
+                const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.8, audioCtx.sampleRate);
+                const slideData = slideBuffer.getChannelData(0);
+                for (let i = 0; i < slideData.length; i++) { slideData[i] = Math.random() * 2 - 1; }
+                const slideSource = audioCtx.createBufferSource();
+                slideSource.buffer = slideBuffer;
+                const slideFilter = audioCtx.createBiquadFilter();
+                slideFilter.type = 'bandpass';
+                slideFilter.frequency.value = 1200;
+                slideFilter.Q.value = 2;
+                const slideGain = audioCtx.createGain();
+                slideGain.gain.setValueAtTime(0, now);
+                slideGain.gain.linearRampToValueAtTime(0.08, now + 0.2);
+                slideGain.gain.linearRampToValueAtTime(0, now + 0.8);
+                slideSource.connect(slideFilter);
+                slideFilter.connect(slideGain);
+                slideGain.connect(audioCtx.destination);
+                slideSource.start(now);
+
+                // 2. 石门落锁
+                setTimeout(() => {
+                    const thudOsc = audioCtx.createOscillator();
+                    thudOsc.type = 'sine';
+                    thudOsc.frequency.setValueAtTime(60, audioCtx.currentTime);
+                    thudOsc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.4);
+                    
+                    const thudGain = audioCtx.createGain();
+                    thudGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                    thudGain.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.02);
+                    thudGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                    
+                    thudOsc.connect(thudGain);
+                    thudGain.connect(audioCtx.destination);
+                    thudOsc.start();
+                    thudOsc.stop(audioCtx.currentTime + 0.6);
+                }, 650);
+
+            } catch (e) {}
+        }
+
+        // === 离开暗格逻辑 ===
+        function leaveVault() {
+            playVaultCloseSound();
+            document.body.classList.add('leaving');
+            setTimeout(() => {
+                window.location.href = "index.html?open=true";
+            }, 700);
+        }
+
+        // === 严格按设定集修正后的文案 ===
+        const items = {
+            livia: { 
+                img: "https://miaozeze.github.io/pocket_watch_1x1_under_300kb.jpg",
+                name: "阿尔弗雷德的怀表", 
+                owner: "档案归属：OWNER: LIVIA", 
+                story: `<p><strong>物品外观：</strong>一块老式的纯银怀表。表盘的玻璃完全碎裂，里面的指针永远停在了凌晨三点十五分。表壳边缘有烈火燎过的痕迹，带着洗不掉的暗色，平时用一块干净的绒布包着。</p>
+                        <p><strong>【背后的故事】</strong><br>这块表的主人是教了她一身英式贵族礼仪、总是拿着手杖敲她脚跟的老管家阿尔弗雷德。十五岁那年，奥斯汀庄园遭遇大火，阿尔弗雷德在红木横梁砸下来的瞬间，用身体死死护住了她。</p>
+                        <p>生命的最后一刻，老管家没有求救，只是用沾满鲜血的手死死攥住她的手腕，留下了最后的命令：“把背挺直，莉薇娅。女仆的仪态不能乱。”</p>
+                        <p>莉薇娅活下来了。她从废墟里只带出了这块表，死死锁在房间的床头柜里，和女仆装放在一起。她从不修它，也不许任何人碰，用来提醒自己“仪态不能乱”。这块停摆的表，成了她这辈子唯一的戒尺，也是她在那场大火后，拼死维持着奥斯汀家族最后一丝体面的证明。</p>` 
+            },
+            edmund: { 
+                img: "https://miaozeze.github.io/watch.jpg", 
+                name: "银链怀表", 
+                owner: "档案归属：OWNER: EDMUND", 
+                story: `<p><strong>物品外观：</strong>一块经典的维多利亚风格纯银怀表，外壳打磨得锃亮，边缘有内敛的雕花。一条银质表链穿过深色燕尾服的扣眼，垂在胸前，走时分秒不差。</p>
+                        <p><strong>【背后的故事】</strong><br>这块表并非什么沉痛的父亲遗物，它是埃德蒙自己挣来的、极其实用的时间工具。作为庄园的运转中枢，他需要处理财务、安保、采买和对外交涉，脑子里装着整座庄园的时刻表。</p>
+                        <p>每次等车或处理事务时，他总会摸出怀表看一眼，精准卡点。不过，怀表虽然体面，本人却偶尔忘事——他经常会因为跟人聊温室里的薄荷聊得太投入，而把自己的茶放到彻底凉透。</p>
+                        <p>只要秒针还在走，他就能笑眯眯地用那点藏在镜片后的算计，把庄园里的烂摊子和明枪暗箭抹平。这只表见证了他在这座庄园里，游刃有余地守着那条不容外人逾越的安全线，以及他对这份工作极致的实用主义。</p>` 
+            },
+            shizuku: { 
+                img: "https://miaozeze.github.io/ring_under_300kb.jpg", 
+                name: "素银单身戒", 
+                owner: "档案归属：OWNER: SHIZUKU", 
+                story: `<p><strong>物品外观：</strong>一枚极简、毫无任何多余装饰的素银戒指，低调地戴在左手食指上。在灯光下偶尔会闪过一点冷淡的光。</p>
+                        <p><strong>【背后的故事】</strong><br>星野雫平时偏女性化，说话理智、温和，生存技能极强。但他小时候生活条件极其艰苦，留下了很痛的创伤。这让他不愿在感情上多涉，面对别人的好意会得体地回避。</p>
+                        <p>这枚戴在左手食指上的单身戒，就是他无声的防御。它挡掉了一切不必要的暧昧与试探，连旁人问起，他也只是温和地笑笑不答。他游离在人群之外，对什么都显得云淡风轻，去哪都能活得很好。但他却心甘情愿留在了芥川庄园，负责所有的监控、警报、武力与急救。这枚戒指背后藏着他的过往，而他不愿提，也没有人敢碰。</p>` 
+            }
+        };
+
+        function openItem(id) {
+            const data = items[id];
+            const imgC = document.getElementById('m-img-container');
+            const img = document.getElementById('m-img');
+            
+            img.onload = () => imgC.style.display = 'block';
+            img.onerror = () => imgC.style.display = 'none';
+            img.src = data.img;
+            
+            document.getElementById('m-name').innerText = data.name;
+            document.getElementById('m-owner').innerText = data.owner;
+            document.getElementById('m-story').innerHTML = data.story;
+            
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() { 
+            document.getElementById('modal').classList.remove('active'); 
+        }
+
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
+</body>
+</html>
