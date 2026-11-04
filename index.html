@@ -259,9 +259,9 @@
                 <div class="reread-divider"></div>
                 <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
                 
-                <!-- 👇 新增：暗格入口 -->
+                <!-- 👇 修改：添加了 onclick 事件 -->
                 <div style="margin-top: 15px;">
-                    <a href="treasure.html" class="reread-btn" style="font-size: 0.7rem; color: #3a3024;">[ 开启不存在的暗格 ]</a>
+                    <a href="javascript:void(0);" onclick="goToTreasure()" class="reread-btn" style="font-size: 0.7rem; color: #3a3024;">[ 开启不存在的暗格 ]</a>
                 </div>
             </div>
         </div>
@@ -340,10 +340,70 @@
             } catch (e) {}
         }
 
-        // === 核心跳转逻辑（静音） ===
+        // ==========================================
+        // 👇 新增：开启暗格音效（复用密室退场的沉重石门声）
+        // ==========================================
+        function playVaultOpenSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const now = audioCtx.currentTime;
+
+                // 1. 石墙摩擦声
+                const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.8, audioCtx.sampleRate);
+                const slideData = slideBuffer.getChannelData(0);
+                for (let i = 0; i < slideData.length; i++) { slideData[i] = Math.random() * 2 - 1; }
+                const slideSource = audioCtx.createBufferSource();
+                slideSource.buffer = slideBuffer;
+                const slideFilter = audioCtx.createBiquadFilter();
+                slideFilter.type = 'bandpass';
+                slideFilter.frequency.value = 1200;
+                slideFilter.Q.value = 2;
+                const slideGain = audioCtx.createGain();
+                slideGain.gain.setValueAtTime(0, now);
+                slideGain.gain.linearRampToValueAtTime(0.08, now + 0.2);
+                slideGain.gain.linearRampToValueAtTime(0, now + 0.8);
+                slideSource.connect(slideFilter);
+                slideFilter.connect(slideGain);
+                slideGain.connect(audioCtx.destination);
+                slideSource.start(now);
+
+                // 2. 石门落锁/开启的沉重闷响
+                setTimeout(() => {
+                    const thudOsc = audioCtx.createOscillator();
+                    thudOsc.type = 'sine';
+                    thudOsc.frequency.setValueAtTime(60, audioCtx.currentTime);
+                    thudOsc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.4);
+                    
+                    const thudGain = audioCtx.createGain();
+                    thudGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                    thudGain.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.02);
+                    thudGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                    
+                    thudOsc.connect(thudGain);
+                    thudGain.connect(audioCtx.destination);
+                    thudOsc.start();
+                    thudOsc.stop(audioCtx.currentTime + 0.6);
+                }, 650);
+
+            } catch (e) {}
+        }
+
+        // === 核心跳转逻辑 ===
         function goToPrologue() {
             sessionStorage.setItem('rainPlaying', 'true');
             window.location.href = 'prologue.html';
+        }
+
+        // 👇 新增：跳转到暗格，带延迟音效
+        function goToTreasure() {
+            playVaultOpenSound();
+            setTimeout(() => {
+                window.location.href = 'treasure.html';
+            }, 700); // 延迟 700ms 让音效播完
         }
 
         function leaveManor() {
