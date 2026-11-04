@@ -210,6 +210,7 @@
                 纸页正在泛黄，灰烬仍有温热。<br>
                 请在此落款，或推开这扇尘封的门。
             </div>
+            <!-- 拆信只跳转，无音效 -->
             <a href="javascript:void(0);" onclick="goToPrologue()" class="open-btn">[ 拆 开 信 件 ]</a>
             <div class="env-footer">From Akutagawa Manor</div>
         </div>
@@ -246,6 +247,7 @@
                 </div>
 
                 <div class="reread-divider"></div>
+                <!-- 重温序章，无音效 -->
                 <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
             </div>
         </div>
@@ -263,23 +265,63 @@
             <div class="char-content-box" id="m-content"></div>
             
             <div class="card-actions">
-                <span class="action-btn" onclick="closeModal()">[ 合上卷宗 ]</span>
+                <!-- 点击合上卷宗，只触发合书音效 -->
+                <span class="action-btn" onclick="playBookCloseSound(); closeModal();">[ 合上卷宗 ]</span>
                 <span class="action-btn primary" id="btn-toggle-story" onclick="toggleStory()"></span>
             </div>
         </div>
     </div>
 
     <script>
-        function goToPrologue() {
-            sessionStorage.setItem('rainPlaying', 'true');
-            window.location.href = 'prologue.html';
+        // ==========================================
+        // 纯代码合成：厚重合书声（仅此处触发）
+        // ==========================================
+        function playBookCloseSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const lowBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.3, audioCtx.sampleRate);
+                const lowData = lowBuffer.getChannelData(0);
+                for (let i = 0; i < lowData.length; i++) { lowData[i] = Math.random() * 2 - 1; }
+                
+                const lowSource = audioCtx.createBufferSource();
+                lowSource.buffer = lowBuffer;
+                const lowFilter = audioCtx.createBiquadFilter();
+                lowFilter.type = 'lowpass';
+                lowFilter.frequency.value = 500;
+
+                const lowGain = audioCtx.createGain();
+                lowGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                lowGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.01); 
+                lowGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); 
+
+                lowSource.connect(lowFilter);
+                lowFilter.connect(lowGain);
+                lowGain.connect(audioCtx.destination);
+                lowSource.start();
+            } catch (e) {}
         }
 
+        // === 核心跳转逻辑 ===
+        function goToPrologue() {
+            sessionStorage.setItem('rainPlaying', 'true');
+            setTimeout(() => { window.location.href = 'prologue.html'; }, 300);
+        }
+
+        function leaveManor() {
+            playBookCloseSound(); // 离开庄园播放合书声
+            document.getElementById('welcome-screen').classList.remove('hidden');
+            closeModal();
+            sessionStorage.removeItem('rainPlaying');
+        }
+
+        // === 其他逻辑（时间、灰烬、状态记忆等） ===
         function updateTime() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('current-time').textContent = `${hours}:${minutes}`;
+            document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         }
         setInterval(updateTime, 1000); updateTime();
 
@@ -309,12 +351,6 @@
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
         });
-
-        function leaveManor() {
-            document.getElementById('welcome-screen').classList.remove('hidden');
-            closeModal();
-            sessionStorage.removeItem('rainPlaying');
-        }
 
         let lastTrailTime = 0;
         document.addEventListener('mousemove', function(e) {
@@ -383,6 +419,7 @@
         let currentCharId = null;
         let isShowingStory = false;
 
+        // 静音打开
         function openModal(id) {
             currentCharId = id;
             isShowingStory = false;
@@ -394,12 +431,12 @@
             document.getElementById('m-content').innerHTML = data.quote;
             
             const btnToggle = document.getElementById('btn-toggle-story');
-            // 统一改为极简版
             btnToggle.innerText = "[ 窥探旧日往事 ]";
             
             document.getElementById('modal').classList.add('active');
         }
 
+        // 静音切换
         function toggleStory() {
             if (!currentCharId) return;
             const data = characters[currentCharId];
@@ -422,8 +459,14 @@
             }, 300);
         }
 
-        function closeModal() { document.getElementById('modal').classList.remove('active'); }
-        document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+        function closeModal() { 
+            document.getElementById('modal').classList.remove('active'); 
+        }
+        
+        // 点击遮罩静音关闭
+        document.getElementById('modal').addEventListener('click', function(e) { 
+            if (e.target === this) closeModal(); 
+        });
     </script>
 </body>
 </html>
