@@ -201,12 +201,11 @@
         <p class="story-p">故事，就此拉开帷幕。</p>
 
         <div class="bottom-actions">
-            <!-- 下一页的链接保持原样，通过 onclick 触发声音 -->
-            <a href="chapter1.html" class="glow-btn" onclick="sessionStorage.setItem('rainPlaying', isPlaying); playPaperSound();">
+            <!-- 核心修改：改成 span，通过 JS 延迟跳转来播完音效 -->
+            <span class="glow-btn" onclick="goToChapter1()">
                 ✦ [ 展开第一章：荆棘与灰烬 ] ✦
-            </a>
+            </span>
             
-            <!-- 核心修改：去掉了 href，改成 onclick 触发 JS 延迟跳转，保证音效播完 -->
             <span id="back-btn" class="subtle-btn" onclick="closeBookAndGoBack()">
                 [ 合上卷宗，退回档案室 ]
             </span>
@@ -222,7 +221,7 @@
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const audioCtx = new AudioContext();
-                if (audioCtx.state === 'suspended') audioCtx.resume(); // 强制唤醒
+                if (audioCtx.state === 'suspended') audioCtx.resume(); 
 
                 const bufferSize = audioCtx.sampleRate * 0.15; 
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
@@ -239,14 +238,14 @@
 
                 const gain = audioCtx.createGain();
                 gain.gain.setValueAtTime(0, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.02); 
+                gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.02); 
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
 
                 source.connect(filter);
                 filter.connect(gain);
                 gain.connect(audioCtx.destination);
                 source.start();
-            } catch (e) { console.log("Paper sound error:", e); }
+            } catch (e) {}
         }
 
         // ==========================================
@@ -259,7 +258,6 @@
                 const audioCtx = new AudioContext();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
 
-                // 1. 低频闷响（模拟封面撞击）
                 const lowBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.3, audioCtx.sampleRate);
                 const lowData = lowBuffer.getChannelData(0);
                 for (let i = 0; i < lowData.length; i++) { lowData[i] = Math.random() * 2 - 1; }
@@ -268,11 +266,11 @@
                 lowSource.buffer = lowBuffer;
                 const lowFilter = audioCtx.createBiquadFilter();
                 lowFilter.type = 'lowpass';
-                lowFilter.frequency.value = 500; // 提高了一点频率，确保普通扬声器能听到
+                lowFilter.frequency.value = 500;
 
                 const lowGain = audioCtx.createGain();
                 lowGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                lowGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.01); // 加大音量
+                lowGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.01); 
                 lowGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); 
 
                 lowSource.connect(lowFilter);
@@ -280,7 +278,6 @@
                 lowGain.connect(audioCtx.destination);
                 lowSource.start();
 
-                // 2. 高频“哗啦”声（模拟纸张收拢）
                 const highBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
                 const highData = highBuffer.getChannelData(0);
                 for (let i = 0; i < highData.length; i++) { highData[i] = Math.random() * 2 - 1; }
@@ -293,7 +290,7 @@
 
                 const highGain = audioCtx.createGain();
                 highGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                highGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.02); // 加大音量
+                highGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.02); 
                 highGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
 
                 highSource.connect(highFilter);
@@ -301,28 +298,34 @@
                 highGain.connect(audioCtx.destination);
                 
                 setTimeout(() => { highSource.start(); }, 50);
-            } catch (e) { console.log("Book close error:", e); }
+            } catch (e) {}
         }
 
         // ==========================================
-        // 👇 核心修复：延迟跳转，确保音效播完 👇
+        // 👇 核心：延迟跳转逻辑 👇
         // ==========================================
+        
+        // 1. 跳转到第一章：先播翻页声，再跳转
+        function goToChapter1() {
+            playPaperSound();
+            sessionStorage.setItem('rainPlaying', isPlaying);
+            setTimeout(() => {
+                window.location.href = 'chapter1.html';
+            }, 350); // 等待 350 毫秒让声音播完
+        }
+
+        // 2. 退回档案室：先播合书声，再跳转
         function closeBookAndGoBack() {
-            // 1. 播放合书音效
             playBookCloseSound();
-            
-            // 2. 获取跳转目标
             const urlParams = new URLSearchParams(window.location.search);
             const fromChar = urlParams.get('from');
             let targetUrl = "index.html?open=true";
             if (fromChar && fromChar !== 'global') {
                 targetUrl = `index.html?char=${fromChar}`;
             }
-
-            // 3. 延迟 400 毫秒再跳转（让合书的声音完全爆发出来）
             setTimeout(() => {
                 window.location.href = targetUrl;
-            }, 400);
+            }, 400); // 等待 400 毫秒让声音播完
         }
 
         // === 其他逻辑（音频控制、时间、雨丝等） ===
