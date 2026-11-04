@@ -5,113 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸页与灰烬 | 芥川庄园</title>
     <style>
+        /* ==================== 全局基础 ==================== */
         body {
             margin: 0; padding: 0; background-color: #050505; color: #c9bda5;
             font-family: "Songti SC", "Noto Serif SC", serif;
             height: 100vh; display: flex; justify-content: center; align-items: center;
             background-image: radial-gradient(circle at center, #111 0%, #050505 100%);
+            overflow: hidden;
         }
+
+        /* ==================== 第一页：大门（欢迎页） ==================== */
+        #page-welcome {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: absolute; width: 100%; height: 100%;
+            transition: opacity 1.2s ease, transform 1.2s ease;
+            z-index: 2;
+        }
+
+        .main-title {
+            font-size: 2.5rem; color: #e8d5b5; letter-spacing: 0.8rem;
+            margin-bottom: 3rem; font-weight: normal;
+            text-shadow: 0 0 15px rgba(232, 213, 181, 0.2);
+        }
+
+        .door-btn {
+            border: 1px solid #4a3c22; padding: 15px 40px;
+            color: #a89573; font-size: 1.1rem; letter-spacing: 0.2rem;
+            cursor: pointer; transition: all 0.4s ease;
+            background: rgba(0,0,0,0.5);
+        }
+        .door-btn:hover {
+            border-color: #8a6e3e; color: #e8d5b5;
+            box-shadow: 0 0 20px rgba(138, 110, 62, 0.3);
+            background: rgba(20, 15, 5, 0.8);
+        }
+
+        /* ==================== 第二页：邀请函（内页） ==================== */
+        #page-invitation {
+            display: flex; justify-content: center; align-items: center;
+            position: absolute; width: 100%; height: 100%;
+            opacity: 0; pointer-events: none; /* 默认隐藏且不可点击 */
+            transform: scale(1.05); /* 初始稍微放大一点点 */
+            transition: opacity 1.2s ease, transform 1.2s ease;
+            z-index: 1;
+        }
+
+        /* 激活状态的样式 */
+        #page-welcome.hidden {
+            opacity: 0; pointer-events: none; transform: scale(0.95);
+        }
+        #page-invitation.active {
+            opacity: 1; pointer-events: auto; transform: scale(1);
+        }
+
         .invitation {
             border: 1px solid #8a6e3e; padding: 2rem; max-width: 600px; width: 85%; text-align: center;
-            position: relative;
+            background: #050505;
         }
         .inner-border {
-            border: 1px dashed #4a3c22; padding: 3rem 2rem; transition: all 0.3s ease;
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .title {
-            font-size: 2.8rem; color: #e8d5b5; letter-spacing: 0.6rem;
-            margin-bottom: 1rem; margin-top: 0; font-weight: normal;
-            text-shadow: 0 0 10px rgba(232, 213, 181, 0.2);
+            border: 1px dashed #4a3c22; padding: 3rem 2rem;
         }
         .divider { color: #8a6e3e; font-size: 1.2rem; margin: 1.5rem 0; letter-spacing: 0.5rem; }
-        
-        /* 文本区域 */
-        .text-box {
+        .text {
             color: #a89573; font-size: 1rem; line-height: 2; letter-spacing: 0.1rem;
-            margin-bottom: 2.5rem; min-height: 120px; 
-            transition: opacity 0.3s ease;
-            display: flex; flex-direction: column; justify-content: center;
+            margin-bottom: 2.5rem;
         }
         
-        .btn-group { display: flex; gap: 20px; justify-content: center; margin-bottom: 1rem; }
-        
         .btn {
-            border-bottom: 1px solid #8a6e3e;
+            display: inline-block; border-bottom: 1px solid #8a6e3e;
             padding: 5px 10px; color: #e8d5b5; cursor: pointer;
             transition: all 0.3s; font-size: 1.1rem;
         }
         .btn:hover { color: #fff; border-bottom-color: #fff; text-shadow: 0 0 8px #fff; }
-        
-        /* 返回按钮（默认隐藏） */
-        #back-btn {
-            font-size: 0.8rem; color: #666; cursor: pointer;
-            margin-top: 15px; text-decoration: underline; text-decoration-color: #333;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
-        }
-        #back-btn:hover { color: #aaa; }
-        #back-btn.show { opacity: 1; pointer-events: auto; }
+        .btn-space { margin: 0 15px; }
     </style>
 </head>
 <body>
-    <div class="invitation">
-        <div class="inner-border">
-            <h1 class="title">纸页与灰烬</h1>
-            <div class="divider">✦ ❦ ✦</div>
-            
-            <div class="text-box" id="dialogue-text">
-                <!-- 默认内容 -->
-                <div id="default-text">
+
+    <!-- 第一页：极简大门 -->
+    <div id="page-welcome">
+        <div class="main-title">纸页与灰烬</div>
+        <div class="door-btn" onclick="openDoor()">[ 推 开 庄 园 的 门 ]</div>
+    </div>
+
+    <!-- 第二页：金色邀请函（默认隐藏） -->
+    <div id="page-invitation">
+        <div class="invitation">
+            <div class="inner-border">
+                <h1 class="main-title" style="font-size: 2.8rem; margin-bottom: 1rem;">纸页与灰烬</h1>
+                <div class="divider">✦ ❦ ✦</div>
+                
+                <div class="text">
                     致 芥川庄园的贵客：<br>
                     昨夜的雷雨已歇，茶点已备好。<br>
                     无论您是来找人算账，还是来寻一口热汤。
                 </div>
-            </div>
 
-            <div class="btn-group">
-                <span class="btn" onclick="changeText('study')">拜访账房</span>
-                <span class="btn" onclick="changeText('kitchen')">前往厨房</span>
+                <div>
+                    <span class="btn">拜访账房</span>
+                    <span class="btn btn-space">前往厨房</span>
+                </div>
             </div>
-            
-            <!-- 新增的返回按钮 -->
-            <div id="back-btn" onclick="resetText()">[ 合上卷宗，退后一步 ]</div>
         </div>
     </div>
 
+    <!-- 交互脚本 -->
     <script>
-        const textBox = document.getElementById('dialogue-text');
-        const backBtn = document.getElementById('back-btn');
-        
-        const texts = {
-            study: "（账房的门虚掩着，里面传来钢笔划过纸页的沙沙声）<br>“大小姐，如果是来查账的，请进；如果是来捣乱的，请回。”<br><span style='font-size:0.8rem; color:#8a6e3e;'>—— 埃德蒙</span>",
-            kitchen: "（厨房里弥漫着烤饼干的香气，但主人的脸色不太好）<br>“您又错过晚饭了。牛奶在炉子上，自己拿，别烫着。”<br><span style='font-size:0.8rem; color:#8a6e3e;'>—— 莉薇娅</span>"
-        };
+        function openDoor() {
+            const pageWelcome = document.getElementById('page-welcome');
+            const pageInvitation = document.getElementById('page-invitation');
 
-        function changeText(target) {
-            // 先淡出
-            textBox.style.opacity = 0;
+            // 第一页淡出缩小
+            pageWelcome.classList.add('hidden');
             
+            // 第二页延迟一点点淡入放大
             setTimeout(() => {
-                // 替换内容
-                textBox.innerHTML = texts[target];
-                textBox.style.opacity = 1;
-                // 显示返回按钮
-                backBtn.classList.add('show');
-            }, 300);
-        }
-
-        function resetText() {
-            textBox.style.opacity = 0;
-            backBtn.classList.remove('show');
-            
-            setTimeout(() => {
-                textBox.innerHTML = `<div id="default-text">
-                    致 芥川庄园的贵客：<br>
-                    昨夜的雷雨已歇，茶点已备好。<br>
-                    无论您是来找人算账，还是来寻一口热汤。
-                </div>`;
-                textBox.style.opacity = 1;
-            }, 300);
+                pageInvitation.classList.add('active');
+            }, 200);
         }
     </script>
 </body>
