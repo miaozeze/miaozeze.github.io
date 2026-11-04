@@ -6,35 +6,32 @@
     <title>芥川庄园邀请函</title>
     <style>
         body {
-            margin: 0; padding: 0; background-color: #050505; color: #c9bda5; /* 偏暗的香槟金/米色 */
+            margin: 0; padding: 0; background-color: #050505; color: #c9bda5;
             font-family: "Songti SC", "Noto Serif SC", serif;
             height: 100vh; display: flex; justify-content: center; align-items: center;
-            /* 模拟羊皮纸或暗色纹理背景 */
             background-image: radial-gradient(circle at center, #111 0%, #050505 100%);
         }
         .invitation {
-            border: 1px solid #8a6e3e; /* 暗金色边框 */
-            padding: 2rem; max-width: 600px; width: 85%; text-align: center;
+            border: 1px solid #8a6e3e; padding: 2rem; max-width: 600px; width: 85%; text-align: center;
             position: relative;
         }
-        /* 内层细线框 */
         .inner-border {
-            border: 1px dashed #4a3c22; padding: 3rem 2rem;
+            border: 1px dashed #4a3c22; padding: 3rem 2rem; transition: all 0.3s ease;
         }
         .title {
             font-size: 2.8rem; color: #e8d5b5; letter-spacing: 0.6rem;
             margin-bottom: 1rem; margin-top: 0; font-weight: normal;
-            text-shadow: 0 0 10px rgba(232, 213, 181, 0.2); /* 微微的烫金发光 */
+            text-shadow: 0 0 10px rgba(232, 213, 181, 0.2);
         }
-        .divider {
-            color: #8a6e3e; font-size: 1.2rem; margin: 1.5rem 0; letter-spacing: 0.5rem;
-        }
-        .text {
+        .divider { color: #8a6e3e; font-size: 1.2rem; margin: 1.5rem 0; letter-spacing: 0.5rem; }
+        
+        /* 文本区域，点击后会变化 */
+        .text-box {
             color: #a89573; font-size: 1rem; line-height: 2; letter-spacing: 0.1rem;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2.5rem; min-height: 100px; /* 保证高度不跳动 */
+            transition: opacity 0.3s ease;
         }
         
-        /* 复古的文本按钮 */
         .btn {
             display: inline-block; border-bottom: 1px solid #8a6e3e;
             padding: 5px 10px; color: #e8d5b5; cursor: pointer;
@@ -50,17 +47,45 @@
             <h1 class="title">纸页与灰烬</h1>
             <div class="divider">✦ ❦ ✦</div>
             
-            <div class="text">
+            <!-- 给这段文字加了一个 id，方便点击时替换 -->
+            <div class="text-box" id="dialogue-text">
                 致 芥川庄园的贵客：<br>
                 昨夜的雷雨已歇，茶点已备好。<br>
                 无论您是来找人算账，还是来寻一口热汤。
             </div>
 
             <div>
-                <span class="btn">拜访账房</span>
-                <span class="btn btn-space">前往厨房</span>
+                <span class="btn" onclick="changeText('study')">拜访账房</span>
+                <span class="btn btn-space" onclick="changeText('kitchen')">前往厨房</span>
             </div>
         </div>
     </div>
+
+    <script>
+        // 预设的台词
+        const texts = {
+            original: "致 芥川庄园的贵客：<br>昨夜的雷雨已歇，茶点已备好。<br>无论您是来找人算账，还是来寻一口热汤。",
+            study: "（账房的门虚掩着，里面传来钢笔划过纸页的沙沙声）<br>“大小姐，如果是来查账的，请进；如果是来捣乱的，请回。”<br>—— 埃德蒙",
+            kitchen: "（厨房里弥漫着烤饼干的香气，但主人的脸色不太好）<br>“您又错过晚饭了。牛奶在炉子上，自己拿，别烫着。”<br>—— 莉薇娅"
+        };
+
+        function changeText(target) {
+            const textBox = document.getElementById('dialogue-text');
+            // 先淡出
+            textBox.style.opacity = 0;
+            
+            // 等 0.3 秒后替换文字并淡入
+            setTimeout(() => {
+                if(target === 'study') {
+                    textBox.innerHTML = texts.study;
+                    textBox.style.color = "#a89573";
+                } else if (target === 'kitchen') {
+                    textBox.innerHTML = texts.kitchen;
+                    textBox.style.color = "#a89573";
+                }
+                textBox.style.opacity = 1;
+            }, 300);
+        }
+    </script>
 </body>
 </html>
