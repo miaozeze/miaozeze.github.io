@@ -5,110 +5,145 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸页与灰烬 | 芥川庄园</title>
     <style>
+        /* === 基础页面 === */
         body {
             margin: 0; padding: 0; background-color: #050505; color: #c9bda5;
             font-family: "Songti SC", "Noto Serif SC", serif;
             height: 100vh; display: flex; justify-content: center; align-items: center;
             background-image: radial-gradient(circle at center, #111 0%, #050505 100%);
+            overflow: hidden;
         }
+        
+        /* === 邀请函主界面 === */
         .invitation {
             border: 1px solid #8a6e3e; padding: 2rem; max-width: 600px; width: 85%; text-align: center;
-            position: relative;
+            position: relative; background: #050505; z-index: 1;
         }
         .inner-border {
-            border: 1px dashed #4a3c22; padding: 3rem 2rem; transition: all 0.3s ease;
+            border: 1px dashed #4a3c22; padding: 3rem 2rem;
             display: flex; flex-direction: column; align-items: center;
         }
+        .divider { color: #8a6e3e; font-size: 1.2rem; margin-top: 0; margin-bottom: 2.5rem; letter-spacing: 0.5rem; }
+        .main-text { color: #a89573; font-size: 1rem; line-height: 2; letter-spacing: 0.1rem; margin-bottom: 3rem; }
         
-        /* 顶部的花边，去掉了大标题后，让它作为视觉起点 */
-        .divider { 
-            color: #8a6e3e; font-size: 1.2rem; margin-top: 0; margin-bottom: 2.5rem; letter-spacing: 0.5rem; 
-        }
-        
-        /* 文本区域 */
-        .text-box {
-            color: #a89573; font-size: 1rem; line-height: 2; letter-spacing: 0.1rem;
-            margin-bottom: 3rem; min-height: 120px; 
-            transition: opacity 0.3s ease;
-            display: flex; flex-direction: column; justify-content: center;
-        }
-        
-        .btn-group { display: flex; gap: 20px; justify-content: center; margin-bottom: 1rem; }
-        
+        .btn-group { display: flex; gap: 20px; justify-content: center; }
         .btn {
-            border-bottom: 1px solid #8a6e3e;
-            padding: 5px 10px; color: #e8d5b5; cursor: pointer;
-            transition: all 0.3s; font-size: 1.1rem;
+            border-bottom: 1px solid #8a6e3e; padding: 5px 10px; color: #e8d5b5; cursor: pointer;
+            transition: all 0.3s; font-size: 1.1rem; letter-spacing: 0.1rem;
         }
         .btn:hover { color: #fff; border-bottom-color: #fff; text-shadow: 0 0 8px #fff; }
-        
-        /* 返回按钮（默认隐藏） */
-        #back-btn {
-            font-size: 0.8rem; color: #666; cursor: pointer;
-            margin-top: 15px; text-decoration: underline; text-decoration-color: #333;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+
+        /* === 弹窗背景遮罩 === */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(4px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease; z-index: 10;
         }
-        #back-btn:hover { color: #aaa; }
-        #back-btn.show { opacity: 1; pointer-events: auto; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+        /* === 角色专属档案卡 === */
+        .character-card {
+            background: #0a0a0a; border: 1px solid #8a6e3e; padding: 3rem;
+            max-width: 500px; width: 80%; text-align: center; position: relative;
+            transform: scale(0.9); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 20px rgba(138, 110, 62, 0.1);
+        }
+        .modal-overlay.active .character-card { transform: scale(1); }
+
+        /* 右上角关闭 */
+        .close-btn {
+            position: absolute; top: 15px; right: 20px; color: #666; font-size: 1.5rem; cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-btn:hover { color: #e8d5b5; }
+
+        .char-name { font-size: 1.8rem; color: #e8d5b5; letter-spacing: 0.3rem; margin-bottom: 0.5rem; }
+        .char-title { font-size: 0.8rem; color: #8a6e3e; letter-spacing: 0.2rem; margin-bottom: 2rem; text-transform: uppercase; }
+        .char-quote { 
+            font-size: 1.1rem; color: #a89573; line-height: 1.8; margin-bottom: 2.5rem; 
+            text-align: left; padding-left: 10px; border-left: 2px solid #333; 
+        }
+
+        /* 底部退回按钮 */
+        .back-btn {
+            display: inline-block;
+            font-size: 0.85rem; color: #666; cursor: pointer;
+            letter-spacing: 0.1rem; transition: color 0.3s;
+        }
+        .back-btn:hover { color: #e8d5b5; }
     </style>
 </head>
 <body>
+
+    <!-- 主界面 -->
     <div class="invitation">
         <div class="inner-border">
+            <!-- 加上你截图里的极简英文抬头 -->
             <p style="letter-spacing: 0.4rem; color: #4a3c22; font-size: 0.75rem; margin-top:0; margin-bottom: 1rem;">P A G E S &nbsp; A N D &nbsp; A S H E S</p>
+            
             <div class="divider">✦ ❦ ✦</div>
             
-            <div class="text-box" id="dialogue-text">
-                <!-- 默认内容 -->
-                <div id="default-text">
-                    致 芥川庄园的贵客：<br>
-                    昨夜的雷雨已歇，茶点已备好。<br>
-                    无论您是来找人算账，还是来寻一口热汤。
-                </div>
+            <div class="main-text">
+                致 芥川庄园的贵客：<br>
+                昨夜的雷雨已歇，茶点已备好。<br>
+                无论您是来找人算账，还是来寻一口热汤。
             </div>
 
             <div class="btn-group">
-                <span class="btn" onclick="changeText('study')">拜访账房</span>
-                <span class="btn" onclick="changeText('kitchen')">前往厨房</span>
+                <!-- 这里改成了正确的弹窗函数 openModal -->
+                <span class="btn" onclick="openModal('edmund')">拜访账房</span>
+                <span class="btn" onclick="openModal('livia')">前往厨房</span>
             </div>
-            
-            <!-- 新增的返回按钮 -->
-            <div id="back-btn" onclick="resetText()">[ 合上卷宗，退后一步 ]</div>
         </div>
     </div>
 
+    <!-- 弹窗层（隐藏状态） -->
+    <div class="modal-overlay" id="modal">
+        <div class="character-card">
+            <div class="close-btn" onclick="closeModal()">×</div>
+            <div class="char-name" id="m-name"></div>
+            <div class="char-title" id="m-title"></div>
+            <div class="char-quote" id="m-quote"></div>
+            
+            <div class="back-btn" onclick="closeModal()">[ 合上卷宗，退后一步 ]</div>
+        </div>
+    </div>
+
+    <!-- 交互脚本 -->
     <script>
-        const textBox = document.getElementById('dialogue-text');
-        const backBtn = document.getElementById('back-btn');
-        
-        const texts = {
-            study: "（账房的门虚掩着，里面传来钢笔划过纸页的沙沙声）<br>“大小姐，如果是来查账的，请进；如果是来捣乱的，请回。”<br><span style='font-size:0.8rem; color:#8a6e3e;'>—— 埃德蒙</span>",
-            kitchen: "（厨房里弥漫着烤饼干的香气，但主人的脸色不太好）<br>“您又错过晚饭了。牛奶在炉子上，自己拿，别烫着。”<br><span style='font-size:0.8rem; color:#8a6e3e;'>—— 莉薇娅</span>"
+        const characters = {
+            edmund: {
+                name: "埃德蒙",
+                title: "Chief Butler / LSE Alumnus",
+                quote: `（账房的门虚掩着，里面传来钢笔划过纸页的沙沙声，他推了推金丝眼镜，笑眯眯地抬头）<br><br>“大小姐，如果是来查账的，请进；如果是来捣乱的，请回。哦对了，如果您是来替莉薇娅小姐讨说法的，那笔预算我已经批了，不用谢。”`
+            },
+            livia: {
+                name: "莉薇娅",
+                title: "Exclusive Maid / Yorkshire",
+                quote: `（厨房里弥漫着烤饼干的香气，她正冷着脸擦拭银器，看到你推门，手上的动作顿了一下）<br><br>“您又错过晚饭了。牛奶在炉子上，自己拿，别烫着。还有，别指望我会给您加糖。”`
+            }
         };
 
-        function changeText(target) {
-            textBox.style.opacity = 0;
+        function openModal(id) {
+            const data = characters[id];
+            document.getElementById('m-name').innerText = data.name;
+            document.getElementById('m-title').innerText = data.title;
+            document.getElementById('m-quote').innerHTML = data.quote;
             
-            setTimeout(() => {
-                textBox.innerHTML = texts[target];
-                textBox.style.opacity = 1;
-                backBtn.classList.add('show');
-            }, 300);
+            document.getElementById('modal').classList.add('active');
         }
 
-        function resetText() {
-            textBox.style.opacity = 0;
-            backBtn.classList.remove('show');
-            
-            setTimeout(() => {
-                textBox.innerHTML = `<div id="default-text">
-                    致 芥川庄园的贵客：<br>
-                    昨夜的雷雨已歇，茶点已备好。<br>
-                    无论您是来找人算账，还是来寻一口热汤。
-                </div>`;
-                textBox.style.opacity = 1;
-            }, 300);
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
         }
+
+        // 点击遮罩层也可以关闭
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
     </script>
 </body>
 </html>
