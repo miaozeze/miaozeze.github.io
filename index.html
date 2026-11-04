@@ -2,54 +2,55 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>纸页与灰烬 | Pages and Ashes</title>
+    <title>Welcome | 芥川庄园</title>
     <style>
-        body { background-color: #0a0a0a; color: #e0e0e0; font-family: "Georgia", "Songti SC", serif; text-align: center; padding-top: 15vh; margin: 0; }
-        .content-box { background-color: rgba(18, 18, 18, 0.85); padding: 60px 40px; max-width: 600px; margin: 0 auto; border: 1px solid #222; box-shadow: 0 0 40px rgba(0,0,0,0.9), inset 0 0 20px rgba(255,255,255,0.02); }
-        h1 { font-size: 2.8em; letter-spacing: 10px; color: #f5f5f5; font-weight: normal; margin-bottom: 15px; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
-        .en-title { font-size: 0.9em; color: #666; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 50px; }
-        .divider { color: #444; font-size: 1.2em; margin: 30px 0; letter-spacing: 5px; }
-        .intro { font-size: 1.1em; color: #999; margin: 0 auto 60px auto; line-height: 2.2; }
-        
-        /* 按钮样式 */
-        .enter-btn { 
-            display: inline-block; 
-            padding: 15px 40px; 
-            border: 1px solid #444; 
-            color: #ccc; 
-            text-decoration: none; 
-            letter-spacing: 3px; 
-            transition: all 0.4s ease; 
-            font-size: 0.95em; 
+        body { 
+            background-color: #050505; 
+            color: #888; 
+            font-family: "Georgia", "Songti SC", serif; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
         }
-        .enter-btn:hover { 
-            background-color: #e0e0e0; 
-            color: #0a0a0a; 
-            border-color: #e0e0e0; 
-            box-shadow: 0 0 15px rgba(224,224,224,0.3); 
+        .welcome-text { 
+            font-size: 1.2em; 
+            letter-spacing: 5px; 
+            margin-bottom: 40px; 
+            opacity: 0; 
+            animation: fadeIn 2s forwards; 
+        }
+        .enter-gate { 
+            border: none; 
+            background: none; 
+            color: #444; 
+            font-size: 1em; 
+            letter-spacing: 2px; 
+            cursor: pointer; 
+            padding: 10px 20px; 
+            transition: all 0.5s ease; 
+            opacity: 0; 
+            animation: fadeIn 2s 1s forwards; 
+            text-decoration: none;
+        }
+        .enter-gate:hover { 
+            color: #fff; 
+            letter-spacing: 4px; 
         }
         
-        .quote { font-style: italic; color: #555; margin-top: 80px; font-size: 0.85em; letter-spacing: 1px; }
+        /* 简单的淡入动画 */
+        @keyframes fadeIn { 
+            to { opacity: 1; } 
+        }
     </style>
 </head>
 <body>
-    <div class="content-box">
-        <h1>纸页与灰烬</h1>
-        <div class="en-title">Pages and Ashes</div>
-        
-        <div class="divider">❦ ❦ ❦</div>
-        
-        <div class="intro">
-            <p>山海、风雪、雨爱。</p>
-            <p>这里是芥川庄园的线上档案室。<br>那些被大火烧毁的、被账本记录下的、被红茶浸泡过的故事，都在这里。</p>
-        </div>
-
-        <!-- 这个就是进入第一章的链接 -->
-        <a href="chapter1.html" class="enter-btn">进入庄园 · 翻开第一章</a>
-
-        <div class="quote">
-            “您看起来，像一只被淋湿的猫。”
-        </div>
+    <div class="welcome-text">
+        山海、风雪、雨爱。
     </div>
+    <!-- 点击这里跳转到 home.html -->
+    <a href="home.html" class="enter-gate">[ 推 门 进 入 ]</a>
 </body>
-</html>
+</html> 
