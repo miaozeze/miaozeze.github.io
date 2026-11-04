@@ -3,67 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>芥川庄园</title>
+    <title>纸页与灰烬 | 芥川庄园</title>
     <style>
-        /* 页面基础设置 */
+        /* 页面基础设置：纯黑背景，全局居中 */
         body {
             margin: 0;
             padding: 0;
-            background-color: #050505; /* 纯黑背景 */
-            color: #d1d1d1; /* 柔和的灰白色文字 */
-            font-family: "Songti SC", "Noto Serif SC", "SimSun", serif; /* 极简古典衬线体 */
+            background-color: #050505;
+            color: #d1d1d1;
+            font-family: "Songti SC", "Noto Serif SC", "SimSun", serif;
             height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             user-select: none;
         }
 
-        /* 主文案 */
-        .text-line {
-            font-size: 1.2rem;
-            letter-spacing: 0.4rem;
-            margin-bottom: 3rem;
-            text-align: center;
+        /* 纯视觉的按钮样式（无跳转） */
+        .fake-btn {
+            display: inline-block;
+            color: #d1d1d1; 
+            text-decoration: none; 
+            border: 1px solid #555; 
+            padding: 10px 20px; 
+            font-size: 0.9rem; 
+            transition: all 0.3s ease;
+            cursor: default; /* 鼠标放上去不会变成小手，表示不是链接 */
         }
-
-        /* 按钮/链接样式 */
-        .enter-btn {
-            font-size: 0.9rem;
-            letter-spacing: 0.2rem;
-            color: #666;
-            text-decoration: none;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            padding: 10px;
-        }
-
-        /* 悬停变亮 */
-        .enter-btn:hover {
+        
+        /* 悬停时的微光效果 */
+        .fake-btn:hover {
+            border-color: #fff;
             color: #fff;
-        }
-
-        /* 底部极暗小字 */
-        .footer-hint {
-            position: absolute;
-            bottom: 2rem;
-            font-size: 0.6rem;
-            color: #222;
-            letter-spacing: 0.1rem;
+            box-shadow: 0 0 15px rgba(255,255,255,0.15);
+            background-color: rgba(255,255,255,0.03);
         }
     </style>
 </head>
 <body>
 
-    <!-- 文案部分 -->
-    <div class="text-line">规矩、阴雨与长夜。</div>
+    <!-- 档案室边框盒子 -->
+    <div style="border: 1px solid #333; padding: 4rem 5rem; text-align: center; background: #080808; max-width: 600px; width: 85%;">
+        
+        <h1 style="font-size: 2.5rem; letter-spacing: 0.5rem; color: #fff; margin-bottom: 1rem; font-weight: normal; margin-top: 0;">纸页与灰烬</h1>
+        <p style="letter-spacing: 0.2rem; color: #666; font-size: 0.8rem; margin-bottom: 3rem;">PAGES AND ASHES</p>
+        
+        <p style="color: #999; font-size: 0.9rem; line-height: 2; margin-bottom: 3rem;">
+            档案已解密。<br>
+            请选择您的身份，进入芥川庄园。
+        </p>
 
-    <!-- 按钮部分：之后你可以把 href="#" 换成你真正的聊天页面链接 -->
-    <a href="#" class="enter-btn">[ 推 开 门 ]</a>
+        <!-- 纯装饰的入口选项 -->
+        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+            <span class="fake-btn">[ 敲响账房的门 ]</span>
+            <span class="fake-btn">[ 前往厨房 ]</span>
+        </div>
 
-    <!-- 底部装饰小字 -->
-    <div class="footer-hint">Welcome to the manor.</div>
+        <p style="margin-top: 4rem; font-size: 0.75rem; color: #444;">“无论您选择哪边，今晚的牛奶都不会少。”</p>
+    </div>
 
 </body>
 </html>
