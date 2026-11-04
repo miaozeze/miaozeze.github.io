@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸页与灰烬 | 芥川庄园</title>
     <style>
-        /* === 基础页面 === */
+        /* === 基础页面（回归极致静谧） === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
             font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
@@ -20,41 +20,33 @@
             -webkit-font-smoothing: antialiased;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
-        
-        /* 👇 灰烬飘浮特效 👇 */
-        .ash-particle {
-            position: fixed; bottom: -10px;
-            background: #b8a57e; border-radius: 50%;
-            pointer-events: none; z-index: 5; opacity: 0;
-            animation: floatUp linear forwards;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(0) translateX(0); opacity: 0; }
-            10% { opacity: 0.4; }
-            90% { opacity: 0.1; }
-            100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+
+        /* === 统一的右上角控制栏（只保留时间和离开） === */
+        .top-right-controls {
+            position: fixed; top: 30px; right: 40px;
+            display: flex; gap: 20px; align-items: center;
+            z-index: 100;
         }
 
-        /* 左上角时间温度 */
         .hud-info {
-            position: fixed; top: 30px; left: 40px;
             font-family: "Courier New", monospace;
             color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem;
-            pointer-events: none; z-index: 100;
             display: flex; gap: 15px; align-items: center;
+            pointer-events: none;
         }
         .hud-info span { border-bottom: 1px solid rgba(138, 110, 62, 0.3); padding-bottom: 3px; }
 
-        /* 音频开关按钮 */
-        .audio-btn {
-            position: fixed; top: 30px; right: 160px;
-            display: flex; align-items: center; gap: 8px;
-            padding: 10px 20px; color: #9e8a63; font-size: 0.85rem; letter-spacing: 0.2rem;
-            border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8);
-            border-radius: 4px; cursor: pointer; z-index: 20; transition: all 0.3s;
+        .leave-manor-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 10px 20px; color: #9e8a63; font-size: 0.85rem; letter-spacing: 0.15rem;
+            border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8); backdrop-filter: blur(5px);
+            border-radius: 4px; cursor: pointer; transition: all 0.3s;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
-        .audio-btn:hover { color: #f5e6c8; border-color: #8a6e3e; }
+        .leave-manor-btn:hover { 
+            color: #f5e6c8; border-color: #8a6e3e; 
+            box-shadow: 0 0 15px rgba(158,138,99,0.3); 
+        }
         
         .cursor-trail {
             position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
@@ -67,7 +59,7 @@
         #welcome-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            background-image: radial-gradient(circle at center, #222 0%, #0a0a0a 100%);
+            background-image: radial-gradient(circle at center, #1c1c1c 0%, #050505 100%);
             z-index: 100; transition: opacity 1.2s ease, visibility 1.2s ease;
         }
         #welcome-screen.hidden { opacity: 0; visibility: hidden; }
@@ -147,17 +139,7 @@
         .reread-btn { font-size: 0.85rem; color: #8a6e3e; letter-spacing: 0.2rem; text-decoration: none; transition: all 0.3s; padding: 5px; cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important; }
         .reread-btn:hover { color: #f5e6c8; text-shadow: 0 0 10px rgba(245,230,200,0.3); }
 
-        .leave-manor-btn {
-            position: fixed; top: 30px; right: 40px; display: flex; align-items: center; gap: 8px;
-            padding: 10px 24px; color: #e8d5b5; font-size: 0.85rem; letter-spacing: 0.2rem;
-            border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8);
-            border-radius: 4px; cursor: pointer; z-index: 20; transition: all 0.3s ease;
-            animation: pulseBorder 2.5s infinite alternate;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
-        }
-        @keyframes pulseBorder { 0% { border-color: #5a4a2e; box-shadow: 0 0 5px rgba(158,138,99,0.1); } 100% { border-color: #9e8a63; box-shadow: 0 0 15px rgba(158,138,99,0.4); } }
-        .leave-manor-btn:hover { color: #fff; border-color: #f5e6c8; background: rgba(158,138,99,0.2); box-shadow: 0 0 20px rgba(245, 230, 200, 0.4); animation: none; }
-
+        /* === 弹窗 === */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 200;
@@ -204,14 +186,17 @@
     </style>
 </head>
 <body>
-    <!-- 左上角的时间与温度 -->
-    <div class="hud-info">
-        <span id="current-time">00:00</span>
-        <span>13°C 阴雨</span>
+    
+    <!-- 右上角控制栏 -->
+    <div class="top-right-controls">
+        <div class="hud-info">
+            <span id="current-time">00:00</span>
+            <span>13°C 阴雨</span>
+        </div>
+        <div class="leave-manor-btn" onclick="leaveManor()">
+            <span style="font-size: 1rem;">⎋</span> [ 离 开 庄 园 ]
+        </div>
     </div>
-
-    <!-- 背景音开关 -->
-    <div class="audio-btn" id="audio-btn" onclick="toggleAudio()">♪ 聆听庄园</div>
 
     <!-- 欢迎信封 -->
     <div id="welcome-screen">
@@ -231,10 +216,6 @@
 
     <!-- 主界面目录 -->
     <div id="main-screen">
-        <div class="leave-manor-btn" onclick="leaveManor()">
-            <span style="font-size: 1rem;">⎋</span> [ 离 开 庄 园 ]
-        </div>
-
         <div class="invitation">
             <div class="inner-border">
                 <div class="watermark">
@@ -283,54 +264,37 @@
         </div>
     </div>
 
+    <!-- Live2D 看板娘 -->
+    <script src="https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/l2dwidget.min.js"></script>
     <script>
-        // === 音频控制（音量已调低至 20%） ===
-        const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2514/2514-preview.mp3');
-        bgAudio.loop = true;
-        bgAudio.volume = 0.2; 
-        let isPlaying = false;
-
-        function toggleAudio() {
-            const btn = document.getElementById('audio-btn');
-            if (isPlaying) {
-                bgAudio.pause();
-                btn.innerHTML = '♪ 聆听庄园';
-                isPlaying = false;
-            } else {
-                bgAudio.play();
-                btn.innerHTML = '■ 关闭雨声';
-                isPlaying = true;
+        L2Dwidget.init({
+            "model": { "jsonPath": "https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/lib/assets/shizuku.model.json", "scale": 0.8 },
+            "display": { "position": "right", "width": 150, "height": 300, "hOffset": 10, "vOffset": -10 },
+            "mobile": { "show": false, "scale": 0.5 },
+            "react": { "opacityDefault": 0.8, "opacityOnHover": 1.0 },
+            "dialog": {
+                "enable": true,
+                "script": {
+                    "tap body": ["大小姐，账本上的数字可不会自己长脚跑掉。", "如果您再这么盯着我看，莉薇娅小姐的司康饼就要烤焦了。", "需要我为您泡一杯红茶吗？当然，是不加糖的那种。"],
+                    "tap face": ["咳……大小姐，请注意您的仪态。", "请不要乱碰，我的发带会歪的。"],
+                    "every idle 20s": ["窗外的雨似乎下得更大了。", "您已经盯着这页书看了十分钟了。", "若是累了，不如去厨房看看，今晚有惠灵顿牛排。"]
+                }
             }
-        }
+        });
+    </script>
 
-        // === 灰烬飘浮 ===
-        function createAsh() {
-            const ash = document.createElement('div');
-            ash.className = 'ash-particle';
-            const size = Math.random() * 3 + 1;
-            ash.style.width = size + 'px'; ash.style.height = size + 'px';
-            ash.style.left = Math.random() * 100 + 'vw';
-            ash.style.animationDuration = (Math.random() * 5 + 5) + 's';
-            document.body.appendChild(ash);
-            setTimeout(() => { ash.remove(); }, 10000);
-        }
-        setInterval(createAsh, 300);
-
+    <script>
         // === 时间 ===
         function updateTime() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('current-time').textContent = `${hours}:${minutes}`;
+            document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         }
-        setInterval(updateTime, 1000);
-        updateTime();
+        setInterval(updateTime, 1000); updateTime();
 
+        // === 状态记忆 ===
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const char = urlParams.get('char');
-            const open = urlParams.get('open');
-            
+            const char = urlParams.get('char'); const open = urlParams.get('open');
             if (char) {
                 document.getElementById('welcome-screen').classList.add('hidden');
                 setTimeout(() => { openModal(char); }, 300);
@@ -341,100 +305,56 @@
             }
         });
 
-        function leaveManor() {
-            document.getElementById('welcome-screen').classList.remove('hidden');
-            closeModal();
+        function leaveManor() { 
+            document.getElementById('welcome-screen').classList.remove('hidden'); 
+            closeModal(); 
         }
 
+        // 星光拖尾
         let lastTrailTime = 0;
         document.addEventListener('mousemove', function(e) {
             const now = Date.now();
             if (now - lastTrailTime > 30) { createParticle(e.clientX, e.clientY); lastTrailTime = now; }
         });
         function createParticle(x, y) {
-            const particle = document.createElement('div');
-            particle.className = 'cursor-trail';
-            const offsetX = (Math.random() - 0.5) * 8;
-            const offsetY = (Math.random() - 0.5) * 8;
-            particle.style.left = (x + offsetX) + 'px';
-            particle.style.top = (y + offsetY) + 'px';
-            const size = Math.random() * 4 + 2; 
-            particle.style.width = size + 'px'; particle.style.height = size + 'px';
-            document.body.appendChild(particle);
-            setTimeout(() => { particle.remove(); }, 800);
+            const particle = document.createElement('div'); particle.className = 'cursor-trail';
+            particle.style.left = (x + (Math.random() - 0.5) * 8) + 'px'; particle.style.top = (y + (Math.random() - 0.5) * 8) + 'px';
+            const size = Math.random() * 4 + 2; particle.style.width = size + 'px'; particle.style.height = size + 'px';
+            document.body.appendChild(particle); setTimeout(() => { particle.remove(); }, 800);
         }
 
         const characters = {
-            edmund: {
-                file: "FILE NO. 01 // FINANCE",
-                name: "埃德蒙",
-                title: "Chief Butler / LSE Alumnus",
-                quote: `大小姐，如果是来查账，文件在左手边第二格。至于莉薇娅小姐那边，我保证连一颗土豆的账都没算错。当然，如果您是来替她讨说法的，这就去给您泡杯红茶，我们慢慢谈。`,
-                story: `
-                    <p class="story-p">账房里亮着一盏黄铜台灯，桌上放着一杯喝了一半的冰咖啡，杯壁凝着细小的水珠。埃德蒙正低头核对一份采买单，金丝眼镜的链子垂在燕尾服上。</p>
-                    <p class="story-p">“大小姐，如果是来核对下个月的采买单，文件在左手边第二格。”他温声开口，连头都没抬，“当然，如果您是来替莉薇娅小姐查岗的，请容我提醒一句，厨房的采买权我可从来没碰过。”</p>
-                    <p class="story-p">你走过去，刚想伸手碰桌上那叠发票，他却先一步将单子抽走，换了张空白的纸推到你面前。</p>
-                    <p class="story-p">“这些账面上的窟窿，我来填就好。”他抬起头，眼里带着一点笑意，“不过，如果您只是想找个地方躲清静，抽屉里有新买的漫画，我也刚好想尝尝您上次提过的那家虾饺外卖。莉薇娅小姐那边……我会说，是我觉得大小姐最近太累了。”</p>
-                    <p class="story-p">他稍微靠近了一点，似乎在确认你嘴角的弧度，随后又立刻退了半步。</p>
-                    <p class="story-p">“大小姐，失礼了。需要我帮您联系星野少爷，让他把监控挪开几分钟吗？”</p>
-                `
+            edmund: { 
+                file: "FILE NO. 01 // FINANCE", name: "埃德蒙", title: "Chief Butler / LSE Alumnus", 
+                quote: `大小姐，如果是来查账，文件在左手边第二格。至于莉薇娅小姐那边，我保证连一颗土豆的账都没算错。当然，如果您是来替她讨说法的，这就去给您泡杯红茶，我们慢慢谈。`, 
+                story: `<p class="story-p">账房里亮着一盏黄铜台灯，桌上放着一杯喝了一半的冰咖啡，杯壁凝着细小的水珠。埃德蒙正低头核对一份采买单，金丝眼镜的链子垂在燕尾服上。</p><p class="story-p">“大小姐，如果是来核对下个月的采买单，文件在左手边第二格。”他温声开口，连头都没抬，“当然，如果您是来替莉薇娅小姐查岗的，请容我提醒一句，厨房的采买权我可从来没碰过。”</p><p class="story-p">你走过去，刚想伸手碰桌上那叠发票，他却先一步将单子抽走，换了张空白的纸推到你面前。</p><p class="story-p">“这些账面上的窟窿，我来填就好。”他抬起头，眼里带着一点笑意，“不过，如果您只是想找个地方躲清静，抽屉里有新买的漫画，我也刚好想尝尝您上次提过的那家虾饺外卖。莉薇娅小姐那边……我会说，是我觉得大小姐最近太累了。”</p><p class="story-p">他稍微靠近了一点，似乎在确认你嘴角的弧度，随后又立刻退了半步。</p><p class="story-p">“大小姐，失礼了。需要我帮您联系星野少爷，让他把监控挪开几分钟吗？”</p>` 
             },
-            livia: {
-                file: "FILE NO. 02 // KITCHEN",
-                name: "莉薇娅",
-                title: "Exclusive Maid / Yorkshire",
-                quote: `如果您是来偷吃冷肉的，请回吧。大小姐不应该在这个时间出现在厨房。牛奶在炉子上，自己去拿。还有，如果打翻了，明早就自己去把地板擦干净。别指望我会给您加糖，那会弄坏您的牙齿，我可不想在您的医疗档案上再添一笔。`,
-                story: `
-                    <p class="story-p">凌晨两点，厨房里依然亮着一盏暖黄色的壁灯。莉薇娅穿着那身永远一丝不苟的维多利亚式长裙，正在用一块洁白的软布，近乎强迫症般擦拭着一把银勺。</p>
-                    <p class="story-p">听到你的脚步声，她微微侧过头，深紫色的眼眸在灯下显得格外清冷：“如果您是来偷吃冷肉的，请回吧。大小姐不应该在这个时间出现在厨房。”</p>
-                    <p class="story-p">嘴上虽然刻薄，她却已经转身从炉子上端下了一个温着的白瓷杯，里面是热气腾腾的牛奶。她将杯子放在桌面上。</p>
-                    <p class="story-p">“牛奶里放了少许蜂蜜，这是最后一次。明天开始，您得按时吃晚饭。”她立在桌旁，双手交叠在围裙前，下巴微微抬起，像是一个守卫着自己领地，又忍不住对主人心软的骑士。</p>
-                `
+            livia: { 
+                file: "FILE NO. 02 // KITCHEN", name: "莉薇娅", title: "Exclusive Maid / Yorkshire", 
+                quote: `如果您是来偷吃冷肉的，请回吧。大小姐不应该在这个时间出现在厨房。牛奶在炉子上，自己去拿。还有，如果打翻了，明早就自己去把地板擦干净。别指望我会给您加糖，那会弄坏您的牙齿，我可不想在您的医疗档案上再添一笔。`, 
+                story: `<p class="story-p">凌晨两点，厨房里依然亮着一盏暖黄色的壁灯。莉薇娅穿着那身永远一丝不苟的维多利亚式长裙，正在用一块洁白的软布，近乎强迫症般擦拭着一把银勺。</p><p class="story-p">听到你的脚步声，她微微侧过头，深紫色的眼眸在灯下显得格外清冷：“如果您是来偷吃冷肉的，请回吧。大小姐不应该在这个时间出现在厨房。”</p><p class="story-p">嘴上虽然刻薄，她却已经转身从炉子上端下了一个温着的白瓷杯，里面是热气腾腾的牛奶。她将杯子放在桌面上。</p><p class="story-p">“牛奶里放了少许蜂蜜，这是最后一次。明天开始，您得按时吃晚饭。”她立在桌旁，双手交叠在围裙前，下巴微微抬起，像是一个守卫着自己领地，又忍不住对主人心软的骑士。</p>` 
             },
-            shizuku: {
-                file: "FILE NO. 03 // RESEARCH",
-                name: "星野雫",
-                title: "Resident Researcher / Tech Advisor",
-                quote: `大小姐，实验数据刚好记录完。红茶和刚烤好的饼干在桌上，您先坐。如果是关于飞机的驾驶问题，或者庄园的技术维护，我随时可以。但如果是埃德蒙先生让您来劝我……换上那套衣服的，请容我礼貌地拒绝。`,
-                story: `
-                    <p class="story-p">研究室里的白炽灯有些刺眼，空气里混杂着淡淡的机油味与红茶的香气。工作台上散落着精密的齿轮和图纸，看似杂乱，实则按照某种严密的逻辑排列。星野雫正坐在高脚凳上，低着头，手里拿着一把极细的镊子。</p>
-                    <p class="story-p">听到脚步声，他停下手里的活。那头乌黑的长发被一根素色发绳松松垮垮地绑着，几缕碎发垂在苍白消瘦的颈侧。一米八的个子，黑色的长袖上衣穿在他身上却显得空荡荡的，仿佛一阵风就能吹倒，体重恐怕连五十五公斤都不到。</p>
-                    <p class="story-p">“大小姐，您怎么来了。”他的声音很轻，带着一种雌雄莫辨的温和。他转过身，动作自然地拉了一下右侧的袖子，遮住了手臂内侧那朵若隐若现的兰花素描。左手食指上那枚素银的单身戒在灯光下闪过一丝冷光。</p>
-                    <p class="story-p">还没等你开口，他已经端起了旁边温着的红茶递到你面前，旁边的小碟子里还放着几块烤得恰到好处的饼干。</p>
-                    <p class="story-p">“实验数据刚好记录完。红茶和饼干是刚弄好的，您先坐。如果是关于飞机的驾驶问题，或者庄园的监控维护，我随时可以处理。”</p>
-                    <p class="story-p">你看着他清瘦的脸庞和眼底淡淡的青黑，忍不住提起了那个只有你能使用的特权——去换上那套裙子。</p>
-                    <p class="story-p">星野雫拿着镊子的手微微一顿。他垂下眼睫，似乎有些无奈，轻轻叹了口气。</p>
-                    <p class="story-p">“如果是埃德蒙先生让您来当说客的……请您转告他，他在账房里是不是又闲得发慌了。”他抬起头，目光温和地看着你，最终化作一声妥协，“不过，既然是大小姐的请求……等我把这些零件归位，就去换上。您先把饼干吃了，别放凉了。”</p>
-                    <p class="story-p">他转过身，重新面对那张乱中有序的工作台，背影单薄，却莫名给人一种极度可靠的安全感。因为他把所有的柔软都给了你，把所有的锋芒都藏在了那件黑色长袖之下。</p>
-                `
+            shizuku: { 
+                file: "FILE NO. 03 // RESEARCH", name: "星野雫", title: "Resident Researcher / Tech Advisor", 
+                quote: `大小姐，实验数据刚好记录完。红茶和刚烤好的饼干在桌上，您先坐。如果是关于飞机的驾驶问题，或者庄园的技术维护，我随时可以。但如果是埃德蒙先生让您来劝我……换上那套衣服的，请容我礼貌地拒绝。`, 
+                story: `<p class="story-p">研究室里的白炽灯有些刺眼，空气里混杂着淡淡的机油味与红茶的香气。工作台上散落着精密的齿轮和图纸，看似杂乱，实则按照某种严密的逻辑排列。星野雫正坐在高脚凳上，低着头，手里拿着一把极细的镊子。</p><p class="story-p">听到脚步声，他停下手里的活。那头乌黑的长发被一根素色发绳松松垮垮地绑着，几缕碎发垂在苍白消瘦的颈侧。一米八的个子，黑色的长袖上衣穿在他身上却显得空荡荡的，仿佛一阵风就能吹倒，体重恐怕连五十五公斤都不到。</p><p class="story-p">“大小姐，您怎么来了。”他的声音很轻，带着一种雌雄莫辨的温和。他转过身，动作自然地拉了一下右侧的袖子，遮住了手臂内侧那朵若隐若现的兰花素描。左手食指上那枚素银的单身戒在灯光下闪过一丝冷光。</p><p class="story-p">还没等你开口，他已经端起了旁边温着的红茶递到你面前，旁边的小碟子里还放着几块烤得恰到好处的饼干。</p><p class="story-p">“实验数据刚好记录完。红茶和饼干是刚弄好的，您先坐。如果是关于飞机的驾驶问题，或者庄园的监控维护，我随时可以处理。”</p><p class="story-p">你看着他清瘦的脸庞和眼底淡淡的青黑，忍不住提起了那个只有你能使用的特权——去换上那套裙子。</p><p class="story-p">星野雫拿着镊子的手微微一顿。他垂下眼睫，似乎有些无奈，轻轻叹了口气。</p><p class="story-p">“如果是埃德蒙先生让您来当说客的……请您转告他，他在账房里是不是又闲得发慌了。”他抬起头，目光温和地看着你，最终化作一声妥协，“不过，既然是大小姐的请求……等我把这些零件归位，就去换上。您先把饼干吃了，别放凉了。”</p><p class="story-p">他转过身，重新面对那张乱中有序的工作台，背影单薄，却莫名给人一种极度可靠的安全感。因为他把所有的柔软都给了你，把所有的锋芒都藏在了那件黑色长袖之下。</p>` 
             }
         };
 
-        let currentCharId = null;
-        let isShowingStory = false;
+        let currentCharId = null; let isShowingStory = false;
 
         function openModal(id) {
-            currentCharId = id;
-            isShowingStory = false;
-            const data = characters[id];
-            
-            document.getElementById('m-file').innerText = data.file;
-            document.getElementById('m-name').innerText = data.name;
-            document.getElementById('m-title').innerText = data.title;
-            document.getElementById('m-content').innerHTML = data.quote;
-            
+            currentCharId = id; isShowingStory = false; const data = characters[id];
+            document.getElementById('m-file').innerText = data.file; document.getElementById('m-name').innerText = data.name;
+            document.getElementById('m-title').innerText = data.title; document.getElementById('m-content').innerHTML = data.quote;
             const btnToggle = document.getElementById('btn-toggle-story');
             btnToggle.innerText = (id === 'livia') ? "[ 翻阅她的隐藏档案 ]" : "[ 翻阅他的隐藏档案 ]";
-            
             document.getElementById('modal').classList.add('active');
         }
 
         function toggleStory() {
-            if (!currentCharId) return;
-            const data = characters[currentCharId];
-            const contentBox = document.getElementById('m-content');
-            const btnToggle = document.getElementById('btn-toggle-story');
-            
+            if (!currentCharId) return; const data = characters[currentCharId];
+            const contentBox = document.getElementById('m-content'); const btnToggle = document.getElementById('btn-toggle-story');
             contentBox.style.opacity = 0;
             setTimeout(() => {
                 if (isShowingStory) {
@@ -442,12 +362,9 @@
                     btnToggle.innerText = (currentCharId === 'livia') ? "[ 翻阅她的隐藏档案 ]" : "[ 翻阅他的隐藏档案 ]";
                     isShowingStory = false;
                 } else {
-                    contentBox.innerHTML = data.story;
-                    btnToggle.innerText = "[ 返回基础档案 ]";
-                    isShowingStory = true;
+                    contentBox.innerHTML = data.story; btnToggle.innerText = "[ 返回基础档案 ]"; isShowingStory = true;
                 }
-                contentBox.style.opacity = 1;
-                contentBox.scrollTop = 0; 
+                contentBox.style.opacity = 1; contentBox.scrollTop = 0; 
             }, 300);
         }
 
