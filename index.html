@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸页与灰烬 | 芥川庄园</title>
     <style>
-        /* === 基础页面（深空灰提亮） === */
+        /* === 基础页面 === */
         body {
             margin: 0; padding: 0; background-color: #1a1a1a; color: #e8d5b5;
             font-family: "Songti SC", "Noto Serif SC", serif;
@@ -23,12 +23,91 @@
             pointer-events: none; z-index: 9999; box-shadow: 0 0 10px 2px rgba(245, 230, 200, 0.8);
             animation: fadeOutTrail 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
-        @keyframes fadeOutTrail {
-            0% { transform: scale(1) translateY(0); opacity: 1; }
-            100% { transform: scale(0) translateY(15px); opacity: 0; }
+        @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
+
+        /* ========================================================
+           全新模块：欢迎邀请函界面（Welcom Screen）
+           ======================================================== */
+        #welcome-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            background-image: radial-gradient(circle at center, #222 0%, #0a0a0a 100%);
+            z-index: 100; transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), visibility 1.2s ease;
+        }
+        /* 点击后隐藏遮罩层 */
+        #welcome-screen.hidden {
+            opacity: 0; visibility: hidden;
         }
 
-        /* === 邀请函主界面 === */
+        /* 信封/邀请函外观 */
+        .envelope {
+            background: #151515; border: 1px solid #5a4a2e;
+            padding: 4rem 3rem; max-width: 420px; width: 85%; text-align: center;
+            position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+        }
+        /* 内层金边 */
+        .envelope::before {
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px solid #2a2213; pointer-events: none;
+        }
+
+        /* 模拟火漆印（Seal） */
+        .seal {
+            width: 60px; height: 60px; border-radius: 50%;
+            background: radial-gradient(circle, #4a3c22 0%, #1a140b 100%);
+            border: 1px solid #9e8a63; margin: 0 auto 2rem auto;
+            display: flex; justify-content: center; align-items: center;
+            color: #9e8a63; font-size: 1.2rem; font-family: "Courier New", monospace;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 5px 15px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        /* 火漆印里面的装饰线 */
+        .seal::after {
+            content: 'A'; font-size: 1.8rem; font-weight: bold; color: #b8a57e;
+        }
+
+        /* 邀请函文字 */
+        .env-to {
+            color: #9e8a63; font-size: 0.8rem; letter-spacing: 0.3rem; margin-bottom: 2rem;
+            text-transform: uppercase;
+        }
+        .env-title {
+            color: #e8d5b5; font-size: 1.8rem; letter-spacing: 0.5rem; margin-bottom: 1.5rem; font-weight: normal;
+        }
+        .env-desc {
+            color: #b8a57e; font-size: 0.95rem; line-height: 2.2; letter-spacing: 0.1rem; margin-bottom: 3rem;
+            font-style: italic;
+        }
+
+        /* 拆开信封按钮 */
+        .open-btn {
+            display: inline-block; padding: 12px 30px; border: 1px solid #5a4a2e;
+            color: #e8d5b5; font-size: 0.9rem; letter-spacing: 0.2rem; cursor: pointer;
+            background: transparent; transition: all 0.4s ease; position: relative;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .open-btn:hover {
+            color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1);
+            box-shadow: 0 0 20px rgba(158,138,99,0.2);
+        }
+
+        /* 装饰性斜体落款 */
+        .env-footer {
+            margin-top: 3rem; font-size: 0.75rem; color: #5a4a2e; letter-spacing: 0.1rem;
+        }
+
+        /* ========================================================
+           主界面（原目录页）
+           ======================================================== */
+        #main-screen {
+            /* 初始状态稍微往下压，让淡入效果更好看 */
+            transform: translateY(20px);
+            transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        #welcome-screen.hidden ~ #main-screen {
+            transform: translateY(0);
+        }
+
         .invitation {
             border: 1px solid #5a4a2e; padding: 3rem 3rem; max-width: 480px; width: 85%; text-align: center;
             position: relative; background: rgba(30, 30, 30, 0.85); z-index: 1; transition: all 0.6s ease;
@@ -36,29 +115,18 @@
         }
         .invitation:hover { border-color: #9e8a63; box-shadow: 0 15px 50px rgba(0,0,0,0.9), 0 0 25px rgba(158,138,99,0.2); }
         
-        .inner-border { 
-            border: 1px dashed #5a4a2e; padding: 2.5rem 1rem; display: flex; flex-direction: column; align-items: center; 
-            transition: border-color 0.6s ease;
-        }
+        .inner-border { border: 1px dashed #5a4a2e; padding: 2.5rem 1rem; display: flex; flex-direction: column; align-items: center; transition: border-color 0.6s ease; }
         .invitation:hover .inner-border { border-color: #8a6e3e; }
 
-        /* === 你指定的单行英文水印（颜色微调提亮） === */
         .watermark {
-            letter-spacing: 0.8rem; 
-            color: #6b5a3e; /* 从极暗改为暗香槟金，提亮背景后依然可见 */
-            font-size: 0.65rem; 
-            margin-top: 0; 
-            margin-bottom: 3.5rem; 
-            text-transform: uppercase;
-            transition: color 0.6s ease;
-            white-space: nowrap; /* 强制不换行 */
+            letter-spacing: 0.8rem; color: #6b5a3e; font-size: 0.65rem; 
+            margin-top: 0; margin-bottom: 3.5rem; text-transform: uppercase;
+            transition: color 0.6s ease; white-space: nowrap;
         }
-        .invitation:hover .watermark { color: #b8a57e; } /* 悬停时变亮 */
+        .invitation:hover .watermark { color: #b8a57e; }
         
-        /* 正文文字 */
         .main-text { color: #e0d0b0; font-size: 1rem; line-height: 2.2; letter-spacing: 0.15rem; margin-bottom: 3rem; }
         
-        /* === 档案目录式按钮 === */
         .btn-group { display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; }
         .btn {
             position: relative; display: flex; justify-content: space-between; align-items: center;
@@ -72,14 +140,13 @@
         .btn .num { color: #9e8a63; font-size: 0.8rem; font-family: "Courier New", monospace; transition: color 0.3s; }
         .btn:hover .num { color: #fff; }
 
-        /* === 弹窗背景遮罩 === */
+        /* === 弹窗 === */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 10;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
-        /* === 角色专属档案卡 === */
         .character-card {
             background: #222; border: 1px solid #9e8a63; padding: 3rem 2.5rem; max-width: 480px; width: 85%; text-align: center; position: relative;
             transform: scale(0.95) translateY(15px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -88,20 +155,16 @@
         .modal-overlay.active .character-card { transform: scale(1) translateY(0); }
 
         .file-number { position: absolute; top: 15px; left: 20px; font-size: 0.75rem; color: #9e8a63; letter-spacing: 0.15rem; font-family: "Courier New", monospace; }
-        
-        .close-btn { position: absolute; top: 12px; right: 20px; color: #9e8a63; font-size: 1.5rem; transition: color 0.3s; cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important; }
+        .close-btn { position: absolute; top: 12px; right: 20px; color: #9e8a63; font-size: 1.5rem; transition: color 0.3s; cursor: pointer; }
         .close-btn:hover { color: #fff; }
 
         .char-name { font-size: 2rem; color: #f5e6c8; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; }
         .char-title { font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #c9bda5; letter-spacing: 0.15rem; margin-bottom: 2.5rem; text-transform: uppercase; }
         .char-quote { font-size: 1rem; color: #e8d5b5; line-height: 1.9; margin-bottom: 2rem; text-align: left; padding-left: 15px; border-left: 2px solid #5a4a2e; }
         
-        /* === 档案卡底部按钮组 === */
         .card-actions { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
-
         .back-btn, .story-btn {
-            display: inline-block; font-size: 0.8rem; letter-spacing: 0.15rem; transition: all 0.3s; padding: 10px 20px; text-decoration: none;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+            display: inline-block; font-size: 0.8rem; letter-spacing: 0.15rem; transition: all 0.3s; padding: 10px 20px; text-decoration: none; cursor: pointer;
         }
         .back-btn { color: #9e8a63; border: 1px solid #5a4a2e; }
         .back-btn:hover { color: #fff; border-color: #8a6e3e; background: rgba(158,138,99,0.1); }
@@ -112,37 +175,60 @@
 </head>
 <body>
 
-    <!-- 主界面 -->
-    <div class="invitation">
-        <div class="inner-border">
+    <!-- ================= 欢迎邀请函（第一层） ================= -->
+    <div id="welcome-screen">
+        <div class="envelope">
+            <div class="seal"></div>
             
-            <!-- 单行英文水印 -->
-            <p class="watermark">P A G E S &nbsp;&nbsp; A N D &nbsp;&nbsp; A S H E S</p>
+            <div class="env-to">To the Esteemed Guest</div>
             
-            <div class="main-text">
-                致 芥川庄园的贵客：<br>
-                昨夜的雷雨已歇，茶点已备好。<br>
-                请选择您要翻阅的档案。
+            <div class="env-title">纸页与灰烬</div>
+            
+            <div class="env-desc">
+                在这座被雷雨与旧火包围的庄园里，<br>
+                纸页正在泛黄，灰烬仍有温热。<br>
+                请在此落款，或推开这扇尘封的门。
             </div>
+            
+            <button class="open-btn" onclick="openLetter()">[ 拆 开 信 件 ]</button>
+            
+            <div class="env-footer">From Akutagawa Manor</div>
+        </div>
+    </div>
 
-            <div class="btn-group">
-                <span class="btn" onclick="openModal('edmund')">
-                    <span>拜访账房</span>
-                    <span class="num">[ 01 ]</span>
-                </span>
-                <span class="btn" onclick="openModal('livia')">
-                    <span>前往厨房</span>
-                    <span class="num">[ 02 ]</span>
-                </span>
-                <span class="btn" onclick="openModal('shizuku')">
-                    <span>探访研究室</span>
-                    <span class="num">[ 03 ]</span>
-                </span>
+    <!-- ================= 主界面目录（第二层） ================= -->
+    <div id="main-screen">
+        <div class="invitation">
+            <div class="inner-border">
+                
+                <!-- 单行英文水印 -->
+                <p class="watermark">P A G E S &nbsp;&nbsp; A N D &nbsp;&nbsp; A S H E S</p>
+                
+                <div class="main-text">
+                    致 芥川庄园的贵客：<br>
+                    昨夜的雷雨已歇，茶点已备好。<br>
+                    请选择您要翻阅的档案。
+                </div>
+
+                <div class="btn-group">
+                    <span class="btn" onclick="openModal('edmund')">
+                        <span>拜访账房</span>
+                        <span class="num">[ 01 ]</span>
+                    </span>
+                    <span class="btn" onclick="openModal('livia')">
+                        <span>前往厨房</span>
+                        <span class="num">[ 02 ]</span>
+                    </span>
+                    <span class="btn" onclick="openModal('shizuku')">
+                        <span>探访研究室</span>
+                        <span class="num">[ 03 ]</span>
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 弹窗层 -->
+    <!-- ================= 角色档案弹窗 ================= -->
     <div class="modal-overlay" id="modal">
         <div class="character-card">
             <div class="file-number" id="m-file"></div>
@@ -160,7 +246,13 @@
     </div>
 
     <script>
-        // === 鼠标拖尾光效 JS 逻辑 ===
+        // === 拆开信封逻辑 ===
+        function openLetter() {
+            const welcome = document.getElementById('welcome-screen');
+            welcome.classList.add('hidden');
+        }
+
+        // === 鼠标拖尾光效 ===
         let lastTrailTime = 0;
         document.addEventListener('mousemove', function(e) {
             const now = Date.now();
@@ -186,21 +278,21 @@
                 name: "埃德蒙",
                 title: "Chief Butler / LSE Alumnus",
                 quote: `（账房的门虚掩着，里面传来钢笔划过纸页的沙沙声，他推了推金丝眼镜，笑眯眯地抬头）<br><br>“大小姐，如果是来查账的，请进；如果是来捣乱的，请回。哦对了，如果您是来替莉薇娅小姐讨说法的，那笔预算我已经批了，不用谢。”`,
-                link: "#" // 这里填埃德蒙的真实跳转链接
+                link: "#" // 换成埃德蒙的真实链接
             },
             livia: {
                 file: "FILE NO. 02 // KITCHEN",
                 name: "莉薇娅",
                 title: "Exclusive Maid / Yorkshire",
                 quote: `（厨房里弥漫着烤饼干的香气，她正冷着脸擦拭银器，看到你推门，手上的动作顿了一下）<br><br>“您又错过晚饭了。牛奶在炉子上，自己拿，别烫着。还有，别指望我会给您加糖。”`,
-                link: "#" // 这里填莉薇娅的真实跳转链接
+                link: "#" // 换成莉薇娅的真实链接
             },
             shizuku: {
                 file: "FILE NO. 03 // RESEARCH",
                 name: "星野雫",
                 title: "Resident Researcher / Tech Advisor",
                 quote: `（研究室里散落着精密的零件和图纸，他正对着模型计算，听到门响，他立刻停下手里的活，长发下的眉眼弯了弯，笑得温和）<br><br>“大小姐，实验数据刚好记录完。红茶和刚烤好的饼干在桌上，您先坐。如果是关于飞机的驾驶问题，或者庄园的技术维护，我随时可以。但如果是埃德蒙先生让您来劝我……换上那套衣服的，请容我礼貌地拒绝。”`,
-                link: "#" // 这里填星野雫的真实跳转链接
+                link: "#" // 换成星野雫的真实链接
             }
         };
 
@@ -214,13 +306,8 @@
             document.getElementById('modal').classList.add('active');
         }
 
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-        }
-
-        document.getElementById('modal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
+        function closeModal() { document.getElementById('modal').classList.remove('active'); }
+        document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
     </script>
 </body>
 </html>
