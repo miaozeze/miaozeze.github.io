@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸页与灰烬 | 芥川庄园</title>
     <style>
-        /* === 基础页面（高级字体与纸张纹理） === */
+        /* === 基础页面 === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
             font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
@@ -19,11 +19,34 @@
             
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
+
+        /* 👇 新增：背景时钟特效 👇 */
+        .bg-clock {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 800px; height: 800px; border-radius: 50%;
+            border: 1px solid rgba(158, 138, 99, 0.05);
+            pointer-events: none; z-index: 0;
+            display: flex; justify-content: center; align-items: center;
+        }
+        /* 时钟刻度 */
+        .bg-clock::before {
+            content: ''; position: absolute; width: 95%; height: 95%; border-radius: 50%;
+            border: 2px dashed rgba(158, 138, 99, 0.03);
+            animation: rotateClock 120s linear infinite; /* 缓慢顺时针旋转 */
+        }
+        /* 时钟指针/齿轮 */
+        .bg-clock::after {
+            content: ''; position: absolute; width: 60%; height: 60%; border-radius: 50%;
+            border: 1px solid rgba(158, 138, 99, 0.04);
+            border-left: 3px solid rgba(158, 138, 99, 0.08);
+            animation: rotateClockReverse 80s linear infinite; /* 缓慢逆时针旋转 */
+        }
+        @keyframes rotateClock { 100% { transform: rotate(360deg); } }
+        @keyframes rotateClockReverse { 100% { transform: rotate(-360deg); } }
+        /* 👆 时钟特效结束 👆 */
         
-        /* === 鼠标拖尾光效 === */
         .cursor-trail {
             position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
             pointer-events: none; z-index: 9999; box-shadow: 0 0 10px 2px rgba(245, 230, 200, 0.8);
@@ -43,7 +66,7 @@
         .envelope {
             background: #151515; border: 1px solid #5a4a2e;
             padding: 4rem 3rem; max-width: 420px; width: 85%; text-align: center;
-            position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+            position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.9); z-index: 2;
         }
         .envelope::before {
             content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
@@ -114,7 +137,14 @@
         .btn .num { color: #9e8a63; font-size: 0.8rem; font-family: "Courier New", monospace; transition: color 0.3s; }
         .btn:hover .num { color: #fff; }
 
-        /* === 离开庄园按钮 === */
+        .reread-divider { width: 60%; border-top: 1px dashed #3a3024; margin: 2rem 0 1rem 0; }
+        .reread-btn {
+            font-size: 0.85rem; color: #8a6e3e; letter-spacing: 0.2rem;
+            text-decoration: none; transition: all 0.3s; padding: 5px;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .reread-btn:hover { color: #f5e6c8; text-shadow: 0 0 10px rgba(245,230,200,0.3); }
+
         .leave-manor-btn {
             position: fixed; top: 30px; right: 40px; display: flex; align-items: center; gap: 8px;
             padding: 10px 24px; color: #e8d5b5; font-size: 0.85rem; letter-spacing: 0.2rem;
@@ -126,7 +156,6 @@
         @keyframes pulseBorder { 0% { border-color: #5a4a2e; box-shadow: 0 0 5px rgba(158,138,99,0.1); } 100% { border-color: #9e8a63; box-shadow: 0 0 15px rgba(158,138,99,0.4); } }
         .leave-manor-btn:hover { color: #fff; border-color: #f5e6c8; background: rgba(158,138,99,0.2); box-shadow: 0 0 20px rgba(245, 230, 200, 0.4); animation: none; }
 
-        /* === 弹窗 === */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 200;
@@ -147,7 +176,6 @@
         .char-name { font-size: 2rem; color: #f5e6c8; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; }
         .char-title { font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #c9bda5; letter-spacing: 0.15rem; margin-bottom: 2.5rem; text-transform: uppercase; }
         
-        /* 弹窗内容区（带滚动条） */
         .char-content-box {
             font-size: 1.05rem; color: #d1c5a8; line-height: 2.2; margin-bottom: 2rem; 
             text-align: justify; padding-left: 15px; border-left: 2px solid #5a4a2e;
@@ -158,14 +186,12 @@
         .char-content-box::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
         .char-content-box::-webkit-scrollbar-thumb { background: #5a4a2e; border-radius: 2px; }
         .char-content-box::-webkit-scrollbar-thumb:hover { background: #9e8a63; }
-        
-        /* 弹窗内的故事正文，首行缩进 */
+
         .story-p { text-indent: 2em; margin-bottom: 1rem; }
 
-        /* 弹窗按钮组（完美容纳三个按钮） */
-        .card-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
+        .card-actions { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .action-btn {
-            display: inline-block; font-size: 0.8rem; letter-spacing: 0.1rem; transition: all 0.3s; padding: 10px 15px; text-decoration: none; cursor: pointer;
+            display: inline-block; font-size: 0.85rem; letter-spacing: 0.15rem; transition: all 0.3s; padding: 10px 20px; text-decoration: none; cursor: pointer;
             color: #9e8a63; border: 1px solid #5a4a2e; background: transparent;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
@@ -176,8 +202,10 @@
     </style>
 </head>
 <body>
+    <!-- 极暗的背景时钟 -->
+    <div class="bg-clock"></div>
 
-    <!-- 欢迎邀请函 -->
+    <!-- 欢迎信封 -->
     <div id="welcome-screen">
         <div class="envelope">
             <div class="seal"></div>
@@ -222,6 +250,9 @@
                         <span>探访研究室</span><span class="num">[ 03 ]</span>
                     </span>
                 </div>
+
+                <div class="reread-divider"></div>
+                <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
             </div>
         </div>
     </div>
@@ -237,11 +268,9 @@
             
             <div class="char-content-box" id="m-content"></div>
             
-            <!-- 👇 恢复了三个按钮 -->
             <div class="card-actions">
                 <span class="action-btn" onclick="closeModal()">[ 合上卷宗 ]</span>
-                <span class="action-btn" id="btn-toggle-story" onclick="toggleStory()">[ 阅读专属故事 ]</span>
-                <a href="#" id="btn-story" class="action-btn primary">[ 翻开序章 ]</a>
+                <span class="action-btn primary" id="btn-toggle-story" onclick="toggleStory()">[ 翻阅 TA 的隐藏档案 ]</span>
             </div>
         </div>
     </div>
@@ -286,7 +315,6 @@
             setTimeout(() => { particle.remove(); }, 800);
         }
 
-        // === 角色数据库（加回了 story） ===
         const characters = {
             edmund: {
                 file: "FILE NO. 01 // FINANCE",
@@ -338,7 +366,7 @@
 
         function openModal(id) {
             currentCharId = id;
-            isShowingStory = false; // 每次打开默认显示台词
+            isShowingStory = false;
             const data = characters[id];
             
             document.getElementById('m-file').innerText = data.file;
@@ -347,15 +375,11 @@
             document.getElementById('m-content').innerHTML = data.quote;
             
             const btnToggle = document.getElementById('btn-toggle-story');
-            btnToggle.innerText = "[ 阅读专属故事 ]";
-            
-            // 动态更新跳转序章的链接
-            document.getElementById('btn-story').href = `prologue.html?from=${id}`;
+            btnToggle.innerText = (id === 'livia') ? "[ 翻阅她的隐藏档案 ]" : "[ 翻阅他的隐藏档案 ]";
             
             document.getElementById('modal').classList.add('active');
         }
 
-        // === 切换 台词/故事 ===
         function toggleStory() {
             if (!currentCharId) return;
             
@@ -367,18 +391,16 @@
             
             setTimeout(() => {
                 if (isShowingStory) {
-                    // 当前是故事，切回台词
                     contentBox.innerHTML = data.quote;
-                    btnToggle.innerText = "[ 阅读专属故事 ]";
+                    btnToggle.innerText = (currentCharId === 'livia') ? "[ 翻阅她的隐藏档案 ]" : "[ 翻阅他的隐藏档案 ]";
                     isShowingStory = false;
                 } else {
-                    // 当前是台词，切到故事
                     contentBox.innerHTML = data.story;
-                    btnToggle.innerText = "[ 返回档案首页 ]";
+                    btnToggle.innerText = "[ 返回基础档案 ]";
                     isShowingStory = true;
                 }
                 contentBox.style.opacity = 1;
-                contentBox.scrollTop = 0; // 切换时回到顶部
+                contentBox.scrollTop = 0; 
             }, 300);
         }
 
