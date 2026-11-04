@@ -167,6 +167,7 @@
         .char-name { font-size: 2rem; color: #f5e6c8; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; }
         .char-title { font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #c9bda5; letter-spacing: 0.15rem; margin-bottom: 2.5rem; text-transform: uppercase; }
         
+        /* 优化了正文框的字体渲染 */
         .char-content-box {
             font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", Georgia, serif;
             font-size: 1.05rem; 
@@ -186,7 +187,11 @@
         .char-content-box::-webkit-scrollbar-thumb { background: #5a4a2e; border-radius: 2px; }
         .char-content-box::-webkit-scrollbar-thumb:hover { background: #9e8a63; }
 
-        .story-p { margin-top: 0; margin-bottom: 1.2em; }
+        /* 优化了段落的间距，取消首行缩进 */
+        .story-p {
+            margin-top: 0;
+            margin-bottom: 1.2em;
+        }
 
         .card-actions { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .action-btn {
