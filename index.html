@@ -12,40 +12,49 @@
             height: 100vh; display: flex; justify-content: center; align-items: center;
             
             background-image: 
-                radial-gradient(circle at center, #1c1c1c 0%, #0a0a0a 70%),
+                radial-gradient(circle at center, #151515 0%, #050505 80%),
                 url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>');
             background-blend-mode: overlay;
             overflow: hidden;
             
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
+        
+        /* 👇 灰烬飘浮特效 👇 */
+        .ash-particle {
+            position: fixed; bottom: -10px;
+            background: #b8a57e; border-radius: 50%;
+            pointer-events: none; z-index: 5; opacity: 0;
+            animation: floatUp linear forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.4; }
+            90% { opacity: 0.1; }
+            100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+        }
 
-        /* 👇 新增：背景时钟特效 👇 */
-        .bg-clock {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 800px; height: 800px; border-radius: 50%;
-            border: 1px solid rgba(158, 138, 99, 0.05);
-            pointer-events: none; z-index: 0;
-            display: flex; justify-content: center; align-items: center;
+        /* 左上角时间温度 */
+        .hud-info {
+            position: fixed; top: 30px; left: 40px;
+            font-family: "Courier New", monospace;
+            color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem;
+            pointer-events: none; z-index: 100;
+            display: flex; gap: 15px; align-items: center;
         }
-        /* 时钟刻度 */
-        .bg-clock::before {
-            content: ''; position: absolute; width: 95%; height: 95%; border-radius: 50%;
-            border: 2px dashed rgba(158, 138, 99, 0.03);
-            animation: rotateClock 120s linear infinite; /* 缓慢顺时针旋转 */
+        .hud-info span { border-bottom: 1px solid rgba(138, 110, 62, 0.3); padding-bottom: 3px; }
+
+        /* 音频开关按钮 */
+        .audio-btn {
+            position: fixed; top: 30px; right: 160px; /* 放在离开庄园旁边 */
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 20px; color: #9e8a63; font-size: 0.85rem; letter-spacing: 0.2rem;
+            border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8);
+            border-radius: 4px; cursor: pointer; z-index: 20; transition: all 0.3s;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
-        /* 时钟指针/齿轮 */
-        .bg-clock::after {
-            content: ''; position: absolute; width: 60%; height: 60%; border-radius: 50%;
-            border: 1px solid rgba(158, 138, 99, 0.04);
-            border-left: 3px solid rgba(158, 138, 99, 0.08);
-            animation: rotateClockReverse 80s linear infinite; /* 缓慢逆时针旋转 */
-        }
-        @keyframes rotateClock { 100% { transform: rotate(360deg); } }
-        @keyframes rotateClockReverse { 100% { transform: rotate(-360deg); } }
-        /* 👆 时钟特效结束 👆 */
+        .audio-btn:hover { color: #f5e6c8; border-color: #8a6e3e; }
         
         .cursor-trail {
             position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
@@ -115,10 +124,7 @@
         .inner-border { border: 1px dashed #5a4a2e; padding: 2.5rem 1rem; display: flex; flex-direction: column; align-items: center; transition: border-color 0.6s ease; }
         .invitation:hover .inner-border { border-color: #8a6e3e; }
 
-        .watermark {
-            display: flex; justify-content: space-between; width: 80%;
-            margin-top: 0; margin-bottom: 3rem; transition: color 0.6s ease;
-        }
+        .watermark { display: flex; justify-content: space-between; width: 80%; margin-top: 0; margin-bottom: 3rem; transition: color 0.6s ease; }
         .watermark span { color: #6b5a3e; font-size: 0.7rem; letter-spacing: 0.3rem; text-transform: uppercase; font-family: "Courier New", monospace; }
         .invitation:hover .watermark span { color: #b8a57e; }
         
@@ -138,11 +144,7 @@
         .btn:hover .num { color: #fff; }
 
         .reread-divider { width: 60%; border-top: 1px dashed #3a3024; margin: 2rem 0 1rem 0; }
-        .reread-btn {
-            font-size: 0.85rem; color: #8a6e3e; letter-spacing: 0.2rem;
-            text-decoration: none; transition: all 0.3s; padding: 5px;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
-        }
+        .reread-btn { font-size: 0.85rem; color: #8a6e3e; letter-spacing: 0.2rem; text-decoration: none; transition: all 0.3s; padding: 5px; cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important; }
         .reread-btn:hover { color: #f5e6c8; text-shadow: 0 0 10px rgba(245,230,200,0.3); }
 
         .leave-manor-btn {
@@ -202,8 +204,14 @@
     </style>
 </head>
 <body>
-    <!-- 极暗的背景时钟 -->
-    <div class="bg-clock"></div>
+    <!-- 左上角的时间与温度 -->
+    <div class="hud-info">
+        <span id="current-time">00:00</span>
+        <span>13°C 阴雨</span>
+    </div>
+
+    <!-- 背景音开关 -->
+    <div class="audio-btn" id="audio-btn" onclick="toggleAudio()">♪ 聆听庄园</div>
 
     <!-- 欢迎信封 -->
     <div id="welcome-screen">
@@ -276,7 +284,48 @@
     </div>
 
     <script>
-        // === 状态记忆逻辑 ===
+        // === 音频控制 ===
+        // 注意：这里用的是一个开源的雨声 mp3 测试链接，如果你想换成你自己的声音，把下面的 URL 改掉即可
+        const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2515/2515-preview.mp3');
+        bgAudio.loop = true; // 循环播放
+        let isPlaying = false;
+
+        function toggleAudio() {
+            const btn = document.getElementById('audio-btn');
+            if (isPlaying) {
+                bgAudio.pause();
+                btn.innerHTML = '♪ 聆听庄园';
+                isPlaying = false;
+            } else {
+                bgAudio.play();
+                btn.innerHTML = '■ 关闭雨声';
+                isPlaying = true;
+            }
+        }
+
+        // === 灰烬飘浮 ===
+        function createAsh() {
+            const ash = document.createElement('div');
+            ash.className = 'ash-particle';
+            const size = Math.random() * 3 + 1;
+            ash.style.width = size + 'px'; ash.style.height = size + 'px';
+            ash.style.left = Math.random() * 100 + 'vw';
+            ash.style.animationDuration = (Math.random() * 5 + 5) + 's'; // 5-10秒飘完
+            document.body.appendChild(ash);
+            setTimeout(() => { ash.remove(); }, 10000);
+        }
+        setInterval(createAsh, 300);
+
+        // === 时间 ===
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}`;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const char = urlParams.get('char');
@@ -382,13 +431,11 @@
 
         function toggleStory() {
             if (!currentCharId) return;
-            
             const data = characters[currentCharId];
             const contentBox = document.getElementById('m-content');
             const btnToggle = document.getElementById('btn-toggle-story');
             
             contentBox.style.opacity = 0;
-            
             setTimeout(() => {
                 if (isShowingStory) {
                     contentBox.innerHTML = data.quote;
@@ -404,13 +451,8 @@
             }, 300);
         }
 
-        function closeModal() { 
-            document.getElementById('modal').classList.remove('active'); 
-        }
-        
-        document.getElementById('modal').addEventListener('click', function(e) { 
-            if (e.target === this) closeModal(); 
-        });
+        function closeModal() { document.getElementById('modal').classList.remove('active'); }
+        document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
     </script>
 </body>
 </html>
