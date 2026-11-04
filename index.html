@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸页与灰烬 | 芥川庄园</title>
     <style>
-        /* === 基础页面（加入微弱的舞台聚光灯效果） === */
+        /* === 基础页面 === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #d1c5a8;
             font-family: "Songti SC", "Noto Serif SC", serif;
             height: 100vh; display: flex; justify-content: center; align-items: center;
+            /* 聚光灯效果 */
             background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 70%);
             overflow: hidden;
             
-            /* 🎯 羽毛笔光标（默认状态） */
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
+            /* 🖋️ 款式三：带墨迹的复古羽毛笔光标 */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l3-3"/><path d="M6 18l12-12c1.5-1.5 3-1 4 0s1.5 2.5 0 4L10 22H3v-4z"/><path d="M13.5 6.5l4 4"/><path d="M9 21v-5.5"/><path d="M3 15h5.5"/></svg>') 2 22, auto;
         }
         
         /* === 邀请函主界面 === */
@@ -105,7 +106,6 @@
         
         .close-btn { 
             position: absolute; top: 12px; right: 20px; color: #6b5a3e; font-size: 1.5rem; transition: color 0.3s; 
-            /* 放大镜光标 */
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .close-btn:hover { color: #e8d5b5; }
@@ -123,7 +123,6 @@
         .back-btn {
             display: inline-block; font-size: 0.8rem; color: #9e8a63;
             letter-spacing: 0.15rem; transition: all 0.3s; border: 1px solid #3a3024; padding: 8px 20px;
-            /* 放大镜光标 */
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .back-btn:hover { color: #fff; border-color: #8a6e3e; background: rgba(138,110,62,0.1); }
