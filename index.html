@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸页与灰烬 | 芥川庄园</title>
     <style>
-        /* === 基础页面（深空灰提亮，增加环境光） === */
+        /* === 基础页面 === */
         body {
             margin: 0; padding: 0; background-color: #121212; color: #e8d5b5;
             font-family: "Songti SC", "Noto Serif SC", serif;
@@ -21,7 +21,7 @@
         .cursor-trail {
             position: fixed;
             width: 4px; height: 4px;
-            background: #f5e6c8; /* 亮星光色 */
+            background: #f5e6c8;
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
@@ -50,28 +50,44 @@
         }
         .invitation:hover .inner-border { border-color: #6b5a3e; }
 
-        /* === 独特排版：错落的英文水印 === */
+        /* === 独特排版：诗意错落的英文水印 === */
         .watermark-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            width: 100%;
             margin-top: 0;
             margin-bottom: 3.5rem;
+            padding: 0 2rem; /* 给左右留出呼吸空间 */
         }
-        .watermark-container span {
+        /* 第一行 */
+        .w-row-1 {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 1.5rem; /* PAGES 和 AND 的间距 */
+        }
+        /* 第二行 */
+        .w-row-2 {
+            text-align: right;
+            margin-top: 0.5rem;
+            padding-right: 2rem; /* 往左收一点，显得更错落 */
+        }
+        
+        /* 英文文字基础样式 */
+        .w-text {
             color: #8a6e3e;
             font-size: 0.75rem;
-            letter-spacing: 0.6rem;
+            letter-spacing: 0.5rem;
             transition: color 0.6s ease;
             text-transform: uppercase;
         }
-        /* 错位设计 */
-        .watermark-container .w-pages { transform: translateX(-20px); }
-        .watermark-container .w-and { font-size: 0.6rem !important; letter-spacing: 0.4rem; margin: 0.5rem 0; color: #6b5a3e !important; }
-        .watermark-container .w-ashes { transform: translateX(20px); }
-        
-        .invitation:hover .watermark-container span { color: #c9bda5; }
-        .invitation:hover .watermark-container .w-and { color: #8a6e3e !important; }
+        /* AND 字号更小一点 */
+        .w-small {
+            font-size: 0.6rem;
+            letter-spacing: 0.4rem;
+            color: #6b5a3e;
+        }
+
+        .invitation:hover .w-text { color: #e8d5b5; }
+        .invitation:hover .w-small { color: #8a6e3e; }
         
         /* 正文文字 */
         .main-text { 
@@ -163,11 +179,15 @@
     <div class="invitation">
         <div class="inner-border">
             
-            <!-- 三行错落英文水印 -->
+            <!-- 按照你的要求重排的英文水印 -->
             <div class="watermark-container">
-                <span class="w-pages">P A G E S</span>
-                <span class="w-and">A N D</span>
-                <span class="w-ashes">A S H E S</span>
+                <div class="w-row-1">
+                    <span class="w-text">P A G E S</span>
+                    <span class="w-text w-small">A N D</span>
+                </div>
+                <div class="w-row-2">
+                    <span class="w-text">A S H E S</span>
+                </div>
             </div>
             
             <div class="main-text">
