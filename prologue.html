@@ -24,7 +24,7 @@
         }
         .hud-info span { border-bottom: 1px solid rgba(138, 110, 62, 0.3); padding-bottom: 3px; }
 
-        /* 按钮样式 */
+        /* 序章的音频按钮，保留在右上角 */
         .audio-btn {
             position: fixed; top: 30px; right: 40px;
             display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -60,8 +60,7 @@
         
         .cover-box {
             border: 1px solid #3a3024; padding: 4rem 3rem; max-width: 600px; width: 85%; text-align: center;
-            background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(5px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9); position: relative; z-index: 2;
+            background: rgba(10, 10, 10, 0.85); backdrop-filter: blur(5px); box-shadow: 0 20px 50px rgba(0,0,0,0.9); position: relative; z-index: 2;
         }
         .cover-box::before { content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; border: 1px dashed #2a2213; pointer-events: none; }
 
@@ -109,6 +108,7 @@
         <span>13°C 阴雨</span>
     </div>
 
+    <!-- 音频按钮默认闪烁 -->
     <div class="audio-btn" id="audio-btn" onclick="toggleAudio()">♪ 开启雨声</div>
 
     <div class="rain-bg" id="rain-bg"></div>
@@ -179,14 +179,13 @@
     </div>
 
     <script>
-        // === 音频控制 ===
+        // === 音频控制 (统一使用柔和的 2514) ===
         const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2514/2514-preview.mp3');
         bgAudio.loop = true;
-        bgAudio.volume = 0;
+        bgAudio.volume = 0; 
         let isPlaying = false;
-        const targetVolume = 0.15;
+        const targetVolume = 0.15; 
 
-        // 渐入音效
         function fadeInAudio() {
             let vol = 0;
             bgAudio.volume = 0;
@@ -196,7 +195,6 @@
             }, 100);
         }
 
-        // 渐出音效
         function fadeOutAudio() {
             let vol = bgAudio.volume;
             let fadeOut = setInterval(() => {
@@ -205,7 +203,6 @@
             }, 50);
         }
 
-        // 按钮控制
         function toggleAudio() {
             const btn = document.getElementById('audio-btn');
             if (isPlaying) {
@@ -223,29 +220,7 @@
             }
         }
 
-        // === 核心：从首页无缝接力播放 ===
-        window.addEventListener('DOMContentLoaded', () => {
-            if (sessionStorage.getItem('rainPlaying') === 'true') {
-                // 页面一加载，直接以设定音量播放，实现无缝衔接
-                bgAudio.volume = targetVolume;
-                bgAudio.play().then(() => {
-                    const btn = document.getElementById('audio-btn');
-                    btn.innerHTML = '■ 关闭雨声';
-                    btn.classList.add('playing');
-                    isPlaying = true;
-                }).catch(e => {
-                    // 某些浏览器极强拦截，需用户点一下
-                    console.log("Carry over autoplay blocked.", e);
-                });
-            }
-        });
-
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        }
-        setInterval(updateTime, 1000); updateTime();
-
+        // === 状态记忆 ===
         const urlParams = new URLSearchParams(window.location.search);
         const fromChar = urlParams.get('from');
         if (fromChar && fromChar !== 'global') {
@@ -254,7 +229,22 @@
             document.getElementById('back-btn').href = `index.html?open=true`;
         }
 
-        // 如果是从序章内部点击翻开，也触发音乐（防漏网之鱼）
+        // 页面加载时，如果是从首页拆信跳过来的，自动开始播放
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('rainPlaying') === 'true') {
+                bgAudio.play().then(() => {
+                    fadeInAudio();
+                    const btn = document.getElementById('audio-btn');
+                    btn.innerHTML = '■ 关闭雨声';
+                    btn.classList.add('playing');
+                    isPlaying = true;
+                }).catch(err => {
+                    console.log("Autoplay blocked. Need user click.");
+                });
+            }
+        });
+
+        // 点击翻开序章时，触发播放（防漏网之鱼）
         function openPrologue() {
             const cover = document.getElementById('cover-screen');
             const story = document.getElementById('story-screen');
@@ -274,6 +264,12 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+        setInterval(updateTime, 1000); updateTime();
+
         // 生成雨丝
         function createRain() {
             const rainBg = document.getElementById('rain-bg');
@@ -282,7 +278,7 @@
                 drop.className = 'rain-drop';
                 drop.style.left = Math.random() * 100 + 'vw';
                 drop.style.animationDuration = (Math.random() * 0.7 + 0.5) + 's';
-                drop.style.opacity = Math.random() * 0.3 + 0.1;
+                drop.style.opacity = Math.random() * 0.4 + 0.1;
                 drop.style.height = (Math.random() * 40 + 40) + 'px';
                 rainBg.appendChild(drop);
                 setTimeout(() => { drop.remove(); }, 1500);
