@@ -61,6 +61,9 @@
         }
         @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
 
+        /* ==========================================
+           第一屏：扉页
+           ========================================== */
         #cover-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
             display: flex; justify-content: center; align-items: center;
@@ -92,6 +95,9 @@
         .btn-open:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); box-shadow: 0 0 20px rgba(158,138,99,0.2); }
         .quote-text { margin-top: 4rem; font-size: 0.85rem; color: #4a3c22; font-style: italic; letter-spacing: 0.1rem; }
 
+        /* ==========================================
+           第二屏：正文
+           ========================================== */
         #story-screen {
             max-width: 680px; width: 85%; margin: 0 auto; padding: 6rem 0;
             opacity: 0; transform: translateY(30px); pointer-events: none;
@@ -209,8 +215,53 @@
         </div>
     </div>
 
+    <!-- 👇 Live2D 看板娘 (序章专用台词) 👇 -->
+    <script src="https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/l2dwidget.min.js"></script>
     <script>
-        // === 音频控制（音量已调低至 20%） ===
+        L2Dwidget.init({
+            "model": {
+                "jsonPath": "https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/lib/assets/shizuku.model.json",
+                "scale": 0.8
+            },
+            "display": {
+                "position": "right",
+                "width": 150,
+                "height": 300,
+                "hOffset": 10,
+                "vOffset": -10
+            },
+            "mobile": {
+                "show": false,
+                "scale": 0.5
+            },
+            "react": {
+                "opacityDefault": 0.8,
+                "opacityOnHover": 1.0
+            },
+            "dialog": {
+                "enable": true,
+                "script": {
+                    "tap body": [
+                        "打雷了……您别害怕，我就在这儿。",
+                        "电路还没修好吗？星野先生动作太慢了。",
+                        "大小姐，请把外套穿好。"
+                    ],
+                    "tap face": [
+                        "咳……大小姐，请注意您的仪态。",
+                        "请不要乱碰，我的发带会歪的。"
+                    ],
+                    "every idle 20s": [
+                        "这场雨，什么时候才能停呢。",
+                        "楼下的账房还亮着灯。",
+                        "您已经盯着这页书看了十分钟了。"
+                    ]
+                }
+            }
+        });
+    </script>
+
+    <script>
+        // === 音频控制 ===
         const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2514/2514-preview.mp3');
         bgAudio.loop = true;
         bgAudio.volume = 0.2;
