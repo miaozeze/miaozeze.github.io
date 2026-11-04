@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>序章 | 纸页与灰烬</title>
+    <style>
+        /* === 基础页面设置 === */
+        body {
+            margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
+            font-family: "Songti SC", "Noto Serif SC", serif;
+            min-height: 100vh; overflow-x: hidden;
+            /* 极简羽毛笔光标 */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
+        }
+        /* 星光拖尾特效 */
+        .cursor-trail {
+            position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
+            pointer-events: none; z-index: 9999; box-shadow: 0 0 10px 2px rgba(245, 230, 200, 0.8);
+            animation: fadeOutTrail 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
+
+        /* ==========================================
+           第一屏：极简黑金扉页（封面）
+           ========================================== */
+        #cover-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 1.2s ease, visibility 1.2s ease; z-index: 10;
+        }
+        
+        .cover-box {
+            border: 1px solid #3a3024; padding: 4rem 3rem; max-width: 600px; width: 85%; text-align: center;
+            background: #0a0a0a; box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            position: relative;
+        }
+        .cover-box::before {
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px dashed #2a2213; pointer-events: none;
+        }
+
+        .main-title { font-size: 2.5rem; color: #e8d5b5; letter-spacing: 0.5rem; margin-bottom: 0.5rem; font-weight: normal; }
+        .sub-title { font-size: 0.8rem; color: #8a6e3e; letter-spacing: 0.3rem; margin-bottom: 3.5rem; text-transform: uppercase; }
+        
+        /* 扉页引言排版 */
+        .intro-text { font-size: 1rem; line-height: 2.4; color: #a89573; margin-bottom: 3.5rem; letter-spacing: 0.15rem; }
+        
+        .btn-open {
+            display: inline-block; padding: 12px 40px; border: 1px solid #5a4a2e;
+            color: #e8d5b5; font-size: 1rem; letter-spacing: 0.2rem; cursor: pointer;
+            background: transparent; transition: all 0.4s ease;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .btn-open:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); box-shadow: 0 0 20px rgba(158,138,99,0.2); }
+
+        .quote-text { margin-top: 4rem; font-size: 0.85rem; color: #4a3c22; font-style: italic; letter-spacing: 0.1rem; }
+
+
+        /* ==========================================
+           第二屏：序章正文
+           ========================================== */
+        #story-screen {
+            max-width: 680px; width: 85%; margin: 0 auto; padding: 6rem 0;
+            opacity: 0; transform: translateY(30px); pointer-events: none;
+            transition: opacity 1.5s ease, transform 1.5s ease;
+        }
+
+        .chapter-heading { text-align: center; font-size: 1.8rem; color: #f5e6c8; letter-spacing: 0.3rem; margin-bottom: 3.5rem; font-weight: normal; }
+        .chapter-heading::after {
+            content: '✦ ❦ ✦'; display: block; font-size: 1rem; color: #5a4a2e; margin-top: 1.2rem; letter-spacing: 0.5rem;
+        }
+
+        /* 正文段落 */
+        .story-p {
+            font-size: 1.05rem; line-height: 2.2; letter-spacing: 0.1rem;
+            color: #c9bda5; text-indent: 2em; margin-bottom: 1.8rem; text-align: justify;
+        }
+        
+        /* 对话/特殊语句样式：无缩进、更亮、左侧带金线 */
+        .dialogue { text-indent: 0; color: #e8d5b5; padding-left: 1em; border-left: 1px solid #3a3024; margin-top: 2rem; margin-bottom: 2rem;}
+
+        /* 底部按钮组 */
+        .bottom-actions {
+            display: flex; justify-content: center; gap: 20px; margin-top: 5rem;
+        }
+
+        .action-btn {
+            padding: 12px 30px; border: 1px solid #5a4a2e; color: #9e8a63;
+            text-decoration: none; font-size: 0.9rem; letter-spacing: 0.2rem; transition: all 0.3s;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .action-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); }
+        
+        /* 主推按钮（高亮） */
+        .action-btn.primary { color: #1a1a1a; background: #c9bda5; border-color: #c9bda5; font-weight: bold; }
+        .action-btn.primary:hover { color: #000; background: #f5e6c8; border-color: #f5e6c8; box-shadow: 0 0 15px rgba(245,230,200,0.4); }
+
+    </style>
+</head>
+<body>
+
+    <!-- ================= 第一屏：扉页 ================= -->
+    <div id="cover-screen">
+        <div class="cover-box">
+            <h1 class="main-title">纸页与灰烬</h1>
+            <div class="sub-title">PAGES AND ASHES</div>
+            
+            <div class="intro-text">
+                三年前的旧火早已熄灭，灰烬却从未冷却。<br>
+                当南方的雷雨再次落下，<br><br>
+                有人用账本掩盖罪恶，<br>
+                有人用烈火烧尽傲骨，<br>
+                有人用沉默守着伤痕。<br><br>
+                欢迎来到，芥川庄园。
+            </div>
+            
+            <button class="btn-open" onclick="openPrologue()">[ 翻 开 序 章 ]</button>
+            
+            <div class="quote-text">“您看起来，像一只被淋湿的猫。”</div>
+        </div>
+    </div>
+
+    <!-- ================= 第二屏：序章正文 ================= -->
+    <div id="story-screen">
+        <h2 class="chapter-heading">序章：雨夜的底色</h2>
+        
+        <p class="story-p">南方的初冬，冷雨裹挟着湿气，像一张密不透风的网，将整座芥川庄园死死罩住。</p>
+        
+        <p class="story-p">伴随着一声撕裂夜空的惊雷，庄园大厅的主吊灯闪烁了两下，彻底熄灭了。</p>
+
+        <p class="story-p">黑暗降临的瞬间，二楼藏书室传来一声极其轻微、却异常刺耳的瓷器碰撞声。</p>
+
+        <p class="story-p">莉薇娅站在窗前，手里死死攥着那只19世纪的骨瓷茶杯。窗外惨白的闪电照亮了她苍白的侧脸。她的脊背绷得笔直，仿佛只要稍微弯下一点，就会被十五岁那年奥斯汀庄园的漫天大火吞噬。</p>
+
+        <p class="story-p dialogue">“把背挺直，女仆的仪态不能乱。”</p>
+
+        <p class="story-p">老管家阿尔弗雷德的遗言在耳畔回响。她深吸了一口气，强行压下指尖的颤抖，将茶杯稳稳地放回桌面。</p>
+
+        <p class="story-p">而在她正下方的一楼账房，却亮起了一束冷白色的应急光。</p>
+
+        <p class="story-p">大管家埃德蒙推了推金丝眼镜，极其从容地合上了手里那份满是赤字的财务报表。他端起手边加了冰块的咖啡喝了一口，目光越过黑暗，看向楼梯口的方向。</p>
+
+        <p class="story-p">南方的回南天，连空气都是黏的。但只要他还站在这座庄园里，那些试图吞噬大小姐的商业舰队和明枪暗箭，就休想越过他亲手划下的红线。</p>
+
+        <p class="story-p dialogue">“配电房的变压器被雷击穿了。备用系统还需要三分钟重启。”</p>
+
+        <p class="story-p">门外，星野雫穿着极简的黑色长袖，手里举着一盏强光灯，像个幽灵般安静地出现。他那头及肩的长发随意散着，一米八的身形瘦得仿佛随时会被风吹倒。</p>
+
+        <p class="story-p">面对突发状况，这个永远游离在人群之外的天才，连呼吸的频率都没有变过。他单手拎着工具箱，越过埃德蒙，径直走向走廊深处。</p>
+
+        <p class="story-p">因为那里，有他留在这个庄园里唯一的意义。</p>
+
+        <p class="story-p">三分钟后，电流声重新响彻庄园。灯光大亮，抽湿机重新发出了低沉的轰鸣。</p>
+
+        <p class="story-p">坐在二楼卧室门后的我，静静地听着外面的一切。一个用最恶毒的话语掩盖着最深重创伤的古典女仆；一个用账本和微笑替我挡住明枪暗箭的现代狐狸；一个明明随时能离开，却甘愿为了我一句话去死磕底线的清冷天才。</p>
+
+        <p class="story-p">我伸出手，翻开了面前那本泛黄的书稿。</p>
+
+        <p class="story-p">纸页正在泛黄，灰烬仍有温热。</p>
+        
+        <p class="story-p">故事，就此拉开帷幕。</p>
+
+        <!-- 底部按钮 -->
+        <div class="bottom-actions">
+            <a href="index.html" class="action-btn">[ 合上卷宗 ]</a>
+            <!-- 如果还没建chapter1.html，这个按钮暂时点进去会404，等建好就行 -->
+            <a href="chapter1.html" class="action-btn primary">[ 翻到第一章 ]</a>
+        </div>
+    </div>
+
+    <script>
+        // 翻页逻辑
+        function openPrologue() {
+            const cover = document.getElementById('cover-screen');
+            const story = document.getElementById('story-screen');
+            
+            cover.style.opacity = 0;
+            cover.style.visibility = 'hidden';
+            
+            story.style.opacity = 1;
+            story.style.transform = 'translateY(0)';
+            story.style.pointerEvents = 'auto';
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 星光拖尾
+        let lastTrailTime = 0;
+        document.addEventListener('mousemove', function(e) {
+            const now = Date.now();
+            if (now - lastTrailTime > 30) {
+                const particle = document.createElement('div');
+                particle.className = 'cursor-trail';
+                particle.style.left = (e.clientX + (Math.random() - 0.5) * 8) + 'px';
+                particle.style.top = (e.clientY + (Math.random() - 0.5) * 8) + 'px';
+                const size = Math.random() * 4 + 2; 
+                particle.style.width = size + 'px'; particle.style.height = size + 'px';
+                document.body.appendChild(particle);
+                setTimeout(() => { particle.remove(); }, 800);
+                lastTrailTime = now;
+            }
+        });
+    </script>
+</body>
+</html>
