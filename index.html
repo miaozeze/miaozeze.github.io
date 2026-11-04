@@ -10,14 +10,30 @@
             margin: 0; padding: 0; background-color: #0a0a0a; color: #d1c5a8;
             font-family: "Songti SC", "Noto Serif SC", serif;
             height: 100vh; display: flex; justify-content: center; align-items: center;
-            /* 聚光灯效果 */
             background-image: radial-gradient(circle at center, #1a1a1a 0%, #050505 70%);
             overflow: hidden;
             
-            /* 🖋️ 款式三：带墨迹的复古羽毛笔光标 */
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21l3-3"/><path d="M6 18l12-12c1.5-1.5 3-1 4 0s1.5 2.5 0 4L10 22H3v-4z"/><path d="M13.5 6.5l4 4"/><path d="M9 21v-5.5"/><path d="M3 15h5.5"/></svg>') 2 22, auto;
+            /* 🖋️ 极简羽毛笔光标（截图里的那版） */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
         
+        /* === 鼠标拖尾光效粒子 === */
+        .cursor-trail {
+            position: fixed;
+            width: 4px; height: 4px;
+            background: #e8d5b5;
+            border-radius: 50%;
+            pointer-events: none; /* 绝对不阻挡点击 */
+            z-index: 9999;
+            box-shadow: 0 0 8px 2px rgba(232, 213, 181, 0.6); /* 发光效果 */
+            animation: fadeOutTrail 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes fadeOutTrail {
+            0% { transform: scale(1) translateY(0); opacity: 1; }
+            100% { transform: scale(0) translateY(15px); opacity: 0; }
+        }
+
         /* === 邀请函主界面 === */
         .invitation {
             border: 1px solid #3a3024; padding: 3rem 3rem; max-width: 480px; width: 85%; text-align: center;
@@ -34,7 +50,6 @@
         }
         .invitation:hover .inner-border { border-color: #5a4a2e; }
 
-        /* 英文水印抬头 */
         .watermark {
             letter-spacing: 0.5rem; color: #6b5a3e; font-size: 0.7rem; 
             margin-top: 0; margin-bottom: 3rem; text-transform: uppercase;
@@ -42,7 +57,6 @@
         }
         .invitation:hover .watermark { color: #9e8a63; }
         
-        /* 正文文字 */
         .main-text { 
             color: #b8a57e; font-size: 0.95rem; line-height: 2.2; 
             letter-spacing: 0.15rem; margin-bottom: 3rem; 
@@ -60,12 +74,10 @@
             font-size: 0.95rem; letter-spacing: 0.15rem;
             background: rgba(255,255,255,0.02);
             overflow: hidden;
-            
             /* 🔍 放大镜光标（悬停按钮时） */
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         
-        /* 悬停时左侧亮起的标签线 */
         .btn::before {
             content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 3px;
             background-color: #e8d5b5; transform: scaleY(0); transition: transform 0.3s ease;
@@ -106,6 +118,7 @@
         
         .close-btn { 
             position: absolute; top: 12px; right: 20px; color: #6b5a3e; font-size: 1.5rem; transition: color 0.3s; 
+            /* 🔍 放大镜光标 */
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .close-btn:hover { color: #e8d5b5; }
@@ -123,6 +136,7 @@
         .back-btn {
             display: inline-block; font-size: 0.8rem; color: #9e8a63;
             letter-spacing: 0.15rem; transition: all 0.3s; border: 1px solid #3a3024; padding: 8px 20px;
+            /* 🔍 放大镜光标 */
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23e8d5b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .back-btn:hover { color: #fff; border-color: #8a6e3e; background: rgba(138,110,62,0.1); }
@@ -133,7 +147,6 @@
     <!-- 主界面 -->
     <div class="invitation">
         <div class="inner-border">
-            <!-- 纯英文水印 -->
             <p class="watermark">P A G E S &nbsp; A N D &nbsp; A S H E S</p>
             
             <div class="main-text">
@@ -174,6 +187,41 @@
     </div>
 
     <script>
+        // === 鼠标拖尾光效 JS 逻辑 ===
+        let lastTrailTime = 0;
+        document.addEventListener('mousemove', function(e) {
+            const now = Date.now();
+            // 限制生成频率（每 30 毫秒生成一个），防止网页卡顿
+            if (now - lastTrailTime > 30) {
+                createParticle(e.clientX, e.clientY);
+                lastTrailTime = now;
+            }
+        });
+
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'cursor-trail';
+            
+            // 让粒子稍微随机偏移一点，看起来像星尘散开
+            const offsetX = (Math.random() - 0.5) * 8;
+            const offsetY = (Math.random() - 0.5) * 8;
+            
+            particle.style.left = (x + offsetX) + 'px';
+            particle.style.top = (y + offsetY) + 'px';
+            
+            // 随机大小，让粒子有层次感
+            const size = Math.random() * 4 + 2; 
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
+            document.body.appendChild(particle);
+            
+            // 动画结束后移除 DOM 节点
+            setTimeout(() => {
+                particle.remove();
+            }, 800);
+        }
+
         // === 角色数据库 ===
         const characters = {
             edmund: {
@@ -210,7 +258,6 @@
             document.getElementById('modal').classList.remove('active');
         }
 
-        // 点击遮罩层（非卡片区域）也可以关闭
         document.getElementById('modal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();
