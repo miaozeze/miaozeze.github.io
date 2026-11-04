@@ -99,6 +99,7 @@
         
         .main-text { color: #e0d0b0; font-size: 1rem; line-height: 2.2; letter-spacing: 0.15rem; margin-bottom: 3rem; }
         
+        /* === 档案按钮组 === */
         .btn-group { display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; }
         .btn {
             position: relative; display: flex; justify-content: space-between; align-items: center;
@@ -111,6 +112,21 @@
         .btn:hover::before { transform: scaleY(1); } 
         .btn .num { color: #9e8a63; font-size: 0.8rem; font-family: "Courier New", monospace; transition: color 0.3s; }
         .btn:hover .num { color: #fff; }
+
+        /* 👇 新增：单独的序章开关样式 */
+        .prologue-divider {
+            width: 60%; border-top: 1px dashed #3a3024; margin: 2rem 0 1rem 0;
+        }
+        .prologue-btn {
+            display: block; width: 85%; padding: 15px 20px; 
+            border: 1px solid #9e8a63; background: rgba(158,138,99,0.15);
+            color: #f5e6c8; font-size: 1rem; letter-spacing: 0.2rem; text-align: center; text-decoration: none;
+            transition: all 0.4s ease; font-weight: bold;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .prologue-btn:hover {
+            background: rgba(158,138,99,0.3); box-shadow: 0 0 20px rgba(158,138,99,0.4); color: #fff;
+        }
 
         /* === 离开庄园按钮 === */
         .leave-manor-btn {
@@ -170,16 +186,15 @@
 
         .story-p { text-indent: 2em; margin-bottom: 1rem; }
         
-        .card-actions { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+        /* 弹窗底部按钮只留一个关闭 */
+        .card-actions { display: flex; justify-content: center; margin-top: 20px; }
         
         .action-btn {
-            display: inline-block; font-size: 0.85rem; letter-spacing: 0.15rem; transition: all 0.3s; padding: 10px 20px; text-decoration: none; cursor: pointer;
+            display: inline-block; font-size: 0.85rem; letter-spacing: 0.15rem; transition: all 0.3s; padding: 10px 30px; text-decoration: none; cursor: pointer;
             color: #9e8a63; border: 1px solid #5a4a2e; background: transparent;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .action-btn:hover { color: #fff; border-color: #8a6e3e; background: rgba(158,138,99,0.1); box-shadow: 0 0 15px rgba(158,138,99,0.2); }
-        .action-btn.primary { background: rgba(158,138,99,0.2); color: #fff; border-color: #9e8a63; }
-        .action-btn.primary:hover { background: rgba(158,138,99,0.4); }
 
     </style>
 </head>
@@ -189,7 +204,6 @@
     <div id="welcome-screen">
         <div class="envelope">
             <div class="seal"></div>
-            
             <div class="env-to">To the Esteemed Guest</div>
             <div class="env-title">纸页与灰烬</div>
             <div class="env-desc">
@@ -238,6 +252,11 @@
                         <span class="num">[ 03 ]</span>
                     </span>
                 </div>
+
+                <!-- 👇 新增的独立序章开关 -->
+                <div class="prologue-divider"></div>
+                <a href="prologue.html" class="prologue-btn">[ 翻 开 序 章 ]</a>
+
             </div>
         </div>
     </div>
@@ -253,10 +272,9 @@
             
             <div class="char-content-box" id="m-content"></div>
             
+            <!-- 弹窗里只保留关闭按钮 -->
             <div class="card-actions">
                 <span class="action-btn" onclick="closeModal()">[ 合上卷宗 ]</span>
-                <!-- 👇 这里改成了超链接，直接指向 prologue.html -->
-                <a href="prologue.html" class="action-btn primary" id="btn-story">[ 翻开序章 ]</a>
             </div>
         </div>
     </div>
@@ -314,20 +332,12 @@
             }
         };
 
-        let currentCharId = null;
-
         function openModal(id) {
-            currentCharId = id;
             const data = characters[id];
-            
             document.getElementById('m-file').innerText = data.file;
             document.getElementById('m-name').innerText = data.name;
             document.getElementById('m-title').innerText = data.title;
             document.getElementById('m-content').innerHTML = data.quote;
-            
-            // 为了统一样式，按钮现在都叫“翻开序章”
-            document.getElementById('btn-story').innerText = "[ 翻开序章 ]";
-            
             document.getElementById('modal').classList.add('active');
         }
 
