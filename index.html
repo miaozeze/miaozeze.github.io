@@ -5,58 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>纸页与灰烬 | 芥川庄园</title>
     <style>
-        /* === 基础页面 === */
+        /* === 基础页面（加入微弱纸张噪点感） === */
         body {
             margin: 0; padding: 0; background-color: #050505; color: #c9bda5;
             font-family: "Songti SC", "Noto Serif SC", serif;
             height: 100vh; display: flex; justify-content: center; align-items: center;
-            background-image: radial-gradient(circle at center, #111 0%, #050505 100%);
+            /* 用径向渐变模拟极其微弱的聚光灯效果 */
+            background-image: radial-gradient(circle at center, #0a0a0a 0%, #050505 80%);
             overflow: hidden;
         }
         
         /* === 邀请函主界面 === */
         .invitation {
-            border: 1px solid #3a2e1b; padding: 2rem 3rem; max-width: 550px; width: 85%; text-align: center;
-            position: relative; background: #050505; z-index: 1;
-            transition: border-color 0.6s ease, box-shadow 0.6s ease;
+            border: 1px solid #222; padding: 3rem 3rem; max-width: 480px; width: 85%; text-align: center;
+            position: relative; background: transparent; z-index: 1;
+            transition: all 0.6s ease;
         }
-        .invitation:hover { border-color: #8a6e3e; box-shadow: 0 0 30px rgba(138, 110, 62, 0.05); }
+        .invitation:hover { border-color: #4a3c22; }
         
         .inner-border {
-            border: 1px dashed #2a2213; padding: 3rem 2rem;
+            border: 1px dashed #1a1a1a; padding: 2rem 1rem;
             display: flex; flex-direction: column; align-items: center;
             transition: border-color 0.6s ease;
         }
-        .invitation:hover .inner-border { border-color: #4a3c22; }
+        .invitation:hover .inner-border { border-color: #2a2213; }
 
+        /* 英文水印抬头 */
         .watermark {
-            letter-spacing: 0.6rem; color: #4a3c22; font-size: 0.75rem; 
-            margin-top: 0; margin-bottom: 1.5rem; text-transform: uppercase;
+            letter-spacing: 0.8rem; color: #2a2213; font-size: 0.65rem; 
+            margin-top: 0; margin-bottom: 3.5rem; text-transform: uppercase;
+            transition: color 0.6s ease;
         }
-        .divider { color: #8a6e3e; font-size: 1.2rem; margin-top: 0; margin-bottom: 2rem; letter-spacing: 0.5rem; }
-        .main-text { color: #a89573; font-size: 0.95rem; line-height: 2.2; letter-spacing: 0.15rem; margin-bottom: 2.5rem; }
+        .invitation:hover .watermark { color: #4a3c22; }
         
-        /* === 升级版：档案目录式按钮（纵向排列） === */
+        /* 正文 */
+        .main-text { 
+            color: #8a7651; font-size: 0.95rem; line-height: 2.2; 
+            letter-spacing: 0.2rem; margin-bottom: 3.5rem; 
+        }
+        
+        /* === 档案目录式按钮 === */
         .btn-group { 
             display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; 
         }
         .btn {
+            position: relative;
             display: flex; justify-content: space-between; align-items: center;
-            width: 80%; padding: 12px 20px; border: 1px solid #2a2213;
-            color: #a89573; cursor: pointer; transition: all 0.4s; font-size: 1rem; letter-spacing: 0.1rem;
+            width: 85%; padding: 14px 20px; border: 1px solid #1a1a1a;
+            color: #8a7651; cursor: pointer; transition: all 0.4s ease; 
+            font-size: 1rem; letter-spacing: 0.15rem;
             background: rgba(255,255,255,0.01);
+            overflow: hidden;
         }
+        
+        /* 悬停时左侧亮起的标签线 */
+        .btn::before {
+            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 2px;
+            background-color: #c9bda5; transform: scaleY(0); transition: transform 0.3s ease;
+        }
+        
         .btn:hover { 
-            color: #fff; border-color: #8a6e3e; background: rgba(138,110,62,0.05); 
-            box-shadow: 0 0 15px rgba(138,110,62,0.1); padding-left: 25px; /* 悬停时文字微微右移 */
+            color: #e8d5b5; border-color: #4a3c22; background: rgba(138,110,62,0.03); 
+            padding-left: 25px; /* 悬停时内容右移一点 */
         }
-        .btn .num { color: #4a3c22; font-size: 0.8rem; font-family: "Courier New", monospace; }
+        .btn:hover::before { transform: scaleY(1); } /* 左侧金线展开 */
+
+        .btn .num { 
+            color: #2a2213; font-size: 0.8rem; font-family: "Courier New", monospace; 
+            transition: color 0.3s;
+        }
         .btn:hover .num { color: #8a6e3e; }
 
         /* === 弹窗背景遮罩 === */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 10;
         }
@@ -64,30 +87,30 @@
 
         /* === 角色专属档案卡 === */
         .character-card {
-            background: #0a0a0a; border: 1px solid #4a3c22; padding: 3rem 2.5rem;
-            max-width: 500px; width: 85%; text-align: center; position: relative;
-            transform: scale(0.95) translateY(10px); 
+            background: #080808; border: 1px solid #4a3c22; padding: 3rem 2.5rem;
+            max-width: 480px; width: 85%; text-align: center; position: relative;
+            transform: scale(0.95) translateY(15px); 
             transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.95);
         }
         .modal-overlay.active .character-card { transform: scale(1) translateY(0); }
 
-        .file-number { position: absolute; top: 15px; left: 20px; font-size: 0.7rem; color: #4a3c22; letter-spacing: 0.1rem; }
+        .file-number { position: absolute; top: 15px; left: 20px; font-size: 0.7rem; color: #4a3c22; letter-spacing: 0.15rem; font-family: "Courier New", monospace; }
         .close-btn { position: absolute; top: 12px; right: 20px; color: #4a3c22; font-size: 1.5rem; cursor: pointer; transition: color 0.3s; }
         .close-btn:hover { color: #e8d5b5; }
 
-        .char-name { font-size: 1.8rem; color: #e8d5b5; letter-spacing: 0.3rem; margin-bottom: 0.5rem; font-weight: normal; }
+        .char-name { font-size: 2rem; color: #e8d5b5; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; }
         .char-title { 
             font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #8a6e3e; 
-            letter-spacing: 0.15rem; margin-bottom: 2rem; text-transform: uppercase; 
+            letter-spacing: 0.15rem; margin-bottom: 2.5rem; text-transform: uppercase; 
         }
         .char-quote { 
-            font-size: 1rem; color: #a89573; line-height: 1.8; margin-bottom: 2.5rem; 
+            font-size: 1rem; color: #a89573; line-height: 1.9; margin-bottom: 3rem; 
             text-align: left; padding-left: 15px; border-left: 1px solid #333; 
         }
         .back-btn {
             display: inline-block; font-size: 0.8rem; color: #666; cursor: pointer;
-            letter-spacing: 0.15rem; transition: color 0.3s; border: 1px solid #222; padding: 8px 15px;
+            letter-spacing: 0.15rem; transition: all 0.3s; border: 1px solid #222; padding: 8px 20px;
         }
         .back-btn:hover { color: #e8d5b5; border-color: #8a6e3e; background: rgba(138,110,62,0.05); }
     </style>
@@ -97,8 +120,8 @@
     <!-- 主界面 -->
     <div class="invitation">
         <div class="inner-border">
+            <!-- 去掉了花边，拉开英文和正文的距离 -->
             <p class="watermark">P A G E S &nbsp; A N D &nbsp; A S H E S</p>
-            <div class="divider">✦ ❦ ✦</div>
             
             <div class="main-text">
                 致 芥川庄园的贵客：<br>
@@ -106,7 +129,6 @@
                 请选择您要翻阅的档案。
             </div>
 
-            <!-- 升级版：目录按钮 -->
             <div class="btn-group">
                 <span class="btn" onclick="openModal('edmund')">
                     <span>拜访账房</span>
@@ -116,7 +138,6 @@
                     <span>前往厨房</span>
                     <span class="num">[ 02 ]</span>
                 </span>
-                <!-- 新增：星野雫的入口 -->
                 <span class="btn" onclick="openModal('shizuku')">
                     <span>探访研究室</span>
                     <span class="num">[ 03 ]</span>
@@ -140,7 +161,6 @@
     </div>
 
     <script>
-        // === 角色数据库 ===
         const characters = {
             edmund: {
                 file: "FILE NO. 01 // FINANCE",
@@ -154,7 +174,6 @@
                 title: "Exclusive Maid / Yorkshire",
                 quote: `（厨房里弥漫着烤饼干的香气，她正冷着脸擦拭银器，看到你推门，手上的动作顿了一下）<br><br>“您又错过晚饭了。牛奶在炉子上，自己拿，别烫着。还有，别指望我会给您加糖。”`
             },
-            // 新增的星野雫数据
             shizuku: {
                 file: "FILE NO. 03 // RESEARCH",
                 name: "星野雫",
