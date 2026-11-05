@@ -186,6 +186,103 @@
         #transition-screen.active .trans-text {
             opacity: 1; transform: translateY(0);
         }
+
+        /* ==========================================================
+           移动端适配（< 900px）
+           ========================================================== */
+        @media (max-width: 900px) {
+
+            /* 1. 顶部 HUD 与离开按钮缩小，避免互相挤压 */
+            .hud-info {
+                top: 12px; left: 12px;
+                font-size: 0.65rem; gap: 8px;
+            }
+            .hud-info span { border-bottom: none; padding-bottom: 0; }
+
+            .leave-manor-btn {
+                top: 12px; right: 12px;
+                padding: 6px 12px;
+                font-size: 0.7rem; letter-spacing: 0.1rem;
+                gap: 4px;
+            }
+
+            /* 2. 两个全屏容器改为可纵向滚动，内容不再被裁切 */
+            #welcome-screen, #main-screen {
+                display: block;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 64px 0 40px 0;
+                box-sizing: border-box;
+            }
+
+            /* 3. 欢迎信封 */
+            .envelope {
+                margin: 0 auto;
+                width: 90%;
+                padding: 2.2rem 1.4rem;
+                box-sizing: border-box;
+            }
+            .seal { width: 48px; height: 48px; margin-bottom: 1.5rem; }
+            .seal::after { font-size: 1.15rem; }
+            .env-to { font-size: 0.7rem; letter-spacing: 0.2rem; margin-bottom: 1.2rem; }
+            .env-title { font-size: 1.4rem; letter-spacing: 0.3rem; margin-bottom: 1rem; }
+            .env-desc { font-size: 0.85rem; line-height: 2; margin-bottom: 2rem; }
+            .open-btn { padding: 10px 22px; font-size: 0.8rem; letter-spacing: 0.15rem; }
+            .env-footer { margin-top: 2rem; font-size: 0.7rem; }
+
+            /* 4. 主邀请函 */
+            .invitation {
+                margin: 0 auto;
+                width: 90%;
+                max-width: 480px;
+                padding: 1.6rem 1.2rem;
+                box-sizing: border-box;
+            }
+            .inner-border { padding: 1.6rem 0.8rem; }
+            .watermark { width: 100%; margin-bottom: 1.8rem; }
+            .watermark span { font-size: 0.6rem; letter-spacing: 0.2rem; }
+            .main-text { font-size: 0.85rem; line-height: 2; margin-bottom: 1.8rem; }
+            .btn-group { gap: 12px; }
+            .btn {
+                width: 100%;
+                padding: 12px 14px;
+                font-size: 0.85rem;
+                letter-spacing: 0.1rem;
+            }
+            /* 触屏点按后 hover 状态会残留，覆盖掉左移效果避免错位 */
+            .btn:hover { padding-left: 14px; }
+            .btn .num { font-size: 0.72rem; }
+            .reread-divider { margin: 1.6rem 0 1rem 0; }
+            .reread-btn { font-size: 0.78rem; letter-spacing: 0.12rem; }
+
+            /* 5. 角色弹窗：限制总高度，长文本在内部滚动 */
+            .modal-overlay { padding: 20px 0; box-sizing: border-box; }
+            .character-card {
+                width: 90%;
+                padding: 2.2rem 1.4rem;
+                box-sizing: border-box;
+                max-height: calc(100vh - 40px);
+            }
+            .file-number { font-size: 0.65rem; top: 12px; left: 14px; }
+            .close-btn { top: 8px; right: 14px; font-size: 1.3rem; }
+            .char-name { font-size: 1.5rem; letter-spacing: 0.25rem; }
+            .char-title { font-size: 0.68rem; margin-bottom: 1.5rem; }
+            .char-content-box {
+                font-size: 0.95rem;
+                line-height: 1.9;
+                max-height: 42vh;
+                padding-left: 12px;
+                margin-bottom: 1.5rem;
+            }
+            .card-actions { gap: 10px; flex-wrap: wrap; }
+            .action-btn { font-size: 0.75rem; padding: 8px 14px; letter-spacing: 0.1rem; }
+        }
+
+        /* 触屏设备：禁用鼠标拖尾与自定义光标 */
+        @media (pointer: coarse) {
+            body { cursor: auto; }
+            .cursor-trail { display: none; }
+        }
     </style>
 </head>
 <body>
