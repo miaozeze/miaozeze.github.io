@@ -104,6 +104,7 @@
             position: relative; display: flex; justify-content: space-between; align-items: center;
             width: 85%; padding: 14px 20px; border: 1px solid #5a4a2e; color: #e8d5b5; transition: all 0.4s ease; 
             font-size: 0.95rem; letter-spacing: 0.15rem; background: rgba(255,255,255,0.03); overflow: hidden;
+            text-decoration: none;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .btn::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 3px; background-color: #f5e6c8; transform: scaleY(0); transition: transform 0.3s ease; }
@@ -112,18 +113,8 @@
         .btn .num { color: #9e8a63; font-size: 0.8rem; font-family: "Courier New", monospace; transition: color 0.3s; }
         .btn:hover .num { color: #fff; }
 
-        /* === 底部链接（恢复原位） === */
         .reread-divider { width: 60%; border-top: 1px dashed #3a3024; margin: 2rem 0 1rem 0; }
         
-        /* 资料室入口（比普通字大一点，略带边框感） */
-        .archive-btn { 
-            display: inline-block; margin-bottom: 1.5rem; padding: 8px 20px; border: 1px solid #5a4a2e;
-            color: #c9bda5; font-size: 0.85rem; letter-spacing: 0.2rem; text-decoration: none; transition: all 0.3s;
-            background: rgba(255,255,255,0.02); border-radius: 2px;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
-        }
-        .archive-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); }
-
         .reread-btn { font-size: 0.85rem; color: #8a6e3e; letter-spacing: 0.2rem; text-decoration: none; transition: all 0.3s; padding: 5px; cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important; }
         .reread-btn:hover { color: #f5e6c8; text-shadow: 0 0 10px rgba(245,230,200,0.3); }
 
@@ -212,13 +203,14 @@
                     <span>P A G E S</span><span>A N D</span><span>A S H E S</span>
                 </div>
                 
-                <!-- 文案重写，更具文学感 -->
+                <!-- 文案修改：第三句为“请选择您要前往的房间。” -->
                 <div class="main-text">
                     致 芥川庄园的贵客：<br>
-                    长夜已逝，晨间的薄雾尚未散去。<br>
-                    请推开您要涉足的那扇门。
+                    昨夜的雷雨已歇，茶点已备好。<br>
+                    请选择您要前往的房间。
                 </div>
 
+                <!-- 四个选项，统一排版 -->
                 <div class="btn-group">
                     <span class="btn" onclick="openModal('edmund')">
                         <span>拜访账房</span><span class="num">[ 01 ]</span>
@@ -229,16 +221,16 @@
                     <span class="btn" onclick="openModal('shizuku')">
                         <span>探访研究室</span><span class="num">[ 03 ]</span>
                     </span>
+                    
+                    <!-- 档案室作为第四个房间 -->
+                    <a href="archive.html" class="btn">
+                        <span>前往档案室</span><span class="num">[ 04 ]</span>
+                    </a>
                 </div>
 
                 <div class="reread-divider"></div>
                 
-                <!-- 资料室入口：单独列在上方，更容易被发现 -->
-                <div style="margin-bottom: 20px;">
-                    <a href="archive.html" class="archive-btn">[ 查阅未归档的暗卷 ]</a>
-                </div>
-
-                <!-- 重温雷雨与暗格：回归原位 -->
+                <!-- 底部主线与暗格入口 -->
                 <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
                     <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
                     
@@ -269,7 +261,7 @@
     </div>
 
     <script>
-        // === 音效：卷宗放回书架 ===
+        // === 音效与跳转 ===
         function playBookOnShelfSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -298,7 +290,6 @@
             } catch (e) {}
         }
 
-        // === 音效：开启暗格（沉重石门与摩擦） ===
         function playVaultOpenSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -307,48 +298,23 @@
                 if (audioCtx.state === 'suspended') audioCtx.resume();
 
                 const now = audioCtx.currentTime;
-
-                // 1. 石墙摩擦声
                 const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.8, audioCtx.sampleRate);
                 const slideData = slideBuffer.getChannelData(0);
                 for (let i = 0; i < slideData.length; i++) { slideData[i] = Math.random() * 2 - 1; }
-                const slideSource = audioCtx.createBufferSource();
-                slideSource.buffer = slideBuffer;
-                const slideFilter = audioCtx.createBiquadFilter();
-                slideFilter.type = 'bandpass';
-                slideFilter.frequency.value = 1200;
-                slideFilter.Q.value = 2;
-                const slideGain = audioCtx.createGain();
-                slideGain.gain.setValueAtTime(0, now);
-                slideGain.gain.linearRampToValueAtTime(0.08, now + 0.2);
-                slideGain.gain.linearRampToValueAtTime(0, now + 0.8);
-                slideSource.connect(slideFilter);
-                slideFilter.connect(slideGain);
-                slideGain.connect(audioCtx.destination);
-                slideSource.start(now);
+                const slideSource = audioCtx.createBufferSource(); slideSource.buffer = slideBuffer;
+                const slideFilter = audioCtx.createBiquadFilter(); slideFilter.type = 'bandpass'; slideFilter.frequency.value = 1200; slideFilter.Q.value = 2;
+                const slideGain = audioCtx.createGain(); slideGain.gain.setValueAtTime(0, now); slideGain.gain.linearRampToValueAtTime(0.08, now + 0.2); slideGain.gain.linearRampToValueAtTime(0, now + 0.8);
+                slideSource.connect(slideFilter); slideFilter.connect(slideGain); slideGain.connect(audioCtx.destination); slideSource.start(now);
 
-                // 2. 石门落锁
                 setTimeout(() => {
-                    const thudOsc = audioCtx.createOscillator();
-                    thudOsc.type = 'sine';
-                    thudOsc.frequency.setValueAtTime(60, audioCtx.currentTime);
-                    thudOsc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.4);
-                    
-                    const thudGain = audioCtx.createGain();
-                    thudGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                    thudGain.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.02);
-                    thudGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-                    
-                    thudOsc.connect(thudGain);
-                    thudGain.connect(audioCtx.destination);
-                    thudOsc.start();
-                    thudOsc.stop(audioCtx.currentTime + 0.6);
+                    const thudOsc = audioCtx.createOscillator(); thudOsc.type = 'sine';
+                    thudOsc.frequency.setValueAtTime(60, audioCtx.currentTime); thudOsc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.4);
+                    const thudGain = audioCtx.createGain(); thudGain.gain.setValueAtTime(0, audioCtx.currentTime); thudGain.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.02); thudGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                    thudOsc.connect(thudGain); thudGain.connect(audioCtx.destination); thudOsc.start(); thudOsc.stop(audioCtx.currentTime + 0.6);
                 }, 650);
-
             } catch (e) {}
         }
 
-        // === 核心跳转 ===
         function goToPrologue() {
             sessionStorage.setItem('rainPlaying', 'true');
             window.location.href = 'prologue.html';
@@ -356,9 +322,7 @@
 
         function goToTreasure() {
             playVaultOpenSound();
-            setTimeout(() => {
-                window.location.href = 'treasure.html';
-            }, 700);
+            setTimeout(() => { window.location.href = 'treasure.html'; }, 700);
         }
 
         function leaveManor() {
@@ -367,7 +331,6 @@
             sessionStorage.removeItem('rainPlaying');
         }
 
-        // === 其他逻辑（时间、灰烬、鼠标） ===
         function updateTime() {
             const now = new Date();
             document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -419,12 +382,9 @@
             setTimeout(() => { particle.remove(); }, 800);
         }
 
-        // === 角色数据 ===
         const characters = {
             edmund: {
-                file: "FILE NO. 01 // FINANCE",
-                name: "埃德蒙",
-                title: "Chief Butler / Finance Office",
+                file: "FILE NO. 01 // FINANCE", name: "埃德蒙", title: "Chief Butler / Finance Office",
                 quote: `大小姐，来查账的话，文件在左手边第二格。要躲清静，热茶和薄荷饼干在桌上。至于莉薇娅小姐那边——您本来就在账房帮我核采买单，不是吗？`,
                 story: `
                     <p class="story-p">账房里亮着一盏黄铜台灯。桌上摊着采买单和几页账，他那杯茶已经凉透了——他聊起温室里的薄荷时总这样。</p>
@@ -438,9 +398,7 @@
                 `
             },
             livia: {
-                file: "FILE NO. 02 // KITCHEN",
-                name: "莉薇娅",
-                title: "Exclusive Maid / Yorkshire",
+                file: "FILE NO. 02 // KITCHEN", name: "莉薇娅", title: "Exclusive Maid / Yorkshire",
                 quote: `大小姐，这个点来厨房做什么？冷肉锁在柜子里，钥匙在我身上——您别想了。去餐桌坐着，我给您热杯牛奶。`,
                 story: `
                     <p class="story-p">凌晨两点，厨房里还亮着灯。莉薇娅在擦一把银勺——擦银器这件事，她从来不看表。</p>
@@ -452,9 +410,7 @@
                 `
             },
             shizuku: {
-                file: "FILE NO. 03 // RESEARCH",
-                name: "星野雫",
-                title: "Resident Researcher / Tech Advisor",
+                file: "FILE NO. 03 // RESEARCH", name: "星野雫", title: "Resident Researcher / Tech Advisor",
                 quote: `大小姐，实验数据刚好记录完。红茶和刚烤好的饼干在桌上，您先坐。如果是关于飞机的驾驶问题，或者庄园的技术维护，我随时可以。但如果是埃德蒙先生让您来劝我……换上那套衣服的，请容我礼貌地拒绝。`,
                 story: `
                     <p class="story-p">研究室里的白炽灯有些刺眼，空气里混着淡淡的机油味和红茶的香气。工作台上散落着精密的齿轮和图纸，乱，但每一件都在它该在的位置。星野雫坐在高脚凳上，低头拿着一把极细的镊子。</p>
