@@ -20,7 +20,7 @@
             color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem; z-index: 102;
             display: flex; gap: 15px;
         }
-        .hud-info span { padding-bottom: 3px; }
+        .hud-info span { padding-bottom: 3px; border-bottom: 1px solid rgba(138, 110, 62, 0.3); }
 
         .back-btn {
             position: fixed; top: 30px; right: 40px; padding: 10px 24px; color: #e8d5b5; font-size: 0.85rem; letter-spacing: 0.2rem;
@@ -88,19 +88,34 @@
         .text-box::-webkit-scrollbar { display: none; }
         .text-box.show { opacity: 1; }
 
-        /* 语录上方的宽幅图片 */
+        /* ==========================================
+           语录上方的宽幅图片
+           ========================================== */
         .quote-image-wrapper {
-            width: 100%; max-width: 600px; margin: 0 auto 2.5rem auto;
-            background: #12100d; border: 2px solid #6e5a3a; padding: 8px; box-sizing: border-box;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 2.5rem auto;
+            background: #12100d;
+            border: 2px solid #6e5a3a;
+            padding: 8px;
+            box-sizing: border-box;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(158, 138, 99, 0.1);
         }
         .quote-image-wrapper img {
-            width: 100%; height: 240px; object-fit: cover; object-position: center 35%;
-            filter: sepia(40%) grayscale(30%) brightness(0.7); display: block;
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            object-position: center 35%;
+            filter: sepia(40%) grayscale(30%) brightness(0.7);
+            display: block;
         }
         .quote-image-caption {
-            text-align: center; font-family: "Courier New", monospace; font-size: 0.75rem;
-            color: #8a6e3e; margin-top: 10px; letter-spacing: 0.15rem;
+            text-align: center;
+            font-family: "Courier New", monospace;
+            font-size: 0.75rem;
+            color: #8a6e3e;
+            margin-top: 10px;
+            letter-spacing: 0.15rem;
         }
 
         .quote-style {
@@ -108,7 +123,9 @@
             padding: 1.5rem 2rem; background: rgba(20,20,20,0.4); border-left: 2px solid #5a4a2e;
         }
 
-        /* 专属排版：大账本 */
+        /* ==========================================
+           专属排版：大账本
+           ========================================== */
         .ledger-book-wrapper { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
 
         .book {
@@ -148,7 +165,10 @@
         .ledger-item-row.active { background: rgba(158, 138, 99, 0.1); border-left-color: #b85c58; color: #f5e6c8; }
 
         /* 右页：真正的账目备注排版 */
-        .detail-box { flex: 1; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+        .detail-box { 
+            flex: 1; display: flex; flex-direction: column; justify-content: space-between; 
+            position: relative; 
+        }
 
         .detail-note { font-family: "KaiTi", "STKaiti", serif; color: #b85c58; font-size: 1.05rem; line-height: 1.8; transform: rotate(-1deg); }
         .detail-title { font-weight: bold; border-bottom: 1px dashed #b85c58; padding-bottom: 5px; margin-bottom: 15px; font-size: 1.2rem; }
@@ -156,30 +176,75 @@
         .note-label { color: #8a6e3e; font-family: "Courier New", monospace; font-size: 0.85rem; margin-right: 5px; }
         .note-content { margin-bottom: 12px; }
 
-        /* 极简暗金照片 */
+        /* ✨ 极简暗金 ✨ */
         .detail-photo {
-            width: 180px; height: 230px; align-self: flex-end; position: relative; flex-shrink: 0;
-            margin-right: 0; margin-bottom: 20px; transition: all 0.3s ease;
-            background: #12100d; border: 2px solid #6e5a3a; padding: 6px; box-sizing: border-box;
-            box-shadow: 0 0 15px rgba(158, 138, 99, 0.15), -5px 5px 20px rgba(0,0,0,0.8); transform: rotate(2deg);
-            display: flex; flex-direction: column;
+            width: 180px; 
+            height: 230px; 
+            align-self: flex-end; 
+            position: relative; 
+            flex-shrink: 0;
+            margin-right: 0; 
+            margin-bottom: 20px; 
+            transition: all 0.3s ease;
+            
+            background: #12100d;
+            border: 2px solid #6e5a3a; 
+            padding: 6px; 
+            box-sizing: border-box;
+            box-shadow: 0 0 15px rgba(158, 138, 99, 0.15), -5px 5px 20px rgba(0,0,0,0.8); 
+            transform: rotate(2deg);
+            
+            display: flex;
+            flex-direction: column;
         }
-        .detail-photo:hover { transform: rotate(0deg) scale(1.04); border-color: #d1b580; box-shadow: 0 0 25px rgba(209, 181, 128, 0.3), -5px 8px 25px rgba(0,0,0,0.9); }
+        
+        .detail-photo:hover { 
+            transform: rotate(0deg) scale(1.04); 
+            border-color: #d1b580; 
+            box-shadow: 0 0 25px rgba(209, 181, 128, 0.3), -5px 8px 25px rgba(0,0,0,0.9);
+        }
 
-        .detail-photo img { width: 100%; flex: 1; object-fit: cover; filter: sepia(20%) grayscale(10%) brightness(0.9); transition: all 0.3s ease; display: block; }
-        .detail-photo:hover img { filter: sepia(10%) grayscale(0%) brightness(1.05); }
+        .detail-photo img { 
+            width: 100%; 
+            flex: 1; 
+            object-fit: cover; 
+            filter: sepia(20%) grayscale(10%) brightness(0.9); 
+            transition: all 0.3s ease;
+            display: block;
+        }
+        
+        .detail-photo:hover img {
+            filter: sepia(10%) grayscale(0%) brightness(1.05); 
+        }
 
         .photo-caption {
-            height: 28px; display: flex; align-items: center; justify-content: center;
-            font-family: "Courier New", monospace; font-size: 0.75rem; color: #d1c5a8; letter-spacing: 1px;
-            transition: color 0.3s; margin-top: 4px;
+            height: 28px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Courier New", monospace; 
+            font-size: 0.75rem; 
+            color: #d1c5a8; 
+            letter-spacing: 1px;
+            transition: color 0.3s;
+            margin-top: 4px; 
         }
-        .detail-photo:hover .photo-caption { color: #f5e6c8; }
+        .detail-photo:hover .photo-caption {
+            color: #f5e6c8; 
+        }
 
-        /* 专属排版：奥斯汀旧债（独立解密页面） */
-        .secret-page { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; max-width: 750px; }
+        /* ==========================================
+           专属排版：奥斯汀旧债（独立解密页面）
+           ========================================== */
+        .secret-page {
+            position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center;
+            max-width: 750px;
+        }
 
-        .secret-header { font-family: "Courier New", monospace; font-size: 1rem; color: #8a6e3e; margin-bottom: 2rem; letter-spacing: 0.2rem; }
+        .secret-header {
+            font-family: "Courier New", monospace; font-size: 1rem; color: #8a6e3e;
+            margin-bottom: 2rem; letter-spacing: 0.2rem;
+        }
 
         .secret-content-layout { display: flex; gap: 40px; align-items: center; }
 
@@ -195,36 +260,60 @@
         }
 
         .secret-photo {
-            background: #111; border: 1px solid #3a3024; padding: 10px 10px 35px 10px;
-            box-shadow: -8px 12px 30px rgba(0,0,0,0.9); transform: rotate(-3deg);
+            background: #111;
+            border: 1px solid #3a3024;
+            padding: 10px 10px 35px 10px;
+            box-shadow: -8px 12px 30px rgba(0,0,0,0.9);
+            transform: rotate(-3deg);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative; overflow: hidden; cursor: pointer;
         }
-        .secret-photo:hover { transform: rotate(0deg) scale(1.08) translateY(-5px); box-shadow: -12px 18px 40px rgba(0,0,0,0.95), 0 0 20px rgba(158,138,99,0.2); border-color: #9e8a63; }
 
-        .secret-photo img { width: 100%; height: 240px; object-fit: cover; filter: sepia(80%) grayscale(100%) brightness(0.5) blur(3px); transform: scale(1.1); transition: all 1s ease; display: block; }
+        .secret-photo:hover {
+            transform: rotate(0deg) scale(1.08) translateY(-5px);
+            box-shadow: -12px 18px 40px rgba(0,0,0,0.95), 0 0 20px rgba(158,138,99,0.2);
+            border-color: #9e8a63;
+        }
+
+        .secret-photo img {
+            width: 100%; height: 240px; object-fit: cover;
+            filter: sepia(80%) grayscale(100%) brightness(0.5) blur(3px);
+            transform: scale(1.1);
+            transition: all 1s ease; display: block;
+        }
 
         .secret-photo::after {
             content: '// 附件：债务清算证明'; position: absolute; bottom: 10px; left: 0; width: 100%;
-            text-align: center; font-family: "Courier New", monospace; font-size: 0.75rem; color: #5a4a2e; transition: color 0.3s;
+            text-align: center; font-family: "Courier New", monospace;
+            font-size: 0.75rem; color: #5a4a2e; transition: color 0.3s;
         }
         .secret-photo:hover::after { color: #9e8a63; }
 
         .secret-photo-area.unlocked { opacity: 1; visibility: visible; transform: translateX(0); }
-        .secret-photo-area.unlocked .secret-photo img { filter: sepia(30%) grayscale(20%) brightness(0.8) blur(0px); transform: scale(1.05); }
+        .secret-photo-area.unlocked .secret-photo img {
+            filter: sepia(30%) grayscale(20%) brightness(0.8) blur(0px); transform: scale(1.05);
+        }
 
-        .redacted { background-color: #050505; color: transparent; user-select: none; box-shadow: inset 0 0 5px rgba(0,0,0,0.9); }
+        .redacted {
+            background-color: #050505; color: transparent; user-select: none;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.9);
+        }
 
         .wax-seal-lock {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             width: 80px; height: 80px; border-radius: 50%;
             background: radial-gradient(circle, #8b2c2c 0%, #4a1515 100%);
-            border: 2px solid #6e2424; box-shadow: 0 5px 15px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.5);
+            border: 2px solid #6e2424;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.5);
             display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s; z-index: 10;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .wax-seal-lock::after { content: '解'; color: #d1c5a8; font-size: 1.5rem; font-family: "Songti SC"; font-weight: bold; }
-        .wax-seal-lock:hover { transform: translate(-50%, -50%) scale(1.05) rotate(5deg); box-shadow: 0 0 15px rgba(139,44,44,0.4), inset 0 0 10px rgba(0,0,0,0.5); border-color: #a84a46; }
+        .wax-seal-lock:hover {
+            transform: translate(-50%, -50%) scale(1.05) rotate(5deg);
+            box-shadow: 0 0 15px rgba(139,44,44,0.4), inset 0 0 10px rgba(0,0,0,0.5);
+            border-color: #a84a46;
+        }
 
         @keyframes sealBreak {
             0% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
@@ -251,12 +340,15 @@
             color: #8a6e3e; font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem;
             opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s;
         }
-        #transition-screen.active .trans-text { opacity: 1; transform: translateY(0); }
+        #transition-screen.active .trans-text {
+            opacity: 1; transform: translateY(0);
+        }
     </style>
 </head>
 <body>
     <div class="hud-info">
         <span id="current-time">00:00</span>
+        <span>13°C 阴雨</span>
         <span>芥川庄园 · 一楼账房</span>
     </div>
 
@@ -454,10 +546,11 @@
             },
             {
                 id: "cookie", name: "温室特供香草曲奇", price: "£ 45", noteTitle: "// 私人支出",
+                // 💡 第一处修改
                 noteText: `
                     <div class="note-content"><span class="note-label">入账说明：</span>自费购入顶级香草荚与黄油。</div>
                     <div class="note-content"><span class="note-label">异常记录：</span>借用温室烤箱，未惊动厨房。</div>
-                    <div class="note-content"><span class="note-label">管家附言：</span>她今天心情很差。这笔钱不走公账，算我个人的。</div>
+                    <div class="note-content"><span class="note-label">管家附言：</span>大小姐今天心情欠佳。这笔钱不走公账，记在我的私人名下。</div>
                 `,
                 imgFile: "a6ed3d01.jpg", imgFallback: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 刚出炉的曲奇"
             }
@@ -507,6 +600,7 @@
                     </div>
                 </div>
             `,
+            // 💡 第二处修改
             secret: `
                 <div class="secret-page">
                     <div class="secret-header">FILE NO. // 奥斯汀旧债（邓恩）</div>
@@ -514,13 +608,13 @@
                         <div class="secret-text-area">
                             <div class="detail-title">// 关于那笔旧债</div>
                             <p class="detail-note" style="margin-bottom: 0;">
-                                <span class="redacted" id="debt-text">钱以杂项摊平，追债的人已经被我挡回去了。这件事，永远别让她知道。带进棺材里。</span>
+                                <span class="redacted" id="debt-text">钱以杂项摊平，追债的人已经被我挡回去了。这件事，永远别让莉薇娅知道。我会把它带进棺材里。</span>
                             </p>
                             <div class="wax-seal-lock" id="debt-seal" onclick="unlockDebt(this)"></div>
                         </div>
                         <div class="secret-photo-area" id="secret-photo-area">
                             <div class="secret-photo">
-                                ${imgTag('ff632647.jpg', 'https://images.unsplash.com/photo-1586769852044-692d6e3703f2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', '债务附件')}
+                                ${imgTag('ff632647.jpg', RAW_BASE + 'ff632647.jpg', '债务附件')}
                             </div>
                         </div>
                     </div>
@@ -572,6 +666,7 @@
         let debtUnlocked = false;
         function unlockDebt(sealElement) {
             debtUnlocked = true;
+            
             sealElement.classList.add('seal-breaking');
             const photoArea = document.getElementById('secret-photo-area');
             if (photoArea) photoArea.classList.add('unlocked');
@@ -592,6 +687,10 @@
             if (isAnimating) return;
             isAnimating = true;
 
+            if (type !== 'secret') {
+                debtUnlocked = false;
+            }
+
             const textBox = document.getElementById('text-content');
             document.querySelectorAll('.nav-item, .secret-nav').forEach(el => el.classList.remove('active'));
             const nav = document.getElementById(`nav-${type}`);
@@ -608,15 +707,6 @@
                     initLedgerDetail();
                 } else {
                     textBox.style.fontFamily = '"Songti SC", "Noto Serif SC", serif';
-                }
-
-                if (type === 'secret' && debtUnlocked) {
-                    const photoArea = document.getElementById('secret-photo-area');
-                    const seal = document.getElementById('debt-seal');
-                    const text = document.getElementById('debt-text');
-                    if (photoArea) photoArea.classList.add('unlocked');
-                    if (seal) seal.style.display = 'none';
-                    if (text) { text.classList.add('revealed'); text.classList.remove('redacted'); }
                 }
 
                 textBox.classList.add('show');
