@@ -14,18 +14,15 @@
                 url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>');
             background-blend-mode: overlay;
             transition: opacity 0.6s ease, filter 0.6s ease;
-            /* 自定义鼠标：古典放大镜 */
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16" y1="16" x2="21" y2="21"/></svg>') 11 11, auto;
         }
 
-        /* 离开时的视觉过渡 */
         body.leaving {
             opacity: 0;
             filter: blur(10px) brightness(0);
             pointer-events: none;
         }
 
-        /* 顶部与按钮 */
         .hud-info {
             position: fixed; top: 30px; left: 40px;
             font-family: "Courier New", monospace; color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem;
@@ -48,7 +45,6 @@
             font-size: 2rem; color: #f5e6c8; letter-spacing: 0.4rem; margin-bottom: 5rem; font-weight: normal; 
         }
 
-        /* 3D 翻转排版 */
         .flip-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; perspective: 1000px; }
         
         .flip-card { width: 280px; height: 380px; cursor: pointer; }
@@ -59,7 +55,6 @@
         }
         .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
 
-        /* 触屏点按翻转：靠 .flipped 类控制 */
         .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
 
         .flip-front, .flip-back {
@@ -68,18 +63,15 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box;
         }
 
-        /* 正面 */
         .flip-front img { width: 100%; height: 240px; object-fit: cover; border: 1px solid #2a2218; margin-bottom: 20px; filter: sepia(20%) grayscale(10%); transition: filter 0.3s; }
         .flip-front:hover img { filter: sepia(0) grayscale(0); }
         .flip-front .name { font-size: 1.15rem; color: #e8d5b5; letter-spacing: 0.1rem; }
 
-        /* 背面 */
         .flip-back { background: #0f0f0f; transform: rotateY(180deg); border-color: #9e8a63; justify-content: flex-start; padding-top: 3rem;}
         .flip-back .owner { font-family: "Courier New", monospace; color: #8a6e3e; font-size: 0.85rem; margin-bottom: 1.5rem; letter-spacing: 0.2rem; border-bottom: 1px dashed #3a3024; padding-bottom: 10px; width: 80%; }
         .flip-back .quote { font-size: 0.95rem; color: #c9bda5; line-height: 2; font-style: italic; padding: 0 10px; text-align: left; text-indent: 2em;}
         .flip-back .click-hint { position: absolute; bottom: 25px; font-size: 0.75rem; color: #5a4a2e; letter-spacing: 0.1rem; }
 
-        /* 弹窗样式 */
         .modal-overlay { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(5px);
             display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; z-index: 200; transition: opacity 0.4s ease;
@@ -120,7 +112,6 @@
         }
         .back-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); }
 
-        /* 空气中的微尘 */
         .dust-mote {
             position: fixed; background-color: rgba(245, 230, 200, 0.4); border-radius: 50%;
             pointer-events: none; z-index: 2;
@@ -134,7 +125,6 @@
             100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
         }
 
-        /* 鼠标拖尾 */
         .cursor-trail {
             position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
             pointer-events: none; z-index: 9999; box-shadow: 0 0 10px 2px rgba(245, 230, 200, 0.8);
@@ -146,52 +136,107 @@
         }
 
         /* ==========================================================
-           移动端布局适配（< 900px）
+           移动端：三列并排显示（与电脑端结构一致）
            ========================================================== */
         @media (max-width: 900px) {
 
-            /* 1. 顶部 HUD 与返回按钮 */
+            /* 1. 顶部 */
             .hud-info {
-                top: 12px; left: 12px;
-                font-size: 0.65rem; gap: 8px;
+                top: 10px; left: 10px;
+                font-size: 0.6rem; gap: 6px;
             }
             .hud-info span { border-bottom: none; padding-bottom: 0; }
-
             .back-btn-top {
-                top: 12px; right: 12px;
-                padding: 6px 12px;
-                font-size: 0.7rem; letter-spacing: 0.1rem;
+                top: 10px; right: 10px;
+                padding: 6px 10px;
+                font-size: 0.65rem; letter-spacing: 0.05rem;
             }
 
-            /* 2. 容器与标题：压缩留白 */
+            /* 2. 容器与标题 */
             .room-container {
-                padding: 5rem 16px 3rem;
+                padding: 4rem 10px 2rem;
                 box-sizing: border-box;
             }
             .room-title {
-                font-size: 1.4rem;
-                letter-spacing: 0.2rem;
-                margin-bottom: 2rem;
+                font-size: 1.1rem;
+                letter-spacing: 0.15rem;
+                margin-bottom: 1.5rem;
             }
 
-            /* 3. 卡片网格 */
-            .flip-grid { gap: 22px; }
+            /* 3. 三列并排网格 */
+            .flip-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
             .flip-card {
-                width: 260px;
-                height: 350px;
+                width: 100%;
+                height: auto;
+                aspect-ratio: 3 / 5;
             }
-            .flip-front { padding: 16px; }
-            .flip-front img {
-                height: 200px;
-                margin-bottom: 16px;
+            .flip-card-inner {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.8);
             }
-            .flip-front .name { font-size: 1rem; }
-            .flip-back { padding-top: 2.4rem; }
-            .flip-back .owner { font-size: 0.75rem; margin-bottom: 1.2rem; }
-            .flip-back .quote { font-size: 0.88rem; line-height: 1.9; }
-            .flip-back .click-hint { bottom: 18px; font-size: 0.7rem; }
 
-            /* 4. 弹窗：flex 纵向布局，故事区内部滚动 */
+            /* 4. 正面：紧凑排版 */
+            .flip-front, .flip-back {
+                padding: 5px;
+                box-sizing: border-box;
+            }
+            .flip-front {
+                justify-content: flex-start;
+                padding-top: 5px;
+            }
+            .flip-front img {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1 / 1;
+                margin-bottom: 5px;
+                border: none;
+            }
+            .flip-front .name {
+                font-size: 0.6rem;
+                letter-spacing: 0;
+                line-height: 1.2;
+                padding: 0 2px;
+                word-break: break-all;
+            }
+
+            /* 5. 背面：小字号 + 引言内部滚动 */
+            .flip-back {
+                padding: 10px 5px 5px;
+                justify-content: flex-start;
+            }
+            .flip-back .owner {
+                font-size: 0.5rem;
+                letter-spacing: 0;
+                margin-bottom: 4px;
+                padding-bottom: 3px;
+                width: 100%;
+                word-break: break-all;
+            }
+            .flip-back .quote {
+                font-size: 0.55rem;
+                line-height: 1.4;
+                padding: 0;
+                text-indent: 0.8em;
+                width: 100%;
+                box-sizing: border-box;
+                flex: 1 1 auto;
+                min-height: 0;
+                overflow-y: auto;
+            }
+            .flip-back .quote::-webkit-scrollbar { width: 2px; }
+            .flip-back .quote::-webkit-scrollbar-thumb { background: #5a4a2e; }
+            .flip-back .click-hint {
+                position: static;
+                margin-top: 4px;
+                font-size: 0.5rem;
+                letter-spacing: 0;
+                flex-shrink: 0;
+            }
+
+            /* 6. 弹窗：flex 纵向，故事区内部滚动 */
             .modal-overlay { padding: 16px; box-sizing: border-box; }
             .item-card {
                 padding: 2rem 1.3rem;
@@ -234,9 +279,6 @@
         @media (pointer: coarse) {
             body { cursor: auto; }
             .cursor-trail { display: none; }
-
-            /* 手指点按后 :hover 会粘住，这里彻底禁用悬停翻转，
-               只让 .flipped 类（由 JS 添加）控制翻面 */
             .flip-card:hover .flip-card-inner { transform: none; }
             .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
         }
@@ -313,14 +355,12 @@
     </div>
 
     <script>
-        // 时间显示
         function updateTime() {
             const now = new Date();
             document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         }
         setInterval(updateTime, 1000); updateTime();
 
-        // === 生成空气中的微尘 ===
         function createDust() {
             const dust = document.createElement('div');
             dust.className = 'dust-mote';
@@ -335,7 +375,6 @@
         }
         setInterval(createDust, 400);
 
-        // === 鼠标拖尾 ===
         let lastTrailTime = 0;
         document.addEventListener('mousemove', function(e) {
             const now = Date.now();
@@ -355,17 +394,12 @@
             }
         });
 
-        // ==========================================
-        // 触屏卡片点按逻辑
-        // 桌面端：hover 看引言，点击直接打开弹窗（原有行为）
-        // 触屏端：第一次点翻面看引言，第二次点才打开弹窗
-        // ==========================================
+        // 触屏点按逻辑：第一次翻面，第二次打开弹窗
         const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
 
         function handleCardTap(el, id) {
             if (isTouchDevice) {
                 if (!el.classList.contains('flipped')) {
-                    // 先把其他卡翻回正面
                     document.querySelectorAll('.flip-card.flipped').forEach(c => c.classList.remove('flipped'));
                     el.classList.add('flipped');
                     return;
@@ -374,9 +408,6 @@
             openItem(id);
         }
 
-        // ==========================================
-        // 👇 音效：把物品放回书架（改为主页的卷宗音效）
-        // ==========================================
         function playBookOnShelfSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -386,7 +417,6 @@
 
                 const now = audioCtx.currentTime;
 
-                // 1. 摩擦声
                 const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.3, audioCtx.sampleRate);
                 const slideData = slideBuffer.getChannelData(0);
                 for (let i = 0; i < slideData.length; i++) { slideData[i] = Math.random() * 2 - 1; }
@@ -406,7 +436,6 @@
                 slideGain.connect(audioCtx.destination);
                 slideSource.start(now);
 
-                // 2. 撞击木板声
                 setTimeout(() => {
                     const thudBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
                     const thudData = thudBuffer.getChannelData(0);
@@ -428,7 +457,6 @@
             } catch (e) {}
         }
 
-        // === 退场音效：机关合拢 / 沉重石门声 ===
         function playVaultCloseSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -474,7 +502,6 @@
             } catch (e) {}
         }
 
-        // === 离开暗格逻辑 ===
         function leaveVault() {
             playVaultCloseSound();
             document.body.classList.add('leaving');
@@ -483,7 +510,6 @@
             }, 700);
         }
 
-        // === 物品文案 ===
         const items = {
             livia: { 
                 img: "https://miaozeze.github.io/pocket_watch_1x1_under_300kb.jpg",
@@ -529,12 +555,10 @@
             document.getElementById('modal').classList.add('active');
         }
 
-        // === 关闭弹窗触发（使用书架音效） ===
         function closeModal() { 
             playBookOnShelfSound(); 
             document.getElementById('modal').classList.remove('active');
 
-            // 触屏端：关闭弹窗后把卡片翻回正面
             if (isTouchDevice) {
                 setTimeout(() => {
                     document.querySelectorAll('.flip-card.flipped').forEach(c => c.classList.remove('flipped'));
