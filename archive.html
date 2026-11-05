@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>档案室 | 纸页与灰烬</title>
+    <style>
+        /* === 基础页面 === */
+        body {
+            margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
+            font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+            background-image: radial-gradient(circle at 50% 30%, #151515 0%, #050505 70%);
+            overflow: hidden; -webkit-font-smoothing: antialiased;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
+        }
+
+        .hud-info {
+            position: fixed; top: 30px; left: 40px; font-family: "Courier New", monospace;
+            color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem; z-index: 102;
+            display: flex; gap: 15px;
+        }
+        .hud-info span { padding-bottom: 3px; }
+
+        .back-btn {
+            position: fixed; top: 30px; right: 40px; padding: 10px 24px; color: #e8d5b5; font-size: 0.85rem; letter-spacing: 0.2rem;
+            border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8); border-radius: 4px; text-decoration: none; z-index: 102; transition: all 0.3s ease;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .back-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.2); }
+
+        /* 鼠标拖尾样式 */
+        .cursor-trail {
+            position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
+            pointer-events: none; z-index: 9999; box-shadow: 0 0 10px 2px rgba(245, 230, 200, 0.8);
+            animation: fadeOutTrail 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
+
+        /* === 核心布局：档案室封锁现场 === */
+        .scene {
+            position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
+        }
+
+        /* 警戒封条（交叉的黄色隔离带） */
+        .caution-tape {
+            position: absolute; top: 50%; left: 50%; width: 150vw; height: 40px;
+            background: repeating-linear-gradient(45deg, #b89f1a, #b89f1a 20px, #1a1a1a 20px, #1a1a1a 40px);
+            opacity: 0.15; z-index: 1; pointer-events: none;
+        }
+        .tape-1 { transform: translate(-50%, -50%) rotate(15deg); }
+        .tape-2 { transform: translate(-50%, -50%) rotate(-15deg); }
+
+        /* 施工通告文件 */
+        .notice-board {
+            position: relative; z-index: 2;
+            background: #11100d;
+            border: 1px solid #3a3024;
+            padding: 3.5rem 4rem;
+            width: 90%; max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.95), inset 0 0 40px rgba(0,0,0,0.8);
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.06"/></svg>');
+            transform: rotate(-1deg);
+        }
+
+        /* 左上角的档案编号 */
+        .file-no {
+            font-family: "Courier New", monospace; font-size: 0.75rem; color: #8a6e3e;
+            letter-spacing: 0.1rem; margin-bottom: 2rem; border-bottom: 1px dashed #3a3024; padding-bottom: 10px;
+        }
+
+        /* 红色警告印章 */
+        .stamp {
+            position: absolute; top: 40px; right: 40px;
+            color: #b85c58; border: 3px solid #b85c58; padding: 6px 12px;
+            font-family: "STKaiti", "KaiTi", serif; font-size: 1.4rem; font-weight: bold;
+            transform: rotate(15deg); opacity: 0.7; letter-spacing: 0.2rem;
+            text-shadow: 0 0 1px #b85c58;
+        }
+
+        /* 打字机文本区 */
+        .typewriter-text {
+            font-family: "Courier New", "Songti SC", serif;
+            font-size: 1.1rem; color: #c9bda5; line-height: 2.2;
+            min-height: 180px; white-space: pre-wrap; letter-spacing: 0.05rem;
+        }
+        
+        .cursor-blink {
+            display: inline-block; width: 10px; height: 1.1rem; background: #8a6e3e;
+            vertical-align: middle; animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* 管家落款 */
+        .signature {
+            margin-top: 3rem; text-align: right; font-family: "STKaiti", "KaiTi", serif;
+            font-size: 1.2rem; color: #8a6e3e; opacity: 0; transition: opacity 1s;
+        }
+
+        /* === 场景过渡遮罩 === */
+        #transition-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #050505; z-index: 999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 1s ease;
+        }
+        #transition-screen.active { opacity: 1; pointer-events: auto; }
+        
+        .trans-text {
+            color: #8a6e3e; font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem;
+            opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s;
+        }
+        #transition-screen.active .trans-text {
+            opacity: 1; transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="hud-info">
+        <span id="current-time">00:00</span>
+        <span>芥川庄园 · 档案室</span>
+    </div>
+
+    <a href="javascript:void(0)" class="back-btn" onclick="leaveRoom()">⎋ [ 离开档案室 ]</a>
+
+    <div class="scene">
+        <div class="caution-tape tape-1"></div>
+        <div class="caution-tape tape-2"></div>
+
+        <div class="notice-board">
+            <div class="file-no">NOTICE NO. 04 // MAINTENANCE</div>
+            <div class="stamp">禁止入内</div>
+            
+            <div class="typewriter-text" id="type-text"></div>
+            <span class="cursor-blink" id="blink-cursor"></span>
+            
+            <div class="signature" id="signature">
+                —— 大管家 埃德蒙
+            </div>
+        </div>
+    </div>
+
+    <!-- 过渡遮罩层 -->
+    <div id="transition-screen">
+        <div class="trans-text" id="trans-text"></div>
+    </div>
+
+    <script>
+        /* ================= 时钟 ================= */
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent =
+                `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+        setInterval(updateTime, 1000); updateTime();
+
+        /* ================= 鼠标拖尾 ================= */
+        let lastTrailTime = 0;
+        document.addEventListener('mousemove', function(e) {
+            const now = Date.now();
+            if (now - lastTrailTime > 30) {
+                const particle = document.createElement('div');
+                particle.className = 'cursor-trail';
+                const offsetX = (Math.random() - 0.5) * 8;
+                const offsetY = (Math.random() - 0.5) * 8;
+                particle.style.left = (e.clientX + offsetX) + 'px';
+                particle.style.top = (e.clientY + offsetY) + 'px';
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px'; particle.style.height = size + 'px';
+                document.body.appendChild(particle);
+                setTimeout(() => { particle.remove(); }, 800);
+                lastTrailTime = now;
+            }
+        });
+
+        /* ================= 音效引擎 ================= */
+        let sharedAudioCtx = null;
+        function getAudioCtx() {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return null;
+            if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') sharedAudioCtx = new AudioContext();
+            if (sharedAudioCtx.state === 'suspended') sharedAudioCtx.resume();
+            return sharedAudioCtx;
+        }
+
+        /* 机械打字机音效 */
+        function playTypeSound() {
+            try {
+                const audioCtx = getAudioCtx();
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+                const bufferSize = audioCtx.sampleRate * 0.05;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'highpass'; filter.frequency.value = 3000;
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(0.1, now + 0.005);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.04);
+
+                source.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+                source.start(now);
+            } catch (e) {}
+        }
+
+        /* 离开档案室：脚步声 + 门锁沉闷声 */
+        function playExitSound() {
+            try {
+                const audioCtx = getAudioCtx();
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+
+                const thumpOsc = audioCtx.createOscillator();
+                thumpOsc.type = 'sine';
+                thumpOsc.frequency.setValueAtTime(100, now);
+                thumpOsc.frequency.exponentialRampToValueAtTime(20, now + 0.15);
+
+                const thumpGain = audioCtx.createGain();
+                thumpGain.gain.setValueAtTime(0, now);
+                thumpGain.gain.linearRampToValueAtTime(0.5, now + 0.02);
+                thumpGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+                thumpOsc.connect(thumpGain); 
+                thumpGain.connect(audioCtx.destination);
+                thumpOsc.start(now); 
+                thumpOsc.stop(now + 0.25);
+
+                for (let i = 0; i < 3; i++) {
+                    const stepTime = now + 0.4 + (i * 0.4);
+                    const stepOsc = audioCtx.createOscillator();
+                    stepOsc.type = 'sine';
+                    stepOsc.frequency.setValueAtTime(80, stepTime);
+                    stepOsc.frequency.exponentialRampToValueAtTime(30, stepTime + 0.1);
+                    
+                    const stepGain = audioCtx.createGain();
+                    stepGain.gain.setValueAtTime(0, stepTime);
+                    stepGain.gain.linearRampToValueAtTime(0.2, stepTime + 0.02);
+                    stepGain.gain.exponentialRampToValueAtTime(0.01, stepTime + 0.15);
+                    
+                    stepOsc.connect(stepGain);
+                    stepGain.connect(audioCtx.destination);
+                    stepOsc.start(stepTime);
+                    stepOsc.stop(stepTime + 0.2);
+                }
+            } catch (e) {}
+        }
+
+        function leaveRoom() {
+            playExitSound();
+            document.getElementById('trans-text').innerText = '离开封锁区，退回寂静的长廊。';
+            document.getElementById('transition-screen').classList.add('active');
+
+            setTimeout(() => {
+                window.location.href = "index.html?open=true";
+            }, 1800);
+        }
+
+        /* ================= 打字机特效逻辑 ================= */
+        const noticeText = `致 庄园访客：\n\n  由于昨夜雷雨导致档案室屋顶渗漏，部分卷宗受潮。为保护纸质档案及排查电路隐患，即日起对该区域进行封锁维修。\n\n  所有重要资料已被转移。在修缮完成之前，请勿擅入。\n\n  感谢您的配合。`;
+        let charIndex = 0;
+        let typingTimer = null;
+        let isTyping = false;
+
+        function typeWriter() {
+            if (charIndex < noticeText.length) {
+                document.getElementById('type-text').innerHTML += noticeText.charAt(charIndex);
+                charIndex++;
+                
+                // 不是空格换行就播声音，避免声音太密集
+                if (noticeText.charAt(charIndex-1) !== ' ' && noticeText.charAt(charIndex-1) !== '\n') {
+                    playTypeSound();
+                }
+                
+                // 随机延迟，模拟打字机的不均匀节奏
+                let delay = Math.random() * 50 + 40;
+                if (noticeText.charAt(charIndex-1) === '\n') delay = 400; // 换行停顿长一点
+                
+                typingTimer = setTimeout(typeWriter, delay);
+            } else {
+                isTyping = false;
+                document.getElementById('blink-cursor').style.display = 'inline-block';
+                document.getElementById('signature').style.opacity = 1;
+            }
+        }
+
+        // 页面加载完成后触发打字
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('blink-cursor').style.display = 'none'; // 打字时隐藏光标
+            setTimeout(() => {
+                typeWriter();
+                isTyping = true;
+            }, 800); // 开局停顿 0.8 秒再开始打
+        });
+
+        /* 如果用户点击屏幕想跳过打字动画 */
+        document.addEventListener('click', (e) => {
+            // 如果点的是退回按钮，忽略跳过逻辑
+            if (e.target.closest('.back-btn')) return; 
+
+            if (isTyping) {
+                clearTimeout(typingTimer);
+                document.getElementById('type-text').innerHTML = noticeText;
+                charIndex = noticeText.length;
+                isTyping = false;
+                document.getElementById('blink-cursor').style.display = 'inline-block';
+                document.getElementById('signature').style.opacity = 1;
+            }
+        });
+    </script>
+</body>
+</html>
