@@ -169,6 +169,23 @@
         }
         .action-btn:hover { color: #fff; border-color: #8a6e3e; background: rgba(158,138,99,0.1); }
         .action-btn.primary { background: rgba(158,138,99,0.2); color: #fff; border-color: #9e8a63; }
+
+        /* === 新增：场景过渡遮罩 === */
+        #transition-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #050505; z-index: 999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 1s ease;
+        }
+        #transition-screen.active { opacity: 1; pointer-events: auto; }
+        
+        .trans-text {
+            color: #8a6e3e; font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem;
+            opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s;
+        }
+        #transition-screen.active .trans-text {
+            opacity: 1; transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -211,8 +228,8 @@
 
                 <!-- 四个选项，统一排版 -->
                 <div class="btn-group">
-                    <!-- ✅ 已改为跳转账房页面 -->
-                    <a href="ledger.html" class="btn">
+                    <!-- 修改：改为触发带过渡动画的进入函数 -->
+                    <a href="javascript:void(0);" onclick="enterRoom('ledger.html', '穿过长廊，黄铜把手微微发凉。')" class="btn">
                         <span>拜访账房</span><span class="num">[ 01 ]</span>
                     </a>
                     <span class="btn" onclick="openModal('livia')">
@@ -222,8 +239,8 @@
                         <span>探访研究室</span><span class="num">[ 03 ]</span>
                     </span>
                     
-                    <!-- 档案室作为第四个房间 -->
-                    <a href="archive.html" class="btn">
+                    <!-- 档案室也可以加上这个效果，我顺手帮你换了 -->
+                    <a href="javascript:void(0);" onclick="enterRoom('archive.html', '沿着旋梯向上，灰尘在光柱中翻涌。')" class="btn">
                         <span>前往档案室</span><span class="num">[ 04 ]</span>
                     </a>
                 </div>
@@ -243,7 +260,13 @@
         </div>
     </div>
 
+    <!-- 过渡遮罩层 -->
+    <div id="transition-screen">
+        <div class="trans-text" id="trans-text"></div>
+    </div>
+
     <div class="modal-overlay" id="modal">
+        <!-- 弹窗内容保持不变 -->
         <div class="character-card">
             <div class="file-number" id="m-file"></div>
             <div class="close-btn" onclick="closeModal()">×</div>
@@ -313,6 +336,79 @@
                     thudOsc.connect(thudGain); thudGain.connect(audioCtx.destination); thudOsc.start(); thudOsc.stop(audioCtx.currentTime + 0.6);
                 }, 650);
             } catch (e) {}
+        }
+
+        // === 新增：进入房间的推门过渡音效 === */
+        function playDoorOpenSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const now = audioCtx.currentTime;
+                
+                // 1. 木门推开的“吱呀”声（带通滤波的高频噪声）
+                const creakBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.4, audioCtx.sampleRate);
+                const creakData = creakBuffer.getChannelData(0);
+                for (let i = 0; i < creakData.length; i++) { creakData[i] = Math.random() * 2 - 1; }
+                
+                const creakSource = audioCtx.createBufferSource(); 
+                creakSource.buffer = creakBuffer;
+                
+                const creakFilter = audioCtx.createBiquadFilter(); 
+                creakFilter.type = 'bandpass'; 
+                creakFilter.frequency.setValueAtTime(800, now);
+                creakFilter.frequency.linearRampToValueAtTime(400, now + 0.4); 
+                creakFilter.Q.value = 2;
+                
+                const creakGain = audioCtx.createGain(); 
+                creakGain.gain.setValueAtTime(0, now); 
+                creakGain.gain.linearRampToValueAtTime(0.08, now + 0.1); 
+                creakGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                
+                creakSource.connect(creakFilter); 
+                creakFilter.connect(creakGain); 
+                creakGain.connect(audioCtx.destination); 
+                creakSource.start(now);
+
+                // 2. 脚步声（低沉的三下闷响）
+                for (let i = 0; i < 3; i++) {
+                    const stepTime = now + 0.2 + (i * 0.4);
+                    const stepOsc = audioCtx.createOscillator();
+                    stepOsc.type = 'sine';
+                    stepOsc.frequency.setValueAtTime(80, stepTime);
+                    stepOsc.frequency.exponentialRampToValueAtTime(30, stepTime + 0.1);
+                    
+                    const stepGain = audioCtx.createGain();
+                    stepGain.gain.setValueAtTime(0, stepTime);
+                    stepGain.gain.linearRampToValueAtTime(0.2, stepTime + 0.02);
+                    stepGain.gain.exponentialRampToValueAtTime(0.01, stepTime + 0.15);
+                    
+                    stepOsc.connect(stepGain);
+                    stepGain.connect(audioCtx.destination);
+                    stepOsc.start(stepTime);
+                    stepOsc.stop(stepTime + 0.2);
+                }
+            } catch (e) {}
+        }
+
+        // === 核心过渡跳转函数 ===
+        function enterRoom(url, text) {
+            // 1. 播放开门与脚步音效
+            playDoorOpenSound();
+
+            // 2. 设置并显示文字
+            document.getElementById('trans-text').innerText = text;
+            const screen = document.getElementById('transition-screen');
+            
+            // 3. 触发暗场动画
+            screen.classList.add('active');
+
+            // 4. 延迟跳转（等待动画播完，约 1.8 秒）
+            setTimeout(() => {
+                window.location.href = url;
+            }, 1800);
         }
 
         function goToPrologue() {
