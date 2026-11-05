@@ -88,9 +88,39 @@
         .text-box::-webkit-scrollbar { display: none; }
         .text-box.show { opacity: 1; }
 
+        /* ==========================================
+           语录上方的宽幅图片（调整了高度和裁剪点）
+           ========================================== */
+        .quote-image-wrapper {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 2.5rem auto;
+            background: #12100d;
+            border: 2px solid #6e5a3a;
+            padding: 8px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(158, 138, 99, 0.1);
+        }
+        .quote-image-wrapper img {
+            width: 100%;
+            height: 240px; /* 高度从 160px 提升到 240px，露出更多台灯 */
+            object-fit: cover;
+            object-position: center 35%; /* 裁剪焦点稍微偏上 */
+            filter: sepia(40%) grayscale(30%) brightness(0.7);
+            display: block;
+        }
+        .quote-image-caption {
+            text-align: center;
+            font-family: "Courier New", monospace;
+            font-size: 0.75rem;
+            color: #8a6e3e;
+            margin-top: 10px;
+            letter-spacing: 0.15rem;
+        }
+
         .quote-style {
             font-style: italic; font-size: 1.25rem; color: #e8d5b5; line-height: 2.2; text-indent: 2em;
-            padding: 1rem 2rem; background: rgba(20,20,20,0.4); border-left: 1px solid #5a4a2e;
+            padding: 1.5rem 2rem; background: rgba(20,20,20,0.4); border-left: 2px solid #5a4a2e;
         }
 
         /* ==========================================
@@ -419,7 +449,6 @@
                 if (!audioCtx) return;
                 const now = audioCtx.currentTime;
 
-                // 1. 合书沉闷撞击声
                 const thumpOsc = audioCtx.createOscillator();
                 thumpOsc.type = 'sine';
                 thumpOsc.frequency.setValueAtTime(120, now);
@@ -435,7 +464,6 @@
                 thumpOsc.start(now); 
                 thumpOsc.stop(now + 0.2);
 
-                // 2. 走远的脚步声（三下）
                 for (let i = 0; i < 3; i++) {
                     const stepTime = now + 0.3 + (i * 0.4);
                     const stepOsc = audioCtx.createOscillator();
@@ -456,15 +484,11 @@
             } catch (e) {}
         }
 
-        /* === 离开房间的过渡函数 === */
         function leaveRoom() {
             playExitSound();
-
-            // 设置过渡文字并显示黑屏
             document.getElementById('trans-text').innerText = '将那些泛黄的秘密留在身后，重回寂静。';
             document.getElementById('transition-screen').classList.add('active');
 
-            // 1.8 秒后跳转回大厅
             setTimeout(() => {
                 window.location.href = "index.html?open=true";
             }, 1800);
@@ -544,6 +568,10 @@
         /* ================= 各内容面板 ================= */
         const contentData = {
             quote: `
+                <div class="quote-image-wrapper">
+                    <img src="https://miaozeze.github.io/ledger_quote.jpg" alt="账房一角">
+                    <div class="quote-image-caption">// 黄铜台灯下的收支账本</div>
+                </div>
                 <div class="quote-style">
                     <p>“大小姐，来查账的话，文件在左手边第二格。要躲清静，热茶和薄荷饼干在桌上。</p>
                     <p>至于莉薇娅小姐那边——您本来就在账房帮我核采买单，不是吗？”</p>
