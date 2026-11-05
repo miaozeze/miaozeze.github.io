@@ -343,6 +343,145 @@
         #transition-screen.active .trans-text {
             opacity: 1; transform: translateY(0);
         }
+
+        /* ==========================================================
+           移动端适配（< 900px）
+           ========================================================== */
+        @media (max-width: 900px) {
+
+            /* 1. 页面基础：允许纵向滚动，顶部留出 HUD 空间 */
+            body {
+                display: block;
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding: 64px 0 40px 0;
+                box-sizing: border-box;
+            }
+
+            /* 2. 顶部 HUD 与返回按钮 */
+            .hud-info {
+                top: 12px;
+                left: 12px;
+                font-size: 0.65rem;
+                gap: 8px;
+                flex-wrap: wrap;
+                max-width: 58%;
+            }
+            .hud-info span { border-bottom: none; padding-bottom: 0; }
+
+            .back-btn {
+                top: 12px;
+                right: 12px;
+                padding: 6px 12px;
+                font-size: 0.7rem;
+                letter-spacing: 0.1rem;
+            }
+
+            /* 3. 主布局：左右并排 → 上下堆叠 */
+            .layout {
+                flex-direction: column;
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+                gap: 20px;
+                padding: 0 16px;
+                box-sizing: border-box;
+            }
+
+            /* 4. 左侧导航 */
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(90, 74, 46, 0.3);
+                padding: 0 0 16px 0;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+            .room-name { font-size: 2rem; }
+            .room-desc { margin-bottom: 1.5rem; }
+            .nav-list { flex-direction: row; flex-wrap: wrap; gap: 12px 20px; }
+            .nav-item { font-size: 0.85rem; letter-spacing: 0.08rem; }
+            .secret-nav { margin-top: 1.2rem; font-size: 0.7rem; }
+
+            /* 5. 右侧内容区 */
+            .content-area {
+                padding: 0;
+                justify-content: flex-start;
+            }
+            .text-box {
+                max-height: none;
+                overflow: visible;
+                padding-right: 0;
+                font-size: 1rem;
+                line-height: 1.9;
+            }
+
+            /* 6. 语录图片 */
+            .quote-image-wrapper { max-width: 100%; margin-bottom: 1.5rem; }
+            .quote-image-wrapper img { height: 160px; }
+            .quote-style { font-size: 1rem; padding: 1rem 1.2rem; line-height: 1.9; }
+
+            /* 7. 账本：左右两页 → 上下两页 */
+            .ledger-book-wrapper { height: auto; }
+            .book {
+                width: 100%;
+                height: auto;
+                max-height: none;
+                flex-direction: column;
+                transform: none;
+                border-radius: 6px;
+            }
+            .book:hover { transform: none; }
+            .book::after { display: none; }
+            .book-page { padding: 20px 16px; }
+            .page-left {
+                border-right: none;
+                border-bottom: 1px solid rgba(90, 74, 46, 0.4);
+            }
+            .page-right { border-left: none; }
+            .ledger-title { font-size: 0.85rem; padding-bottom: 10px; margin-bottom: 16px; }
+            .ledger-item-row { font-size: 0.85rem; padding: 12px 6px; }
+
+            /* 左页内部的滚动容器改为自然高度 */
+            .page-left > div[style*="overflow-y"] {
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+            /* 8. 账目详情 */
+            .detail-box { gap: 16px; justify-content: flex-start; }
+            .detail-note { font-size: 0.95rem; line-height: 1.7; transform: none; }
+            .detail-title { font-size: 1.05rem; }
+            .note-content { margin-bottom: 10px; }
+            .detail-photo {
+                width: 140px;
+                height: 180px;
+                align-self: center;
+                margin-bottom: 12px;
+                transform: rotate(1deg);
+            }
+            .photo-caption { font-size: 0.7rem; }
+
+            /* 9. 暗门页面 */
+            .secret-page { max-width: 100%; }
+            .secret-header { font-size: 0.8rem; margin-bottom: 1rem; }
+            .secret-content-layout { flex-direction: column; gap: 20px; align-items: stretch; }
+            .secret-text-area { padding: 1.2rem; min-height: 160px; }
+            .secret-photo-area { width: 100%; }
+            .secret-photo { transform: none; }
+            .secret-photo:hover { transform: none; }
+            .secret-photo img { height: 200px; }
+            .wax-seal-lock { width: 64px; height: 64px; }
+            .wax-seal-lock::after { font-size: 1.2rem; }
+        }
+
+        /* 触屏设备：禁用鼠标拖尾与自定义光标 */
+        @media (pointer: coarse) {
+            body { cursor: auto; }
+            .cursor-trail { display: none; }
+        }
     </style>
 </head>
 <body>
