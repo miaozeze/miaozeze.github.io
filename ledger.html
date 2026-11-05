@@ -296,6 +296,23 @@
         .revealed { animation: textReveal 1s forwards; }
 
         #ledger-detail-page { transition: opacity 0.2s ease; }
+
+        /* === 场景过渡遮罩 === */
+        #transition-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #050505; z-index: 999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 1s ease;
+        }
+        #transition-screen.active { opacity: 1; pointer-events: auto; }
+        
+        .trans-text {
+            color: #8a6e3e; font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem;
+            opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s;
+        }
+        #transition-screen.active .trans-text {
+            opacity: 1; transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -304,7 +321,7 @@
         <span>芥川庄园 · 一楼账房</span>
     </div>
 
-    <a href="javascript:void(0)" class="back-btn" onclick="playBookCloseSound()">⎋ [ 离开账房 ]</a>
+    <a href="javascript:void(0)" class="back-btn" onclick="leaveRoom()">⎋ [ 离开账房 ]</a>
 
     <div class="layout">
         <div class="sidebar">
@@ -325,6 +342,11 @@
         <div class="content-area">
             <div class="text-box show" id="text-content"></div>
         </div>
+    </div>
+
+    <!-- 过渡遮罩层 -->
+    <div id="transition-screen">
+        <div class="trans-text" id="trans-text"></div>
     </div>
 
     <script>
@@ -390,39 +412,62 @@
             } catch (e) {}
         }
 
-        /* 离开账房：纯粹的合上书本沉闷撞击音效 */
-        function playBookCloseSound() {
+        /* 离开账房：合书音效 + 脚步声 */
+        function playExitSound() {
             try {
                 const audioCtx = getAudioCtx();
-                if (!audioCtx) { 
-                    window.location.href = "index.html?open=true"; 
-                    return; 
-                }
+                if (!audioCtx) return;
                 const now = audioCtx.currentTime;
 
-                // 合成低频“砰”的合书声
+                // 1. 合书沉闷撞击声
                 const thumpOsc = audioCtx.createOscillator();
                 thumpOsc.type = 'sine';
-                // 频率从 120Hz 快速降到 30Hz，模拟撞击的厚度
                 thumpOsc.frequency.setValueAtTime(120, now);
                 thumpOsc.frequency.exponentialRampToValueAtTime(30, now + 0.12);
 
                 const thumpGain = audioCtx.createGain();
                 thumpGain.gain.setValueAtTime(0, now);
-                thumpGain.gain.linearRampToValueAtTime(0.6, now + 0.02); // 瞬间爆发音量
-                thumpGain.gain.exponentialRampToValueAtTime(0.01, now + 0.2); // 快速衰减
+                thumpGain.gain.linearRampToValueAtTime(0.6, now + 0.02);
+                thumpGain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
 
                 thumpOsc.connect(thumpGain); 
                 thumpGain.connect(audioCtx.destination);
-                
                 thumpOsc.start(now); 
                 thumpOsc.stop(now + 0.2);
 
-                // 留出 200ms 给音效播放，然后跳转
-                setTimeout(() => { window.location.href = "index.html?open=true"; }, 200);
-            } catch (e) { 
-                window.location.href = "index.html?open=true"; 
-            }
+                // 2. 走远的脚步声（三下）
+                for (let i = 0; i < 3; i++) {
+                    const stepTime = now + 0.3 + (i * 0.4);
+                    const stepOsc = audioCtx.createOscillator();
+                    stepOsc.type = 'sine';
+                    stepOsc.frequency.setValueAtTime(80, stepTime);
+                    stepOsc.frequency.exponentialRampToValueAtTime(30, stepTime + 0.1);
+                    
+                    const stepGain = audioCtx.createGain();
+                    stepGain.gain.setValueAtTime(0, stepTime);
+                    stepGain.gain.linearRampToValueAtTime(0.2, stepTime + 0.02);
+                    stepGain.gain.exponentialRampToValueAtTime(0.01, stepTime + 0.15);
+                    
+                    stepOsc.connect(stepGain);
+                    stepGain.connect(audioCtx.destination);
+                    stepOsc.start(stepTime);
+                    stepOsc.stop(stepTime + 0.2);
+                }
+            } catch (e) {}
+        }
+
+        /* === 离开房间的过渡函数 === */
+        function leaveRoom() {
+            playExitSound();
+
+            // 设置过渡文字并显示黑屏
+            document.getElementById('trans-text').innerText = '将那些泛黄的秘密留在身后，重回寂静。';
+            document.getElementById('transition-screen').classList.add('active');
+
+            // 1.8 秒后跳转回大厅
+            setTimeout(() => {
+                window.location.href = "index.html?open=true";
+            }, 1800);
         }
 
         /* ================= 图片地址配置 ================= */
