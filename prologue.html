@@ -201,7 +201,6 @@
                 ✦ [ 第一章：荆棘与灰烬 ] ✦
             </span>
             
-            <!-- 已经修改为“退回大厅” -->
             <span id="back-btn" class="subtle-btn" onclick="closeBookAndGoBack()">
                 [ 合上卷宗，退回大厅 ]
             </span>
@@ -312,7 +311,13 @@
         }
 
         // === 其他逻辑（音频控制、时间、雨丝等） ===
-        const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2514/2514-preview.mp3');
+        
+        // 直接使用线上绝对路径
+        const bgAudio = new Audio('https://miaozeze.github.io/rain.mp3');
+        bgAudio.onerror = function() {
+            bgAudio.src = 'https://cdn.pixabay.com/download/audio/2022/07/04/audio_2d3581857c.mp3?filename=heavy-rain-ambient-11495.mp3';
+        };
+
         bgAudio.loop = true;
         bgAudio.volume = 0; 
         let isPlaying = false;
@@ -343,7 +348,7 @@
                 bgAudio.play().then(() => {
                     fadeInAudio(); btn.innerHTML = '■ 关闭雨声'; btn.classList.add('playing'); isPlaying = true;
                     sessionStorage.setItem('rainPlaying', 'true'); 
-                }).catch(err => console.log(err));
+                }).catch(err => alert("音频加载失败，请确认路径或网络。"));
             }
         }
 
@@ -354,8 +359,7 @@
                     const btn = document.getElementById('audio-btn');
                     btn.innerHTML = '■ 关闭雨声'; btn.classList.add('playing'); isPlaying = true;
                 }).catch(e => {
-                    const btn = document.getElementById('audio-btn');
-                    btn.innerHTML = '♪ 开启雨声'; btn.classList.remove('playing');
+                    console.log("自动播放被浏览器拦截，等待用户点击");
                 });
             }
         });
@@ -369,7 +373,9 @@
                     fadeInAudio(); const btn = document.getElementById('audio-btn');
                     btn.innerHTML = '■ 关闭雨声'; btn.classList.add('playing'); isPlaying = true;
                     sessionStorage.setItem('rainPlaying', 'true');
-                }).catch(err => console.log(err));
+                }).catch(err => {
+                    alert("音频加载失败，可能是路径错误或浏览器限制。");
+                });
             }
             cover.style.opacity = 0; cover.style.visibility = 'hidden';
             story.style.opacity = 1; story.style.transform = 'translateY(0)'; story.style.pointerEvents = 'auto';
