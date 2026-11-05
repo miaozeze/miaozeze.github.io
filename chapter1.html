@@ -130,6 +130,89 @@
         }
         .glow-btn:hover::after { left: 150%; transition: left 0.6s ease; }
 
+        /* ==========================================================
+           移动端适配（< 900px）
+           ========================================================== */
+        @media (max-width: 900px) {
+
+            /* 1. 顶部 HUD 与音频按钮缩小，避免互相挤压 */
+            .hud-info {
+                top: 12px; left: 12px;
+                font-size: 0.65rem; gap: 8px;
+            }
+            .hud-info span { border-bottom: none; padding-bottom: 0; }
+
+            .audio-btn {
+                top: 12px; right: 12px;
+                padding: 6px 12px;
+                font-size: 0.68rem; letter-spacing: 0.08rem;
+            }
+
+            /* 2. 故事屏：压缩上方留白与宽度 */
+            #story-screen {
+                width: 90%;
+                padding: 5rem 0 2.5rem;
+            }
+            .chapter-heading {
+                font-size: 1.2rem;
+                letter-spacing: 0.12rem;
+                margin-bottom: 2rem;
+                line-height: 1.6;
+            }
+            .chapter-heading::after {
+                font-size: 0.75rem;
+                letter-spacing: 0.3rem;
+                margin-top: 0.8rem;
+            }
+
+            /* 3. 正文与回忆对话 */
+            .story-p {
+                font-size: 0.92rem;
+                line-height: 2;
+                letter-spacing: 0.03rem;
+                margin-bottom: 1.4rem;
+                text-indent: 1.6em;
+            }
+            .memory-dialogue {
+                font-size: 0.95rem;
+                line-height: 1.95;
+                letter-spacing: 0.05rem;
+                padding: 1rem 1.1rem;
+                margin: 1.8rem 0;
+            }
+            .time-skip {
+                font-size: 0.75rem;
+                letter-spacing: 0.35rem;
+                margin: 2rem 0;
+            }
+
+            /* 4. 底部按钮 */
+            .bottom-actions {
+                margin-top: 3rem;
+                padding-bottom: 2.5rem;
+                gap: 20px;
+            }
+            .glow-btn {
+                padding: 12px 20px;
+                font-size: 0.8rem;
+                letter-spacing: 0.08rem;
+                text-align: center;
+                max-width: 100%;
+                box-sizing: border-box;
+                line-height: 1.5;
+            }
+            .subtle-btn {
+                font-size: 0.78rem;
+                letter-spacing: 0.1rem;
+            }
+        }
+
+        /* 触屏设备：禁用鼠标拖尾与自定义光标 */
+        @media (pointer: coarse) {
+            body { cursor: auto; }
+            .cursor-trail { display: none; }
+        }
+
     </style>
 </head>
 <body>
