@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>芥川庄园大厅 | 纸页与灰烬</title>
     <style>
-        /* === 基础页面（黑金极简） === */
+        /* === 基础页面 === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
             font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
@@ -43,7 +43,7 @@
         }
         @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
 
-        /* 欢迎信封 */
+        /* === 欢迎信封 === */
         #welcome-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
@@ -76,14 +76,13 @@
         .open-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); box-shadow: 0 0 20px rgba(158,138,99,0.2); }
         .env-footer { margin-top: 3rem; font-size: 0.75rem; color: #5a4a2e; letter-spacing: 0.1rem; font-family: "Courier New", monospace; }
 
-        /* 主界面 */
+        /* === 主界面 === */
         #main-screen {
             position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
             opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 1.5s ease, transform 1.5s ease; z-index: 10;
         }
         #welcome-screen.hidden + #main-screen { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-        /* 中心主面板 */
         .invitation {
             border: 1px solid #5a4a2e; padding: 3rem 3rem; max-width: 480px; width: 85%; text-align: center;
             position: relative; background: rgba(30, 30, 30, 0.85); z-index: 1; transition: all 0.6s ease;
@@ -113,27 +112,21 @@
         .btn .num { color: #9e8a63; font-size: 0.8rem; font-family: "Courier New", monospace; transition: color 0.3s; }
         .btn:hover .num { color: #fff; }
 
-        /* === 外围空间链接（散落感） === */
-        .outer-link {
-            position: absolute; color: #5a4a2e; font-size: 0.85rem; letter-spacing: 0.2rem;
-            text-decoration: none; transition: all 0.4s; cursor: pointer;
-            font-family: "Noto Serif SC", serif;
+        /* === 底部链接（恢复原位） === */
+        .reread-divider { width: 60%; border-top: 1px dashed #3a3024; margin: 2rem 0 1rem 0; }
+        
+        /* 资料室入口（比普通字大一点，略带边框感） */
+        .archive-btn { 
+            display: inline-block; margin-bottom: 1.5rem; padding: 8px 20px; border: 1px solid #5a4a2e;
+            color: #c9bda5; font-size: 0.85rem; letter-spacing: 0.2rem; text-decoration: none; transition: all 0.3s;
+            background: rgba(255,255,255,0.02); border-radius: 2px;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
-            z-index: 20;
         }
-        .outer-link:hover { color: #e8d5b5; text-shadow: 0 0 10px rgba(245,230,200,0.3); }
+        .archive-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); }
 
-        /* 左侧：重温雷雨（主线） */
-        .link-prologue { left: 8%; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: left center; }
-        
-        /* 右侧：潜入资料室（支线） */
-        .link-archive { right: 8%; top: 50%; transform: translateY(-50%) rotate(90deg); transform-origin: right center; }
-        
-        /* 左下角：暗格（彩蛋） */
-        .link-vault { left: 40px; bottom: 40px; color: #3a3024; font-size: 0.75rem; }
-        .link-vault:hover { color: #8a6e3e; }
+        .reread-btn { font-size: 0.85rem; color: #8a6e3e; letter-spacing: 0.2rem; text-decoration: none; transition: all 0.3s; padding: 5px; cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important; }
+        .reread-btn:hover { color: #f5e6c8; text-shadow: 0 0 10px rgba(245,230,200,0.3); }
 
-        /* 离开按钮 */
         .leave-manor-btn {
             position: fixed; top: 30px; right: 40px; display: flex; align-items: center; gap: 8px;
             padding: 10px 24px; color: #e8d5b5; font-size: 0.85rem; letter-spacing: 0.2rem;
@@ -145,13 +138,12 @@
         @keyframes pulseBorder { 0% { border-color: #5a4a2e; box-shadow: 0 0 5px rgba(158,138,99,0.1); } 100% { border-color: #9e8a63; box-shadow: 0 0 15px rgba(158,138,99,0.4); } }
         .leave-manor-btn:hover { color: #fff; border-color: #f5e6c8; background: rgba(158,138,99,0.2); box-shadow: 0 0 20px rgba(245, 230, 200, 0.4); animation: none; }
 
-        /* 弹窗（角色） */
+        /* 弹窗 */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 200;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-
         .character-card {
             background: #1a1a1a; border: 1px solid #9e8a63; padding: 3rem 2.5rem; max-width: 480px; width: 85%; text-align: center; position: relative;
             transform: scale(0.95) translateY(15px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -194,11 +186,6 @@
         <span>13°C 阴雨</span>
     </div>
 
-    <!-- 外围空间（散落的门） -->
-    <a href="prologue.html" class="outer-link link-prologue">[ 重温那个雷雨之夜 ]</a>
-    <a href="archive.html" class="outer-link link-archive">[ 潜入机密资料室 ]</a>
-    <a href="treasure.html" class="outer-link link-vault">[ 开启不存在的暗格 ]</a>
-
     <div id="welcome-screen">
         <div class="envelope">
             <div class="seal"></div>
@@ -219,17 +206,17 @@
             <span style="font-size: 1rem;">⎋</span> [ 离 开 庄 园 ]
         </div>
 
-        <!-- 中间主面板（干净、纯粹） -->
         <div class="invitation">
             <div class="inner-border">
                 <div class="watermark">
                     <span>P A G E S</span><span>A N D</span><span>A S H E S</span>
                 </div>
                 
+                <!-- 文案重写，更具文学感 -->
                 <div class="main-text">
                     致 芥川庄园的贵客：<br>
-                    昨夜的雷雨已歇，茶点已备好。<br>
-                    请选择您要前往的房间。
+                    长夜已逝，晨间的薄雾尚未散去。<br>
+                    请推开您要涉足的那扇门。
                 </div>
 
                 <div class="btn-group">
@@ -243,6 +230,23 @@
                         <span>探访研究室</span><span class="num">[ 03 ]</span>
                     </span>
                 </div>
+
+                <div class="reread-divider"></div>
+                
+                <!-- 资料室入口：单独列在上方，更容易被发现 -->
+                <div style="margin-bottom: 20px;">
+                    <a href="archive.html" class="archive-btn">[ 查阅未归档的暗卷 ]</a>
+                </div>
+
+                <!-- 重温雷雨与暗格：回归原位 -->
+                <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                    <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
+                    
+                    <div>
+                        <span class="reread-btn" style="font-size: 0.7rem; color: #3a3024; cursor: pointer;" onclick="goToTreasure()">[ 开启不存在的暗格 ]</span>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -265,13 +269,14 @@
     </div>
 
     <script>
-        // 音效与交互逻辑
+        // === 音效：卷宗放回书架 ===
         function playBookOnShelfSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const audioCtx = new AudioContext();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
+
                 const now = audioCtx.currentTime;
                 const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.3, audioCtx.sampleRate);
                 const slideData = slideBuffer.getChannelData(0);
@@ -293,9 +298,67 @@
             } catch (e) {}
         }
 
+        // === 音效：开启暗格（沉重石门与摩擦） ===
+        function playVaultOpenSound() {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const now = audioCtx.currentTime;
+
+                // 1. 石墙摩擦声
+                const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.8, audioCtx.sampleRate);
+                const slideData = slideBuffer.getChannelData(0);
+                for (let i = 0; i < slideData.length; i++) { slideData[i] = Math.random() * 2 - 1; }
+                const slideSource = audioCtx.createBufferSource();
+                slideSource.buffer = slideBuffer;
+                const slideFilter = audioCtx.createBiquadFilter();
+                slideFilter.type = 'bandpass';
+                slideFilter.frequency.value = 1200;
+                slideFilter.Q.value = 2;
+                const slideGain = audioCtx.createGain();
+                slideGain.gain.setValueAtTime(0, now);
+                slideGain.gain.linearRampToValueAtTime(0.08, now + 0.2);
+                slideGain.gain.linearRampToValueAtTime(0, now + 0.8);
+                slideSource.connect(slideFilter);
+                slideFilter.connect(slideGain);
+                slideGain.connect(audioCtx.destination);
+                slideSource.start(now);
+
+                // 2. 石门落锁
+                setTimeout(() => {
+                    const thudOsc = audioCtx.createOscillator();
+                    thudOsc.type = 'sine';
+                    thudOsc.frequency.setValueAtTime(60, audioCtx.currentTime);
+                    thudOsc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.4);
+                    
+                    const thudGain = audioCtx.createGain();
+                    thudGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                    thudGain.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.02);
+                    thudGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                    
+                    thudOsc.connect(thudGain);
+                    thudGain.connect(audioCtx.destination);
+                    thudOsc.start();
+                    thudOsc.stop(audioCtx.currentTime + 0.6);
+                }, 650);
+
+            } catch (e) {}
+        }
+
+        // === 核心跳转 ===
         function goToPrologue() {
             sessionStorage.setItem('rainPlaying', 'true');
             window.location.href = 'prologue.html';
+        }
+
+        function goToTreasure() {
+            playVaultOpenSound();
+            setTimeout(() => {
+                window.location.href = 'treasure.html';
+            }, 700);
         }
 
         function leaveManor() {
@@ -304,6 +367,7 @@
             sessionStorage.removeItem('rainPlaying');
         }
 
+        // === 其他逻辑（时间、灰烬、鼠标） ===
         function updateTime() {
             const now = new Date();
             document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -355,6 +419,7 @@
             setTimeout(() => { particle.remove(); }, 800);
         }
 
+        // === 角色数据 ===
         const characters = {
             edmund: {
                 file: "FILE NO. 01 // FINANCE",
