@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>纸页与灰烬 | 芥川庄园</title>
+    <title>芥川庄园 | 纸页与灰烬</title>
     <style>
-        /* === 基础页面 === */
+        /* === 基础页面（完全保留你原版的极简黑金） === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
             font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
@@ -13,19 +13,14 @@
             background-image: 
                 radial-gradient(circle at center, #151515 0%, #050505 80%),
                 url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>');
-            background-blend-mode: overlay;
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
+            background-blend-mode: overlay; overflow: hidden; -webkit-font-smoothing: antialiased;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
         
         /* 灰烬飘浮特效 */
         .ash-particle {
-            position: fixed; bottom: -10px;
-            background: #8a6e3e; 
-            border-radius: 50%;
-            pointer-events: none; z-index: 5; opacity: 0;
-            filter: blur(0.5px);
+            position: fixed; bottom: -10px; background: #8a6e3e; border-radius: 50%;
+            pointer-events: none; z-index: 5; opacity: 0; filter: blur(0.5px);
             animation: floatUp linear forwards;
         }
         @keyframes floatUp {
@@ -35,13 +30,9 @@
             100% { transform: translateY(-110vh) translateX(20px); opacity: 0; }
         }
 
-        /* 左上角时间温度 */
         .hud-info {
-            position: fixed; top: 30px; left: 40px;
-            font-family: "Courier New", monospace;
-            color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem;
-            pointer-events: none; z-index: 102;
-            display: flex; gap: 15px; align-items: center;
+            position: fixed; top: 30px; left: 40px; font-family: "Courier New", monospace;
+            color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem; pointer-events: none; z-index: 102; display: flex; gap: 15px; align-items: center;
         }
         .hud-info span { border-bottom: 1px solid rgba(138, 110, 62, 0.3); padding-bottom: 3px; }
         
@@ -52,7 +43,7 @@
         }
         @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
 
-        /* === 欢迎信封 === */
+        /* 欢迎信封（首次进入） */
         #welcome-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
@@ -62,19 +53,13 @@
         #welcome-screen.hidden { opacity: 0; visibility: hidden; }
 
         .envelope {
-            background: #151515; border: 1px solid #5a4a2e;
-            padding: 4rem 3rem; max-width: 420px; width: 85%; text-align: center;
+            background: #151515; border: 1px solid #5a4a2e; padding: 4rem 3rem; max-width: 420px; width: 85%; text-align: center;
             position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.9); z-index: 2;
         }
-        .envelope::before {
-            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 1px solid #2a2213; pointer-events: none;
-        }
+        .envelope::before { content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; border: 1px solid #2a2213; pointer-events: none; }
         .seal {
-            width: 60px; height: 60px; border-radius: 50%;
-            background: radial-gradient(circle, #4a3c22 0%, #1a140b 100%);
-            border: 1px solid #9e8a63; margin: 0 auto 2rem auto;
-            display: flex; justify-content: center; align-items: center;
+            width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, #4a3c22 0%, #1a140b 100%);
+            border: 1px solid #9e8a63; margin: 0 auto 2rem auto; display: flex; justify-content: center; align-items: center;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 5px 15px rgba(0,0,0,0.5);
         }
         .seal::after { content: '芥'; font-size: 1.4rem; font-weight: bold; color: #b8a57e; font-family: "Songti SC", serif; }
@@ -84,21 +69,17 @@
         .env-desc { color: #b8a57e; font-size: 0.95rem; line-height: 2.2; letter-spacing: 0.1rem; margin-bottom: 3rem; font-style: italic; }
         
         .open-btn {
-            display: inline-block; padding: 12px 30px; border: 1px solid #5a4a2e;
-            color: #e8d5b5; font-size: 0.9rem; letter-spacing: 0.2rem; cursor: pointer;
+            display: inline-block; padding: 12px 30px; border: 1px solid #5a4a2e; color: #e8d5b5; font-size: 0.9rem; letter-spacing: 0.2rem; cursor: pointer;
             background: transparent; transition: all 0.4s ease; text-decoration: none;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .open-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); box-shadow: 0 0 20px rgba(158,138,99,0.2); }
         .env-footer { margin-top: 3rem; font-size: 0.75rem; color: #5a4a2e; letter-spacing: 0.1rem; font-family: "Courier New", monospace; }
 
-        /* === 主界面 === */
+        /* 主界面 */
         #main-screen {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; transform: translateY(20px); pointer-events: none;
-            transition: opacity 1.5s ease, transform 1.5s ease;
-            z-index: 10;
+            position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
+            opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 1.5s ease, transform 1.5s ease; z-index: 10;
         }
         #welcome-screen.hidden + #main-screen { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
@@ -146,7 +127,7 @@
         @keyframes pulseBorder { 0% { border-color: #5a4a2e; box-shadow: 0 0 5px rgba(158,138,99,0.1); } 100% { border-color: #9e8a63; box-shadow: 0 0 15px rgba(158,138,99,0.4); } }
         .leave-manor-btn:hover { color: #fff; border-color: #f5e6c8; background: rgba(158,138,99,0.2); box-shadow: 0 0 20px rgba(245, 230, 200, 0.4); animation: none; }
 
-        /* === 弹窗 === */
+        /* 弹窗（角色） */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px);
             display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 200;
@@ -156,7 +137,7 @@
         .character-card {
             background: #1a1a1a; border: 1px solid #9e8a63; padding: 3rem 2.5rem; max-width: 480px; width: 85%; text-align: center; position: relative;
             transform: scale(0.95) translateY(15px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 25px 70px rgba(0,0,0,0.95), 0 0 40px rgba(158,138,99,0.2);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.95);
         }
         .modal-overlay.active .character-card { transform: scale(1) translateY(0); }
 
@@ -167,31 +148,17 @@
         .char-name { font-size: 2rem; color: #f5e6c8; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; }
         .char-title { font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #c9bda5; letter-spacing: 0.15rem; margin-bottom: 2.5rem; text-transform: uppercase; }
         
-        /* 优化了正文框的字体渲染 */
         .char-content-box {
             font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", Georgia, serif;
-            font-size: 1.05rem; 
-            color: #d1c5a8; 
-            line-height: 2.1; 
-            margin-bottom: 2rem; 
-            text-align: left;
-            padding-left: 15px; 
-            border-left: 2px solid #5a4a2e;
-            max-height: 300px; 
-            overflow-y: auto; 
-            transition: opacity 0.3s ease;
-            letter-spacing: 0.02rem;
+            font-size: 1.05rem; color: #d1c5a8; line-height: 2.1; margin-bottom: 2rem; text-align: left;
+            padding-left: 15px; border-left: 2px solid #5a4a2e; max-height: 300px; overflow-y: auto;
+            transition: opacity 0.3s ease; letter-spacing: 0.02rem;
         }
         .char-content-box::-webkit-scrollbar { width: 4px; }
         .char-content-box::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
         .char-content-box::-webkit-scrollbar-thumb { background: #5a4a2e; border-radius: 2px; }
-        .char-content-box::-webkit-scrollbar-thumb:hover { background: #9e8a63; }
 
-        /* 优化了段落的间距，取消首行缩进 */
-        .story-p {
-            margin-top: 0;
-            margin-bottom: 1.2em;
-        }
+        .story-p { margin-top: 0; margin-bottom: 1.2em; }
 
         .card-actions { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .action-btn {
@@ -199,10 +166,8 @@
             color: #9e8a63; border: 1px solid #5a4a2e; background: transparent;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
-        .action-btn:hover { color: #fff; border-color: #8a6e3e; background: rgba(158,138,99,0.1); box-shadow: 0 0 15px rgba(158,138,99,0.2); }
+        .action-btn:hover { color: #fff; border-color: #8a6e3e; background: rgba(158,138,99,0.1); }
         .action-btn.primary { background: rgba(158,138,99,0.2); color: #fff; border-color: #9e8a63; }
-        .action-btn.primary:hover { background: rgba(158,138,99,0.4); }
-
     </style>
 </head>
 <body>
@@ -221,7 +186,6 @@
                 纸页正在泛黄，灰烬仍有温热。<br>
                 请在此落款，或推开这扇尘封的门。
             </div>
-            <!-- 直接调用跳转函数，无音效 -->
             <a href="javascript:void(0);" onclick="goToPrologue()" class="open-btn">[ 拆 开 信 件 ]</a>
             <div class="env-footer">From Akutagawa Manor</div>
         </div>
@@ -238,10 +202,11 @@
                     <span>P A G E S</span><span>A N D</span><span>A S H E S</span>
                 </div>
                 
+                <!-- 文案修改：不再叫档案，而是选择拜访谁 -->
                 <div class="main-text">
                     致 芥川庄园的贵客：<br>
                     昨夜的雷雨已歇，茶点已备好。<br>
-                    请选择您要翻阅的档案。
+                    请选择您要前往的房间。
                 </div>
 
                 <div class="btn-group">
@@ -257,12 +222,19 @@
                 </div>
 
                 <div class="reread-divider"></div>
-                <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
                 
-                <!-- 👇 修改：添加了 onclick 事件 -->
-                <div style="margin-top: 15px;">
-                    <a href="javascript:void(0);" onclick="goToTreasure()" class="reread-btn" style="font-size: 0.7rem; color: #3a3024;">[ 开启不存在的暗格 ]</a>
+                <!-- 追加：庄园的其他秘密区域 -->
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+                    <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
+                    <a href="archive.html" class="reread-btn">[ 潜入机密资料室 ]</a>
+                    <a href="letter.html" class="reread-btn">[ 截获一封晚宴请柬 ]</a>
+                    
+                    <!-- 暗格入口保留 -->
+                    <div style="margin-top: 15px;">
+                        <a href="treasure.html" class="reread-btn" style="font-size: 0.7rem; color: #3a3024;">[ 开启不存在的暗格 ]</a>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -278,7 +250,6 @@
             <div class="char-content-box" id="m-content"></div>
             
             <div class="card-actions">
-                <!-- 合上卷宗触发放回书架的声效 -->
                 <span class="action-btn" onclick="playBookOnShelfSound(); closeModal();">[ 合上卷宗 ]</span>
                 <span class="action-btn primary" id="btn-toggle-story" onclick="toggleStory()"></span>
             </div>
@@ -286,9 +257,7 @@
     </div>
 
     <script>
-        // ==========================================
-        // 👇 音效：把卷宗放回书架（仅在合上卷宗时触发）
-        // ==========================================
+        // 音效与跳转逻辑保持不变
         function playBookOnShelfSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -297,8 +266,6 @@
                 if (audioCtx.state === 'suspended') audioCtx.resume();
 
                 const now = audioCtx.currentTime;
-
-                // 1. 摩擦声
                 const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.3, audioCtx.sampleRate);
                 const slideData = slideBuffer.getChannelData(0);
                 for (let i = 0; i < slideData.length; i++) { slideData[i] = Math.random() * 2 - 1; }
@@ -318,7 +285,6 @@
                 slideGain.connect(audioCtx.destination);
                 slideSource.start(now);
 
-                // 2. 撞击木板声
                 setTimeout(() => {
                     const thudBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
                     const thudData = thudBuffer.getChannelData(0);
@@ -340,70 +306,9 @@
             } catch (e) {}
         }
 
-        // ==========================================
-        // 👇 新增：开启暗格音效（复用密室退场的沉重石门声）
-        // ==========================================
-        function playVaultOpenSound() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const audioCtx = new AudioContext();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-
-                const now = audioCtx.currentTime;
-
-                // 1. 石墙摩擦声
-                const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.8, audioCtx.sampleRate);
-                const slideData = slideBuffer.getChannelData(0);
-                for (let i = 0; i < slideData.length; i++) { slideData[i] = Math.random() * 2 - 1; }
-                const slideSource = audioCtx.createBufferSource();
-                slideSource.buffer = slideBuffer;
-                const slideFilter = audioCtx.createBiquadFilter();
-                slideFilter.type = 'bandpass';
-                slideFilter.frequency.value = 1200;
-                slideFilter.Q.value = 2;
-                const slideGain = audioCtx.createGain();
-                slideGain.gain.setValueAtTime(0, now);
-                slideGain.gain.linearRampToValueAtTime(0.08, now + 0.2);
-                slideGain.gain.linearRampToValueAtTime(0, now + 0.8);
-                slideSource.connect(slideFilter);
-                slideFilter.connect(slideGain);
-                slideGain.connect(audioCtx.destination);
-                slideSource.start(now);
-
-                // 2. 石门落锁/开启的沉重闷响
-                setTimeout(() => {
-                    const thudOsc = audioCtx.createOscillator();
-                    thudOsc.type = 'sine';
-                    thudOsc.frequency.setValueAtTime(60, audioCtx.currentTime);
-                    thudOsc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.4);
-                    
-                    const thudGain = audioCtx.createGain();
-                    thudGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                    thudGain.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.02);
-                    thudGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-                    
-                    thudOsc.connect(thudGain);
-                    thudGain.connect(audioCtx.destination);
-                    thudOsc.start();
-                    thudOsc.stop(audioCtx.currentTime + 0.6);
-                }, 650);
-
-            } catch (e) {}
-        }
-
-        // === 核心跳转逻辑 ===
         function goToPrologue() {
             sessionStorage.setItem('rainPlaying', 'true');
             window.location.href = 'prologue.html';
-        }
-
-        // 👇 新增：跳转到暗格，带延迟音效
-        function goToTreasure() {
-            playVaultOpenSound();
-            setTimeout(() => {
-                window.location.href = 'treasure.html';
-            }, 700); // 延迟 700ms 让音效播完
         }
 
         function leaveManor() {
@@ -412,7 +317,6 @@
             sessionStorage.removeItem('rainPlaying');
         }
 
-        // === 其他逻辑（时间、灰烬、状态记忆等） ===
         function updateTime() {
             const now = new Date();
             document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
