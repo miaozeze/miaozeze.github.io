@@ -138,7 +138,7 @@
         <span>13°C 阴雨</span>
     </div>
 
-    <div class="audio-btn" id="audio-btn" onclick="toggleAudio()">♪ 开启雨声</div>
+    <div class="audio-btn" id="audio-btn" onclick="toggleAudio(event)">♪ 开启雨声</div>
 
     <div class="rain-bg" id="rain-bg"></div>
 
@@ -227,7 +227,6 @@
 
         <p class="story-p">哪怕是变成一团灰烬，她也要做最傲骨铮铮的那一把。</p>
 
-        <!-- 👇 修改了这里的按钮文字 -->
         <div class="bottom-actions">
             <span class="glow-btn" onclick="goToChapter2()">
                 ✦ [ 第二章：红茶与冰冷的账单 ] ✦
@@ -339,7 +338,12 @@
         }
 
         // === 其他逻辑（音频控制、时间、雨丝、滚动淡入） ===
-        const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2514/2514-preview.mp3');
+        // 💡 替换为本地绝对路径，防止外链失效
+        const bgAudio = new Audio('https://miaozeze.github.io/rain.mp3');
+        bgAudio.onerror = function() {
+            bgAudio.src = 'https://cdn.pixabay.com/download/audio/2022/07/04/audio_2d3581857c.mp3?filename=heavy-rain-ambient-11495.mp3';
+        };
+
         bgAudio.loop = true;
         bgAudio.volume = 0; 
         let isPlaying = false;
@@ -361,7 +365,8 @@
             }, 50);
         }
 
-        function toggleAudio() {
+        function toggleAudio(e) {
+            if (e) e.stopPropagation();
             const btn = document.getElementById('audio-btn');
             if (isPlaying) {
                 fadeOutAudio(); btn.innerHTML = '♪ 开启雨声'; btn.classList.remove('playing'); isPlaying = false;
@@ -384,6 +389,19 @@
                     const btn = document.getElementById('audio-btn');
                     btn.innerHTML = '♪ 开启雨声'; btn.classList.remove('playing');
                 });
+            }
+        });
+
+        // 💡 新增：点击全屏自动开启雨声（防拦截）
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.audio-btn')) return;
+            if (!isPlaying) {
+                bgAudio.play().then(() => {
+                    fadeInAudio(); 
+                    const btn = document.getElementById('audio-btn');
+                    btn.innerHTML = '■ 关闭雨声'; btn.classList.add('playing'); isPlaying = true;
+                    sessionStorage.setItem('rainPlaying', 'true');
+                }).catch(err => {});
             }
         });
 
