@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第二章：红茶与冰冷的账单 | 纸页与灰烬</title>
+    <title>第一章 | 纸页与灰烬</title>
     <style>
-        /* === 基础页面设置 === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
             font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
@@ -87,12 +86,11 @@
             transition: opacity 1s ease-out, transform 1s ease-out;
         }
         .memory-dialogue.visible { opacity: 1; transform: translateY(0); }
-
+        
         .time-skip { 
             text-align: center; color: #5a4a2e; font-size: 0.85rem; letter-spacing: 0.5rem; margin: 3rem 0; 
         }
 
-        /* === 底部按钮 === */
         .bottom-actions { 
             display: flex; 
             flex-direction: column; 
@@ -140,84 +138,98 @@
         <span>13°C 阴雨</span>
     </div>
 
-    <div class="audio-btn" id="audio-btn" onclick="toggleAudio()">♪ 开启雨声</div>
+    <div class="audio-btn" id="audio-btn" onclick="toggleAudio(event)">♪ 开启雨声</div>
+
     <div class="rain-bg" id="rain-bg"></div>
 
     <div id="story-screen">
-        <h2 class="chapter-heading">第二章：红茶、权谋与冰冷的账单</h2>
+        <h2 class="chapter-heading">第一章：荆棘的灰烬与雨夜的猫</h2>
         
-        <p class="story-p">伴随着低沉的电流声，庄园的备用系统重新启动。走廊的灯光大亮，抽湿机重新发出了令人烦躁的嗡鸣。</p>
-        <p class="story-p">莉薇娅站在走廊的阴影里，看着星野雫提着工具箱从配电房走出来。他路过莉薇娅时，脚步停了一下。</p>
+        <p class="story-p">南方初冬的雷雨，总带着一股令人作呕的黏腻感。</p>
+        
+        <p class="story-p">伴随着一声撕裂夜空的惊雷，芥川庄园的灯光骤然熄灭。黑暗降临的瞬间，莉薇娅猛地攥紧了手里的骨瓷茶杯，指尖因为用力过度而泛出死一样的青白。</p>
 
-        <p class="memory-dialogue">“线路修好了。早点休息。”</p>
+        <p class="story-p">她站在二楼的窗前，死死咬着牙，逼着自己的脊背挺得像一柄标枪。</p>
 
-        <p class="story-p">莉薇娅没有回话，只是微不可察地点了一下头。她转过身，脊背依旧绷得像一柄标枪，重新走向了厨房。那个雷雨夜的回忆被她强行塞回了底层的抽屉里。她知道自己今晚注定无眠，但她必须在明天天亮之前，确保庄园的一切恢复原状。</p>
+        <p class="story-p">不能弯。绝对不能弯。</p>
+
+        <p class="story-p">窗外的闪电再次亮起，惨白的光照亮了她毫无血色的脸。那一刻，她眼前的落地窗变成了奥斯汀庄园燃烧的废墟；鼻尖萦绕的不是南方湿冷的雨气，而是皮肉烧焦的腥臭。</p>
+
+        <p class="story-p">三年前的那个夜晚，也是这样的雷雨。</p>
+
+        <p class="memory-dialogue">“跑！莉薇娅，快跑！”<br>“阿尔弗雷德！”</p>
+
+        <p class="story-p">十五岁的她在火海中尖叫。巨大的红木横梁砸下来，老管家阿尔弗雷德用身体死死护住了她。火星燎焦了他的白发，那根陪伴了他四十年的银手杖断成了两截。</p>
+
+        <p class="story-p">那个总是拿着手杖敲她脚跟，逼她练习英式管家礼仪，严厉得不近人情的老人，在生命的最后一刻，没有求救，只是用沾满鲜血的手死死攥住她的手腕，用极其严厉的声音，下达了最后的命令：</p>
+
+        <p class="memory-dialogue">“把背挺直，莉薇娅。女仆的仪态不能乱。”</p>
+
+        <p class="story-p">莉薇娅活下来了。但奥斯汀家族彻底完了。</p>
+
+        <p class="story-p">庄园化为灰烬，父母双亡，曾经高高在上的“荆棘蔷薇”，变成了背负着巨额债务、连流浪狗都不如的废物。她被债主追赶，被昔日的“朋友”拒之门外，最后带着一身债务，浑浑噩噩地被塞进底舱，来到了这座南方的东方豪门。</p>
+
+        <p class="story-p">她以为自己会死在异国他乡的一个臭水沟里。</p>
+
+        <p class="story-p">事实上，在三年前那个南方城市的冬夜里，她确实快要死了。</p>
+
+        <p class="story-p">大雨倾盆，她发着高烧，蜷缩在垃圾箱旁的泥水里。雨水打湿了她破烂的衣服，她冷得浑身发抖，却依然像个神经病一样，死死地把背脊贴在冰冷的墙砖上。</p>
+
+        <p class="story-p">她没力气了，她真的好想睡过去。</p>
+
+        <p class="story-p">可她连死，都不愿意像一滩烂泥一样蜷缩着死。</p>
+
+        <p class="story-p">就在她的视线即将彻底模糊时，一把黑色的伞遮在了她的头顶。</p>
+
+        <p class="story-p">一个穿着昂贵大衣的小女孩蹲在了她面前。那是年幼的芥川千鶴。</p>
+
+        <p class="story-p">那个小女孩没有像其他人那样嫌弃她身上的污泥，也没有高高在上地施舍。她只是盯着莉薇娅看了一会儿，然后用一种极其新奇的语气说：</p>
+
+        <p class="memory-dialogue">“你看起来，像一只被淋湿的猫。”</p>
+
+        <p class="story-p">莉薇娅愣住了。她那颗已经像死灰一样的心脏，被这句荒谬的话狠狠地撞了一下。</p>
+
+        <p class="memory-dialogue">“如果你没地方去，要不要跟我回家？”小女孩把伞往她那边倾斜了大半，任由雨水打湿了自己昂贵的肩膀，“我刚好缺一个女仆……不过，你要是不会打领结，我可不要。”</p>
+
+        <p class="story-p">莉薇娅看着那双清澈的眼睛。那是她在那场大火之后，第一次被当作一个“人”来对待。</p>
+
+        <p class="story-p">她极其艰难地、用尽全身最后的力气，从泥水里站了起来。她没有感动，只是觉得没得选。她极其屈辱地低下了头，用发抖的声音，一字一句地说：</p>
+
+        <p class="memory-dialogue">“如果您愿意收留我，我愿意做您的女仆。用一生报答您。”</p>
+
+        <p class="story-p">来到芥川家的第二天，家主原本打算让她当个最普通的外围女仆，负责走廊的洒扫。但莉薇娅拒绝了。</p>
+
+        <p class="story-p">那个还在发着高烧的女孩，直接走进了芥川家的厨房。她用整整一天一夜，没有合眼，做了一桌极其完美的古典法餐。从法式清汤到惠灵顿牛排，每一道工序都精准得如同艺术。</p>
+
+        <p class="story-p">然后，她站在家主面前，高傲地扬起下巴，一字一句地说：</p>
+
+        <p class="memory-dialogue">“我不伺候别人，我只做大小姐一个人的专属女仆。除非我死，否则谁也不能把我从她身边赶走。”</p>
+
+        <p class="story-p">她赢了。她留在了大小姐身边。</p>
 
         <div class="time-skip">✦ ❦ ✦</div>
 
-        <p class="story-p">清晨七点整。伴随着“哗啦”一声，厚重的暗红色天鹅绒窗帘被猛地拉开。</p>
-        <p class="story-p">初冬刺眼的晨光毫无防备地刺破了卧室的昏暗。</p>
+        <p class="story-p">“莉薇娅小姐，您的茶再不倒，杯子怕是会被您捏碎。”</p>
 
-        <p class="memory-dialogue">“光线是最好的闹钟，大小姐。如果您不想在今天晚上的家族晚宴上，因为黑眼圈被夫人数落仪态，就请现在起床。”</p>
+        <p class="story-p">一道带着笑意的声音从楼梯口传来，猛地将莉薇娅从深渊般的回忆里拽回现实。</p>
 
-        <p class="story-p">她站在床边，制服的裙摆一丝不苟，手里拿着一套熨烫得没有一丝褶皱的丝绒礼服。即便昨晚被雷雨和旧伤折磨得一夜未眠，她此刻的面容依旧完美得挑不出一丝瑕疵。</p>
-        <p class="story-p">“又是这种沉闷的颜色。”你坐在床沿，看着那件礼服，忍不住抱怨。</p>
+        <p class="story-p">大管家埃德蒙站在一楼的大厅里。他穿着深色燕尾服，手里端着一杯加满冰块的咖啡，正笑眯眯地看着她。</p>
 
-        <p class="memory-dialogue">“这是最符合芥川家门面的颜色，至少能压住中村家那种暴发户的俗气。您的领口要是再敢弄得一团糟，我不介意亲自替您扣。”</p>
+        <p class="story-p">莉薇娅深吸了一口气。她低下头，看着手里那杯依然温热的红茶，眼底的脆弱在瞬间被彻底冻结成冰。</p>
 
-        <p class="story-p">她没有再多说什么，只是转过身，在离开房间前落下最后一击：“七点十五分，餐厅。如果您迟到一分钟，那杯大吉岭就会被倒进下水道。我不开玩笑。”</p>
+        <p class="story-p">她转过身，居高临下地俯视着埃德蒙，脊背挺直得没有一丝瑕疵。</p>
 
-        <p class="story-p">庄园一楼的餐厅，空气中弥漫着淡淡的红茶香气。长长的橡木餐桌上，银质餐具被擦拭得能照出人影，摆放的间距精确到了毫米。</p>
-        <p class="story-p">你刚在餐椅上坐下，一份铺着暗纹的请柬就被推到了你面前。</p>
+        <p class="memory-dialogue">“埃德蒙先生，如果您只会靠那种发出噪音的铁皮机器来掩盖无能，大可以回您的伦敦去。芥川家不需要一个连规矩都不懂的大管家。”</p>
 
-        <p class="memory-dialogue">“早安，大小姐。这是中村家刚刚派人送来的请柬。明晚的私人晚宴，指名要您出席。不过，如果您不想去，账房那边刚好有一笔跨洋海运的结算需要您亲自签字。时间刚好冲突，我会替您回绝。”</p>
+        <p class="story-p">她不仅是在维持规矩，她是在拼命维持着奥斯汀家族最后的一丝体面。</p>
 
-        <p class="story-p">大管家埃德蒙不知何时已经站在了你的左手边。他穿着笔挺的深色燕尾服，金丝眼镜后的目光依旧温和，胸前的银链怀表随着他的动作闪过微光。他递上一份空白的纸，和一支钢笔。这就是埃德蒙。绝不劝你反抗，而是直接把路给你铺好，然后笑眯眯地站在旁边，等你自己做决定。</p>
-        <p class="story-p">“中村健太？”你皱起眉头，连碰都不想碰那份请柬。</p>
+        <p class="story-p">因为她知道，只要她一旦弯下腰，一旦表现出软弱，她就会被这座残酷的庄园淘汰，就会被赶出那个曾经对她说过“你像一只淋湿的猫”的大小姐身边。</p>
 
-        <p class="memory-dialogue">“是。那位浑身散发着铜臭味的暴发户少爷。如果您去，我会为您准备最隆重的礼服，确保您在宴会上挑不出一丝错处。但如果您去，就别指望我会给那位中村少爷哪怕一个好脸色。那种拿联姻当商业收购的粗鄙之人，连您的茶杯都不配碰。”</p>
+        <p class="story-p">哪怕是变成一团灰烬，她也要做最傲骨铮铮的那一把。</p>
 
-        <p class="story-p">端着餐盘走过来的莉薇娅冷声接过了话头。她精准地将一小碟法式煎蛋卷放在你面前，蛋卷内部是完美的凝乳状，一丝焦痕都没有。</p>
-        <p class="story-p">你抬头看着他们俩。一个拿着账本，笑里藏刀；一个端着重茶，傲骨铮铮。都在用各自的方式，替你挡着门外那些明枪暗箭。</p>
-        <p class="story-p">“如果父亲非要我嫁呢？”你轻声问。餐厅里有一瞬间的寂静。</p>
-        <p class="story-p">埃德蒙推了一下眼镜，温和的笑意收敛了些许，换上了那种极低沉的、公事公办的语调：</p>
-
-        <p class="memory-dialogue">“家主如果要一桩联姻，需要的是资金链的补足。但只要账面还没崩盘，只要那笔融资的窟窿我能填上……这婚，就结不成。您只要把手头这份文件处理好。剩下的，我会去和家主谈。”</p>
-        <p class="memory-dialogue">“吃您的早餐。如果您连这点文件都处理不好，芥川家迟早要完。喝茶，把暴躁收一收。然后，把盘子里的东西吃干净。我不希望再看到您挑食。”</p>
-
-        <p class="story-p">莉薇娅用指关节极轻地敲了两下桌面，将你的注意力拉回盘子。</p>
-
-        <div class="time-skip">✦ ❦ ✦</div>
-
-        <p class="story-p">晚饭后的书房，气压低得让人喘不过气。家主在两个小时前大发雷霆，因为南美的航线出了一点小问题，连带影响了拍卖行的现金流。联姻的议题再次被摆上了台面。</p>
-        <p class="story-p">你烦躁地推开面前的文件。就在这时，书房的暗门被轻轻敲响了。</p>
-        <p class="story-p">星野雫穿着一件黑色的长袖，像个幽灵般安静地走了进来。他那头乌黑的长发被一根素色发绳松松垮垮地绑着，一米八的身形瘦得仿佛随时会被风吹倒，手里却稳稳地提着一个精巧的医药箱。</p>
-
-        <p class="memory-dialogue">“大小姐。”</p>
-
-        <p class="story-p">“我没生病，雫。”</p>
-
-        <p class="memory-dialogue">“但您没吃晚饭。莉薇娅小姐在门外急得差点把端盘子的银托都捏弯了，埃德蒙先生则在走廊里暗示我，如果我不进来看看，他明天就会把研究室的下个月预算砍掉一半。”</p>
-
-        <p class="story-p">他无奈地叹了口气，把医药箱放在桌上，顺手从口袋里拿出一颗用锡纸包着的薄荷糖：</p>
-
-        <p class="memory-dialogue">“只有这一颗，别让莉薇娅看到。她知道您饭前吃甜的会发火。”</p>
-
-        <p class="story-p">你接过糖，心情稍微平复了一些。</p>
-
-        <p class="memory-dialogue">“航线的事，埃德蒙能搞定。就算搞不定，我也可以黑进中村家的内部网，把他们那点偷税漏税的底子抖出来。您是这座庄园的主人。如果您不想嫁，没人能逼您。至于中村家的人……如果他们真的敢越过底线，我保证他们连庄园的大门都走不出去。”</p>
-
-        <p class="story-p">“你这话听起来，像是随时准备为我杀人放火。”你打趣道。</p>
-        <p class="story-p">星野雫的动作微微一顿。他垂下眼睫，并没有脸红，只是习惯性地拉了一下右臂的袖子，遮住那朵兰花。</p>
-
-        <p class="memory-dialogue">“只是陈述一个事实，大小姐。如果没什么事，我先回研究室了，那台服务器的防火墙还需要加固。”</p>
-
-        <p class="story-p">他走到门口，突然又停住脚步，转过身，极其认真地嘱咐：“对了，别让莉薇娅知道是我给您吃的糖。否则我真的会挨骂。”</p>
-
-        <!-- 👇 底部按钮：发光按钮变为回到第一章，低调按钮变为退回大厅 -->
         <div class="bottom-actions">
-            <span class="glow-btn" onclick="goToChapter1()">
-                ✦ [ 回到第一章：荆棘与灰烬 ] ✦
+            <span class="glow-btn" onclick="goToChapter2()">
+                ✦ [ 第二章：红茶与冰冷的账单 ] ✦
             </span>
             
             <span class="subtle-btn" onclick="closeBookAndGoBack()">
@@ -234,14 +246,29 @@
                 if (!AudioContext) return;
                 const audioCtx = new AudioContext();
                 if (audioCtx.state === 'suspended') audioCtx.resume(); 
+
                 const bufferSize = audioCtx.sampleRate * 0.15; 
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
                 const data = buffer.getChannelData(0);
                 for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
-                const source = audioCtx.createBufferSource(); source.buffer = buffer;
-                const filter = audioCtx.createBiquadFilter(); filter.type = 'bandpass'; filter.frequency.value = 1500; filter.Q.value = 0.5; 
-                const gain = audioCtx.createGain(); gain.gain.setValueAtTime(0, audioCtx.currentTime); gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.02); gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                source.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination); source.start();
+
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1500; 
+                filter.Q.value = 0.5; 
+
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.02); 
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+
+                source.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+                source.start();
             } catch (e) {}
         }
 
@@ -252,70 +279,149 @@
                 if (!AudioContext) return;
                 const audioCtx = new AudioContext();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
+
                 const lowBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.3, audioCtx.sampleRate);
                 const lowData = lowBuffer.getChannelData(0);
                 for (let i = 0; i < lowData.length; i++) { lowData[i] = Math.random() * 2 - 1; }
-                const lowSource = audioCtx.createBufferSource(); lowSource.buffer = lowBuffer;
-                const lowFilter = audioCtx.createBiquadFilter(); lowFilter.type = 'lowpass'; lowFilter.frequency.value = 500; 
-                const lowGain = audioCtx.createGain(); lowGain.gain.setValueAtTime(0, audioCtx.currentTime); lowGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.01); lowGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); 
-                lowSource.connect(lowFilter); lowFilter.connect(lowGain); lowGain.connect(audioCtx.destination); lowSource.start();
+                
+                const lowSource = audioCtx.createBufferSource();
+                lowSource.buffer = lowBuffer;
+                const lowFilter = audioCtx.createBiquadFilter();
+                lowFilter.type = 'lowpass';
+                lowFilter.frequency.value = 500; 
+
+                const lowGain = audioCtx.createGain();
+                lowGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                lowGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.01); 
+                lowGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2); 
+
+                lowSource.connect(lowFilter);
+                lowFilter.connect(lowGain);
+                lowGain.connect(audioCtx.destination);
+                lowSource.start();
 
                 const highBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
                 const highData = highBuffer.getChannelData(0);
                 for (let i = 0; i < highData.length; i++) { highData[i] = Math.random() * 2 - 1; }
-                const highSource = audioCtx.createBufferSource(); highSource.buffer = highBuffer;
-                const highFilter = audioCtx.createBiquadFilter(); highFilter.type = 'highpass'; highFilter.frequency.value = 1500; 
-                const highGain = audioCtx.createGain(); highGain.gain.setValueAtTime(0, audioCtx.currentTime); highGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.02); highGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                highSource.connect(highFilter); highFilter.connect(highGain); highGain.connect(audioCtx.destination);
+
+                const highSource = audioCtx.createBufferSource();
+                highSource.buffer = highBuffer;
+                const highFilter = audioCtx.createBiquadFilter();
+                highFilter.type = 'highpass';
+                highFilter.frequency.value = 1500; 
+
+                const highGain = audioCtx.createGain();
+                highGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                highGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.02); 
+                highGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+
+                highSource.connect(highFilter);
+                highFilter.connect(highGain);
+                highGain.connect(audioCtx.destination);
+                
                 setTimeout(() => { highSource.start(); }, 50);
             } catch (e) {}
         }
 
         // === 核心跳转逻辑 ===
-        function goToChapter1() {
+        function goToChapter2() {
             playPaperSound();
             sessionStorage.setItem('rainPlaying', isPlaying);
-            setTimeout(() => {
-                window.location.href = "chapter1.html";
-            }, 400); 
+            setTimeout(() => { window.location.href = 'chapter2.html'; }, 350); 
         }
 
         function closeBookAndGoBack() {
             playBookCloseSound();
             setTimeout(() => {
                 window.location.href = "index.html?open=true";
-            }, 400); 
+            }, 400);
         }
 
-        // === 环境音与特效 ===
-        const bgAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2514/2514-preview.mp3');
-        bgAudio.loop = true; bgAudio.volume = 0; 
-        let isPlaying = false; const targetVolume = 0.15; 
+        // === 其他逻辑（音频控制、时间、雨丝、滚动淡入） ===
+        // 💡 替换为本地绝对路径，防止外链失效
+        const bgAudio = new Audio('https://miaozeze.github.io/rain.mp3');
+        bgAudio.onerror = function() {
+            bgAudio.src = 'https://cdn.pixabay.com/download/audio/2022/07/04/audio_2d3581857c.mp3?filename=heavy-rain-ambient-11495.mp3';
+        };
 
-        function fadeInAudio() { let vol = 0; bgAudio.volume = 0; let fadeIn = setInterval(() => { if (vol < targetVolume) { vol += 0.01; bgAudio.volume = vol; } else { clearInterval(fadeIn); } }, 100); }
-        function fadeOutAudio() { let vol = bgAudio.volume; let fadeOut = setInterval(() => { if (vol > 0.02) { vol -= 0.02; bgAudio.volume = vol; } else { bgAudio.pause(); bgAudio.volume = 0; clearInterval(fadeOut); } }, 50); }
-        function toggleAudio() {
+        bgAudio.loop = true;
+        bgAudio.volume = 0; 
+        let isPlaying = false;
+        const targetVolume = 0.15; 
+
+        function fadeInAudio() {
+            let vol = 0; bgAudio.volume = 0;
+            let fadeIn = setInterval(() => {
+                if (vol < targetVolume) { vol += 0.01; bgAudio.volume = vol; } 
+                else { clearInterval(fadeIn); }
+            }, 100);
+        }
+
+        function fadeOutAudio() {
+            let vol = bgAudio.volume;
+            let fadeOut = setInterval(() => {
+                if (vol > 0.02) { vol -= 0.02; bgAudio.volume = vol; } 
+                else { bgAudio.pause(); bgAudio.volume = 0; clearInterval(fadeOut); }
+            }, 50);
+        }
+
+        function toggleAudio(e) {
+            if (e) e.stopPropagation();
             const btn = document.getElementById('audio-btn');
-            if (isPlaying) { fadeOutAudio(); btn.innerHTML = '♪ 开启雨声'; btn.classList.remove('playing'); isPlaying = false; sessionStorage.setItem('rainPlaying', 'false'); } 
-            else { bgAudio.play().then(() => { fadeInAudio(); btn.innerHTML = '■ 关闭雨声'; btn.classList.add('playing'); isPlaying = true; sessionStorage.setItem('rainPlaying', 'true'); }).catch(err => console.log(err)); }
+            if (isPlaying) {
+                fadeOutAudio(); btn.innerHTML = '♪ 开启雨声'; btn.classList.remove('playing'); isPlaying = false;
+                sessionStorage.setItem('rainPlaying', 'false'); 
+            } else {
+                bgAudio.play().then(() => {
+                    fadeInAudio(); btn.innerHTML = '■ 关闭雨声'; btn.classList.add('playing'); isPlaying = true;
+                    sessionStorage.setItem('rainPlaying', 'true'); 
+                }).catch(err => console.log(err));
+            }
         }
+
         window.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('rainPlaying') === 'true') {
                 bgAudio.volume = targetVolume;
-                bgAudio.play().then(() => { const btn = document.getElementById('audio-btn'); btn.innerHTML = '■ 关闭雨声'; btn.classList.add('playing'); isPlaying = true; }).catch(e => { const btn = document.getElementById('audio-btn'); btn.innerHTML = '♪ 开启雨声'; btn.classList.remove('playing'); });
+                bgAudio.play().then(() => {
+                    const btn = document.getElementById('audio-btn');
+                    btn.innerHTML = '■ 关闭雨声'; btn.classList.add('playing'); isPlaying = true;
+                }).catch(e => {
+                    const btn = document.getElementById('audio-btn');
+                    btn.innerHTML = '♪ 开启雨声'; btn.classList.remove('playing');
+                });
             }
         });
 
-        function updateTime() { const now = new Date(); document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`; }
+        // 💡 新增：点击全屏自动开启雨声（防拦截）
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.audio-btn')) return;
+            if (!isPlaying) {
+                bgAudio.play().then(() => {
+                    fadeInAudio(); 
+                    const btn = document.getElementById('audio-btn');
+                    btn.innerHTML = '■ 关闭雨声'; btn.classList.add('playing'); isPlaying = true;
+                    sessionStorage.setItem('rainPlaying', 'true');
+                }).catch(err => {});
+            }
+        });
+
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
         setInterval(updateTime, 1000); updateTime();
 
         function createRain() {
             const rainBg = document.getElementById('rain-bg');
             setInterval(() => {
-                const drop = document.createElement('div'); drop.className = 'rain-drop';
-                drop.style.left = Math.random() * 100 + 'vw'; drop.style.animationDuration = (Math.random() * 0.7 + 0.5) + 's';
-                drop.style.opacity = Math.random() * 0.4 + 0.1; drop.style.height = (Math.random() * 40 + 40) + 'px';
-                rainBg.appendChild(drop); setTimeout(() => { drop.remove(); }, 1500);
+                const drop = document.createElement('div');
+                drop.className = 'rain-drop';
+                drop.style.left = Math.random() * 100 + 'vw';
+                drop.style.animationDuration = (Math.random() * 0.7 + 0.5) + 's';
+                drop.style.opacity = Math.random() * 0.4 + 0.1;
+                drop.style.height = (Math.random() * 40 + 40) + 'px';
+                rainBg.appendChild(drop);
+                setTimeout(() => { drop.remove(); }, 1500);
             }, 40);
         }
         createRain();
@@ -324,18 +430,31 @@
         document.addEventListener('mousemove', function(e) {
             const now = Date.now();
             if (now - lastTrailTime > 30) {
-                const particle = document.createElement('div'); particle.className = 'cursor-trail';
-                particle.style.left = (e.clientX + (Math.random() - 0.5) * 8) + 'px'; particle.style.top = (e.clientY + (Math.random() - 0.5) * 8) + 'px';
-                const size = Math.random() * 4 + 2; particle.style.width = size + 'px'; particle.style.height = size + 'px';
-                document.body.appendChild(particle); setTimeout(() => { particle.remove(); }, 800); lastTrailTime = now;
+                const particle = document.createElement('div');
+                particle.className = 'cursor-trail';
+                particle.style.left = (e.clientX + (Math.random() - 0.5) * 8) + 'px';
+                particle.style.top = (e.clientY + (Math.random() - 0.5) * 8) + 'px';
+                const size = Math.random() * 4 + 2; 
+                particle.style.width = size + 'px'; particle.style.height = size + 'px';
+                document.body.appendChild(particle);
+                setTimeout(() => { particle.remove(); }, 800);
+                lastTrailTime = now;
             }
         });
 
         function revealText() {
             const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
             }, { root: null, rootMargin: '0px', threshold: 0.1 });
-            document.querySelectorAll('.story-p, .memory-dialogue').forEach(p => { observer.observe(p); });
+
+            document.querySelectorAll('.story-p, .memory-dialogue').forEach(p => {
+                observer.observe(p);
+            });
         }
         revealText();
     </script>
