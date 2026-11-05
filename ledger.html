@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>厨房 | 纸页与灰烬</title>
+    <title>账房 | 纸页与灰烬</title>
     <style>
         /* === 基础页面 === */
         body {
@@ -29,7 +29,7 @@
         }
         .back-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.2); }
 
-        /* 鼠标拖尾 */
+        /* 鼠标拖尾样式 */
         .cursor-trail {
             position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
             pointer-events: none; z-index: 9999; box-shadow: 0 0 10px 2px rgba(245, 230, 200, 0.8);
@@ -39,285 +39,527 @@
 
         /* === 核心布局 === */
         .layout {
-            display: flex; width: 95%; max-width: 1280px; height: 85vh; gap: 40px;
+            display: flex; width: 95%; max-width: 1200px; height: 85vh; gap: 50px;
         }
 
-        /* 左侧导航 */
+        /* 左侧：导航 */
         .sidebar {
-            width: 240px; display: flex; flex-direction: column; justify-content: center;
+            width: 280px; display: flex; flex-direction: column; justify-content: center;
             border-right: 1px solid rgba(90, 74, 46, 0.3); padding-right: 40px;
-            position: relative; flex-shrink: 0;
+            position: relative;
         }
+
         .room-name { font-size: 3rem; color: #f5e6c8; margin: 0 0 0.5rem 0; font-weight: normal; letter-spacing: 0.2rem; }
         .room-desc { font-family: "Courier New", monospace; font-size: 0.75rem; color: #8a6e3e; letter-spacing: 0.15rem; text-transform: uppercase; margin-bottom: 4rem; }
+
         .nav-list { display: flex; flex-direction: column; gap: 20px; }
+
         .nav-item {
-            font-size: 1rem; color: #8a6e3e; letter-spacing: 0.15rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 10px;
+            font-size: 1rem; color: #8a6e3e; letter-spacing: 0.15rem; cursor: pointer;
+            transition: all 0.3s; display: flex; align-items: center; gap: 10px;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .nav-item::before { content: '—'; color: transparent; transition: color 0.3s; }
         .nav-item:hover, .nav-item.active { color: #f5e6c8; padding-left: 10px; }
         .nav-item:hover::before, .nav-item.active::before { color: #f5e6c8; }
 
-        /* 右侧内容 */
-        .content-area { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 2rem 0; position: relative; }
+        /* 隐藏的暗门触发 */
+        .secret-nav {
+            margin-top: 3rem; font-family: "Courier New", monospace; font-size: 0.75rem;
+            color: #1f1a14; letter-spacing: 0.1rem; cursor: pointer; transition: all 0.5s ease;
+            user-select: none;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .secret-nav:hover { color: #b85c58; text-shadow: 0 0 10px rgba(184, 92, 88, 0.3); }
+        .secret-nav.active { color: #b85c58; font-weight: bold; }
+
+        /* 右侧：内容区 */
+        .content-area {
+            flex: 1; display: flex; flex-direction: column; justify-content: center;
+            padding: 2rem 0; position: relative;
+        }
+
         .text-box {
-            max-height: 75vh; overflow-y: auto; padding-right: 20px; font-family: "Songti SC", "Noto Serif SC", serif;
-            font-size: 1.1rem; color: #d1c5a8; line-height: 2.2; text-align: justify; letter-spacing: 0.05rem;
-            opacity: 0; transition: opacity 0.4s ease;
+            max-height: 75vh; overflow-y: auto; padding-right: 20px;
+            font-family: "Songti SC", "Noto Serif SC", serif;
+            font-size: 1.1rem; color: #d1c5a8; line-height: 2.2; text-align: justify;
+            letter-spacing: 0.05rem; opacity: 0; transition: opacity 0.4s ease;
         }
         .text-box::-webkit-scrollbar { display: none; }
         .text-box.show { opacity: 1; }
 
         /* ==========================================
-           01 / 语录宽幅图片
+           语录上方的宽幅图片
            ========================================== */
         .quote-image-wrapper {
-            width: 100%; max-width: 600px; margin: 0 auto 2.5rem auto;
-            background: #12100d; border: 2px solid #6e5a3a; padding: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 15px 15px -10px rgba(158, 138, 99, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 2.5rem auto;
+            background: #12100d;
+            border: 2px solid #6e5a3a;
+            padding: 8px;
+            box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(158, 138, 99, 0.1);
         }
         .quote-image-wrapper img {
-            width: 100%; height: 240px; object-fit: cover; object-position: center;
-            filter: sepia(40%) grayscale(30%) brightness(0.7); display: block;
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            object-position: center 35%;
+            filter: sepia(40%) grayscale(30%) brightness(0.7);
+            display: block;
         }
         .quote-image-caption {
-            text-align: center; font-family: "Courier New", monospace; font-size: 0.75rem;
-            color: #8a6e3e; margin-top: 10px; letter-spacing: 0.15rem;
+            text-align: center;
+            font-family: "Courier New", monospace;
+            font-size: 0.75rem;
+            color: #8a6e3e;
+            margin-top: 10px;
+            letter-spacing: 0.15rem;
         }
+
         .quote-style {
             font-style: italic; font-size: 1.25rem; color: #e8d5b5; line-height: 2.2; text-indent: 2em;
             padding: 1.5rem 2rem; background: rgba(20,20,20,0.4); border-left: 2px solid #5a4a2e;
         }
 
         /* ==========================================
-           03 / 专属食单（杂志封面排版：全高图 + 垂直居中文字）
+           专属排版：大账本
            ========================================== */
-        .kitchen-split-view {
-            display: flex;
-            width: 100%;
-            max-width: 1050px;
-            height: 70vh;
-            max-height: 600px;
-            margin: 0 auto;
-            gap: 25px;
+        .ledger-book-wrapper { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+
+        .book {
+            display: flex; width: 950px; height: 70vh; max-height: 600px;
+            background: #151310; border: 1px solid #3a3024; border-radius: 8px;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.95), inset 0 0 30px rgba(0,0,0,0.8);
+            position: relative; transform: rotate(-1deg); transition: transform 0.4s;
+        }
+        .book:hover { transform: rotate(0deg) translateY(-5px); }
+
+        .book::after {
+            content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: 40px;
+            background: linear-gradient(to right, rgba(0,0,0,0.5), rgba(0,0,0,0.1), rgba(0,0,0,0.5));
+            transform: translateX(-50%); pointer-events: none; z-index: 2;
         }
 
-        /* 左侧：点菜单 */
-        .menu-ticket-wrapper {
-            width: 250px;
+        .book-page {
+            flex: 1; padding: 40px; position: relative; display: flex; flex-direction: column;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.05"/></svg>');
+        }
+        .page-left { border-right: 1px solid rgba(90, 74, 46, 0.4); }
+        .page-right { border-left: 1px solid rgba(255, 255, 255, 0.02); }
+
+        .ledger-title {
+            font-family: "Courier New", monospace; font-size: 1rem; color: #8a6e3e;
+            text-align: center; border-bottom: 2px solid #5a4a2e; padding-bottom: 15px; margin-bottom: 25px;
+            letter-spacing: 0.2rem; flex-shrink: 0;
+        }
+
+        .ledger-item-row {
+            display: flex; justify-content: space-between; align-items: center; font-family: "Courier New", monospace;
+            font-size: 0.95rem; color: #c9bda5; border-bottom: 1px dotted #3a3024;
+            padding: 16px 10px; cursor: pointer; transition: all 0.3s; border-left: 2px solid transparent;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .ledger-item-row:hover { background: rgba(158, 138, 99, 0.05); color: #fff; }
+        .ledger-item-row.active { background: rgba(158, 138, 99, 0.1); border-left-color: #b85c58; color: #f5e6c8; }
+
+        /* 右页：真正的账目备注排版 */
+        .detail-box { 
+            flex: 1; display: flex; flex-direction: column; justify-content: space-between; 
+            position: relative; 
+        }
+
+        .detail-note { font-family: "KaiTi", "STKaiti", serif; color: #b85c58; font-size: 1.05rem; line-height: 1.8; transform: rotate(-1deg); }
+        .detail-title { font-weight: bold; border-bottom: 1px dashed #b85c58; padding-bottom: 5px; margin-bottom: 15px; font-size: 1.2rem; }
+
+        .note-label { color: #8a6e3e; font-family: "Courier New", monospace; font-size: 0.85rem; margin-right: 5px; }
+        .note-content { margin-bottom: 12px; }
+
+        /* ✨ 极简暗金 ✨ */
+        .detail-photo {
+            width: 180px; 
+            height: 230px; 
+            align-self: flex-end; 
+            position: relative; 
             flex-shrink: 0;
-            background: #14110d;
-            padding: 12px;
-            border-radius: 6px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,0,0,0.8);
-            border: 2px solid #2a2015;
-            position: relative;
-        }
-        .menu-ticket-wrapper::before {
-            content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 40px; height: 25px; background: linear-gradient(to bottom, #d0d0d0, #505050);
-            border-radius: 4px 4px 8px 8px; z-index: 10;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.5);
-            clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
-        }
-        .menu-ticket {
-            background: #1c1a17;
-            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
-            border: 1px solid #3a3024;
-            padding: 20px 15px;
-            height: 100%;
+            margin-right: 0; 
+            margin-bottom: 20px; 
+            transition: all 0.3s ease;
+            
+            background: #12100d;
+            border: 2px solid #6e5a3a; 
+            padding: 6px; 
             box-sizing: border-box;
-            color: #a89573;
-            font-family: "Courier New", monospace;
-        }
-        .slip-header { display: flex; justify-content: space-between; border-bottom: 2px dashed #3a3024; padding-bottom: 12px; margin-bottom: 15px; font-size: 0.7rem; letter-spacing: 0.1rem; }
-        .slip-header span { color: #b85c58; }
-        .slip-cols { display: flex; font-size: 0.65rem; color: #5a4a2e; border-bottom: 1px solid #3a3024; padding-bottom: 6px; margin-bottom: 10px; }
-        .col-qty { width: 35px; }
-        .col-dish { flex: 1; }
-        .slip-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px dotted #2a2218; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
-        .slip-item:hover { background: rgba(158,138,99,0.05); padding-left: 5px; }
-        .slip-item.active { color: #f5e6c8; }
-        .slip-item.active .col-qty { color: #b85c58; font-weight: bold; }
-        .checkbox { display: inline-block; width: 12px; height: 12px; border: 1px solid #5a4a2e; margin-right: 8px; position: relative; top: 1px; transition: all 0.3s; }
-        .slip-item.active .checkbox { background: #b85c58; border-color: #b85c58; }
-        .slip-item.active .checkbox::after { content: '✓'; color: #1c1a17; position: absolute; top: -4px; left: 0px; font-size: 11px; font-weight: bold; }
-
-        /* 右侧：档案面板 */
-        .recipe-panel-wrapper {
-            flex: 1;
-            background: rgba(20, 20, 20, 0.6);
-            border: 1px solid #3a3024;
-            border-radius: 6px;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8);
-            position: relative;
-            padding: 0; /* 移除 padding，以便图片贴边 */
-            display: flex;
-            overflow: hidden;
-        }
-        .recipe-panel-wrapper::before {
-            content: ''; position: absolute; top: 30px; bottom: 30px; left: 0; width: 3px; background: #b85c58; z-index: 10;
-        }
-
-        /* 杂志封面排版核心：左图 + 右字 */
-        .editorial-cover {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* 左侧全高图片 */
-        .cover-image-left {
-            width: 42%; /* 图片宽度 */
-            height: 100%;
-            position: relative;
-            flex-shrink: 0;
-            border-right: 1px solid #3a3024;
-        }
-        .cover-image-left img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: sepia(30%) contrast(1.1) brightness(0.85);
-            display: block;
-        }
-        .cover-image-caption {
-            position: absolute; bottom: 20px; left: 20px;
-            font-family: "Courier New", monospace; font-size: 0.75rem; color: #d1c5a8;
-            background: rgba(10,10,10,0.7); padding: 4px 8px; letter-spacing: 0.1rem;
-            border-left: 2px solid #b85c58;
-        }
-
-        /* 右侧文字区 */
-        .cover-text-right {
-            flex: 1;
-            padding: 40px;
+            box-shadow: 0 0 15px rgba(158, 138, 99, 0.15), -5px 5px 20px rgba(0,0,0,0.8); 
+            transform: rotate(2deg);
+            
             display: flex;
             flex-direction: column;
-            justify-content: center; /* 垂直居中，解决字少留白问题 */
-        }
-
-        .panel-title {
-            font-family: "KaiTi", "STKaiti", serif;
-            font-size: 1.7rem; /* 调整字号，确保不换行 */
-            color: #f5e6c8; margin: 0 0 5px 0; font-weight: normal;
-            white-space: nowrap; /* 强制不换行 */
-            overflow: hidden;
-            text-overflow: ellipsis; /* 超长省略 */
-        }
-        .panel-no {
-            font-family: "Courier New", monospace; font-size: 0.8rem; color: #b85c58;
-            letter-spacing: 0.15rem; margin-bottom: 25px; border-bottom: 1px dashed #3a3024; padding-bottom: 10px;
-        }
-
-        .sec-title {
-            font-family: "Courier New", monospace; font-size: 0.85rem; color: #8a6e3e;
-            letter-spacing: 0.1rem; margin: 0 0 10px 0; border-bottom: 1px dotted rgba(138,110,62,0.3); padding-bottom: 5px;
         }
         
-        /* 给描述加一个引言样式，填补视觉空白 */
-        .panel-desc {
-            font-size: 1rem; 
-            line-height: 1.8; 
+        .detail-photo:hover { 
+            transform: rotate(0deg) scale(1.04); 
+            border-color: #d1b580; 
+            box-shadow: 0 0 25px rgba(209, 181, 128, 0.3), -5px 8px 25px rgba(0,0,0,0.9);
+        }
+
+        .detail-photo img { 
+            width: 100%; 
+            flex: 1; 
+            object-fit: cover; 
+            filter: sepia(20%) grayscale(10%) brightness(0.9); 
+            transition: all 0.3s ease;
+            display: block;
+        }
+        
+        .detail-photo:hover img {
+            filter: sepia(10%) grayscale(0%) brightness(1.05); 
+        }
+
+        .photo-caption {
+            height: 28px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Courier New", monospace; 
+            font-size: 0.75rem; 
             color: #d1c5a8; 
-            text-align: justify;
-            margin-bottom: 25px;
-            position: relative;
-            padding-left: 15px;
-            border-left: 2px solid rgba(138,110,62,0.3);
-            font-style: italic;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+            margin-top: 4px; 
         }
-
-        .panel-steps {
-            font-family: "Songti SC", serif; 
-            font-size: 0.95rem; 
-            line-height: 1.8; 
-            color: #a89573;
-        }
-        .panel-steps p { margin-top: 0; margin-bottom: 10px; display: flex; }
-        .panel-steps span { color: #b85c58; font-weight: bold; margin-right: 10px; font-family: "Courier New", monospace; flex-shrink: 0; }
-
-        /* 打印淡入动画 */
-        .print-anim { animation: printOut 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-        @keyframes printOut {
-            0% { opacity: 0; transform: translateY(10px); filter: blur(1px); }
-            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        .detail-photo:hover .photo-caption {
+            color: #f5e6c8; 
         }
 
         /* ==========================================
-           04 / 厨房手记（保持不变，极简线框）
+           专属排版：奥斯汀旧债（独立解密页面）
            ========================================== */
-        .notes-board {
-            display: flex; flex-direction: column; gap: 20px;
-            width: 100%; max-width: 750px; margin: 0 auto;
+        .secret-page {
+            position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center;
+            max-width: 750px;
         }
-        .note-card {
-            background: rgba(20, 20, 20, 0.6); border: 1px solid #3a3024; border-left: 3px solid #b85c58;
-            padding: 20px 30px; position: relative; transition: all 0.3s; display: flex; align-items: center; gap: 20px;
+
+        .secret-header {
+            font-family: "Courier New", monospace; font-size: 1rem; color: #8a6e3e;
+            margin-bottom: 2rem; letter-spacing: 0.2rem;
         }
-        .note-card:hover { border-color: #8a6e3e; border-left-color: #b85c58; background: rgba(30, 30, 30, 0.8); transform: translateX(5px); }
-        .note-tag {
-            font-family: "Courier New", monospace; font-size: 0.75rem; color: #b85c58;
-            letter-spacing: 0.1rem; border: 1px solid #b85c58; padding: 4px 8px; flex-shrink: 0; opacity: 0.8;
+
+        .secret-content-layout { display: flex; gap: 40px; align-items: center; }
+
+        .secret-text-area {
+            flex: 1; position: relative; padding: 2rem; border-left: 2px solid #b85c58;
+            background: rgba(20, 10, 10, 0.4); min-height: 200px; display: flex; flex-direction: column; justify-content: center;
         }
-        .note-text { font-family: "KaiTi", "STKaiti", serif; font-size: 1.1rem; color: #d1c5a8; line-height: 1.6; }
+
+        .secret-photo-area {
+            width: 260px; flex-shrink: 0;
+            transition: opacity 1.5s ease, visibility 1.5s ease, transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+            opacity: 0; visibility: hidden; transform: translateX(30px);
+        }
+
+        .secret-photo {
+            background: #111;
+            border: 1px solid #3a3024;
+            padding: 10px 10px 35px 10px;
+            box-shadow: -8px 12px 30px rgba(0,0,0,0.9);
+            transform: rotate(-3deg);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; overflow: hidden; cursor: pointer;
+        }
+
+        .secret-photo:hover {
+            transform: rotate(0deg) scale(1.08) translateY(-5px);
+            box-shadow: -12px 18px 40px rgba(0,0,0,0.95), 0 0 20px rgba(158,138,99,0.2);
+            border-color: #9e8a63;
+        }
+
+        .secret-photo img {
+            width: 100%; height: 240px; object-fit: cover;
+            filter: sepia(80%) grayscale(100%) brightness(0.5) blur(3px);
+            transform: scale(1.1);
+            transition: all 1s ease; display: block;
+        }
+
+        .secret-photo::after {
+            content: '// 附件：债务清算证明'; position: absolute; bottom: 10px; left: 0; width: 100%;
+            text-align: center; font-family: "Courier New", monospace;
+            font-size: 0.75rem; color: #5a4a2e; transition: color 0.3s;
+        }
+        .secret-photo:hover::after { color: #9e8a63; }
+
+        .secret-photo-area.unlocked { opacity: 1; visibility: visible; transform: translateX(0); }
+        .secret-photo-area.unlocked .secret-photo img {
+            filter: sepia(30%) grayscale(20%) brightness(0.8) blur(0px); transform: scale(1.05);
+        }
+
+        .redacted {
+            background-color: #050505; color: transparent; user-select: none;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.9);
+        }
+
+        .wax-seal-lock {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80px; height: 80px; border-radius: 50%;
+            background: radial-gradient(circle, #8b2c2c 0%, #4a1515 100%);
+            border: 2px solid #6e2424;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.5);
+            display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s; z-index: 10;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .wax-seal-lock::after { content: '解'; color: #d1c5a8; font-size: 1.5rem; font-family: "Songti SC"; font-weight: bold; }
+        .wax-seal-lock:hover {
+            transform: translate(-50%, -50%) scale(1.05) rotate(5deg);
+            box-shadow: 0 0 15px rgba(139,44,44,0.4), inset 0 0 10px rgba(0,0,0,0.5);
+            border-color: #a84a46;
+        }
+
+        @keyframes sealBreak {
+            0% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.1) rotate(15deg); opacity: 0.5; filter: blur(2px); }
+            100% { transform: translate(-50%, -50%) scale(0) rotate(30deg); opacity: 0; filter: blur(5px); }
+        }
+        .seal-breaking { animation: sealBreak 0.6s forwards; }
+
+        @keyframes textReveal { 0% { background-color: #050505; color: transparent; } 100% { background-color: transparent; color: #b85c58; } }
+        .revealed { animation: textReveal 1s forwards; }
+
+        #ledger-detail-page { transition: opacity 0.2s ease; }
 
         /* === 场景过渡遮罩 === */
         #transition-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #050505; z-index: 999;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #050505; z-index: 999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 1s ease;
         }
         #transition-screen.active { opacity: 1; pointer-events: auto; }
-        .trans-text { color: #8a6e3e; font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem; opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s; }
-        #transition-screen.active .trans-text { opacity: 1; transform: translateY(0); }
+        
+        .trans-text {
+            color: #8a6e3e; font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem;
+            opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s;
+        }
+        #transition-screen.active .trans-text {
+            opacity: 1; transform: translateY(0);
+        }
+
+        /* ==========================================================
+           移动端适配（< 900px）
+           ========================================================== */
+        @media (max-width: 900px) {
+
+            /* 1. 页面基础：允许纵向滚动，顶部留出 HUD 空间 */
+            body {
+                display: block;
+                height: auto;
+                min-height: 100vh;
+                overflow-y: auto;
+                overflow-x: hidden;
+                padding: 64px 0 40px 0;
+                box-sizing: border-box;
+            }
+
+            /* 2. 顶部 HUD 与返回按钮 */
+            .hud-info {
+                top: 12px;
+                left: 12px;
+                font-size: 0.65rem;
+                gap: 8px;
+                flex-wrap: wrap;
+                max-width: 58%;
+            }
+            .hud-info span { border-bottom: none; padding-bottom: 0; }
+
+            .back-btn {
+                top: 12px;
+                right: 12px;
+                padding: 6px 12px;
+                font-size: 0.7rem;
+                letter-spacing: 0.1rem;
+            }
+
+            /* 3. 主布局：左右并排 → 上下堆叠 */
+            .layout {
+                flex-direction: column;
+                width: 100%;
+                max-width: 100%;
+                height: auto;
+                gap: 20px;
+                padding: 0 16px;
+                box-sizing: border-box;
+            }
+
+            /* 4. 左侧导航 */
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(90, 74, 46, 0.3);
+                padding: 0 0 16px 0;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+            .room-name { font-size: 2rem; }
+            .room-desc { margin-bottom: 1.5rem; }
+            .nav-list { flex-direction: row; flex-wrap: wrap; gap: 12px 20px; }
+            .nav-item { font-size: 0.85rem; letter-spacing: 0.08rem; }
+            .secret-nav { margin-top: 1.2rem; font-size: 0.7rem; }
+
+            /* 5. 右侧内容区 */
+            .content-area {
+                padding: 0;
+                justify-content: flex-start;
+            }
+            .text-box {
+                max-height: none;
+                overflow: visible;
+                padding-right: 0;
+                font-size: 1rem;
+                line-height: 1.9;
+            }
+
+            /* 6. 语录图片 */
+            .quote-image-wrapper { max-width: 100%; margin-bottom: 1.5rem; }
+            .quote-image-wrapper img { height: 160px; }
+            .quote-style { font-size: 1rem; padding: 1rem 1.2rem; line-height: 1.9; }
+
+            /* 7. 账本：左右两页 → 上下两页 */
+            .ledger-book-wrapper { height: auto; }
+            .book {
+                width: 100%;
+                height: auto;
+                max-height: none;
+                flex-direction: column;
+                transform: none;
+                border-radius: 6px;
+            }
+            .book:hover { transform: none; }
+            .book::after { display: none; }
+            .book-page { padding: 20px 16px; }
+            .page-left {
+                border-right: none;
+                border-bottom: 1px solid rgba(90, 74, 46, 0.4);
+            }
+            .page-right { border-left: none; }
+            .ledger-title { font-size: 0.85rem; padding-bottom: 10px; margin-bottom: 16px; }
+            .ledger-item-row { font-size: 0.85rem; padding: 12px 6px; }
+
+            /* 左页内部的滚动容器改为自然高度 */
+            .page-left > div[style*="overflow-y"] {
+                height: auto !important;
+                overflow: visible !important;
+            }
+
+            /* 8. 账目详情 */
+            .detail-box { gap: 16px; justify-content: flex-start; }
+            .detail-note { font-size: 0.95rem; line-height: 1.7; transform: none; }
+            .detail-title { font-size: 1.05rem; }
+            .note-content { margin-bottom: 10px; }
+            .detail-photo {
+                width: 140px;
+                height: 180px;
+                align-self: center;
+                margin-bottom: 12px;
+                transform: rotate(1deg);
+            }
+            .photo-caption { font-size: 0.7rem; }
+
+            /* 9. 暗门页面 */
+            .secret-page { max-width: 100%; }
+            .secret-header { font-size: 0.8rem; margin-bottom: 1rem; }
+            .secret-content-layout { flex-direction: column; gap: 20px; align-items: stretch; }
+            .secret-text-area { padding: 1.2rem; min-height: 160px; }
+            .secret-photo-area { width: 100%; }
+            .secret-photo { transform: none; }
+            .secret-photo:hover { transform: none; }
+            .secret-photo img { height: 200px; }
+            .wax-seal-lock { width: 64px; height: 64px; }
+            .wax-seal-lock::after { font-size: 1.2rem; }
+
+            /* 10. 过渡文字：适配手机，防止溢出并居中 */
+            .trans-text {
+                width: 80%;
+                max-width: 320px;
+                text-align: center;
+                font-size: 0.95rem;
+                letter-spacing: 0.15rem;
+                line-height: 1.8;
+                padding: 0 16px;
+                box-sizing: border-box;
+            }
+        }
+
+        /* 触屏设备：禁用鼠标拖尾与自定义光标 */
+        @media (pointer: coarse) {
+            body { cursor: auto; }
+            .cursor-trail { display: none; }
+        }
     </style>
 </head>
 <body>
     <div class="hud-info">
         <span id="current-time">00:00</span>
         <span>13°C 阴雨</span>
-        <span>芥川庄园 · 一楼厨房</span>
+        <span>芥川庄园 · 一楼账房</span>
     </div>
 
-    <a href="javascript:void(0)" class="back-btn" onclick="leaveRoom()">⎋ [ 离开厨房 ]</a>
+    <a href="javascript:void(0)" class="back-btn" onclick="leaveRoom()">⎋ [ 离开账房 ]</a>
 
     <div class="layout">
         <div class="sidebar">
-            <h2 class="room-name">厨房</h2>
-            <div class="room-desc">专属女仆 / 莉薇娅</div>
+            <h2 class="room-name">账房</h2>
+            <div class="room-desc">大管家 / 埃德蒙</div>
+
             <div class="nav-list">
-                <div class="nav-item active" id="nav-quote" onclick="switchContent('quote')">01 / 她的语录</div>
+                <div class="nav-item active" id="nav-quote" onclick="switchContent('quote')">01 / 他的语录</div>
                 <div class="nav-item" id="nav-story" onclick="switchContent('story')">02 / 旧日往事</div>
-                <div class="nav-item" id="nav-menu" onclick="switchContent('menu')">03 / 专属食单</div>
-                <div class="nav-item" id="nav-notes" onclick="switchContent('notes')">04 / 厨房手记</div>
+                <div class="nav-item" id="nav-ledger" onclick="switchContent('ledger')">03 / 收支账本</div>
+            </div>
+
+            <div class="secret-nav" id="nav-secret" onclick="switchContent('secret')">
+                [ 未归档：关于那笔旧债 ]
             </div>
         </div>
-        <div class="content-area"><div class="text-box show" id="text-content"></div></div>
+
+        <div class="content-area">
+            <div class="text-box show" id="text-content"></div>
+        </div>
     </div>
-    <div id="transition-screen"><div class="trans-text" id="trans-text"></div></div>
+
+    <!-- 过渡遮罩层 -->
+    <div id="transition-screen">
+        <div class="trans-text" id="trans-text"></div>
+    </div>
 
     <script>
-        /* ================= 系统基础逻辑 ================= */
+        /* ================= 时钟 ================= */
         function updateTime() {
             const now = new Date();
-            document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            document.getElementById('current-time').textContent =
+                `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         }
         setInterval(updateTime, 1000); updateTime();
 
+        /* ================= 鼠标拖尾 ================= */
         let lastTrailTime = 0;
         document.addEventListener('mousemove', function(e) {
             const now = Date.now();
             if (now - lastTrailTime > 30) {
-                const particle = document.createElement('div'); particle.className = 'cursor-trail';
-                const offsetX = (Math.random() - 0.5) * 8; const offsetY = (Math.random() - 0.5) * 8;
-                particle.style.left = (e.clientX + offsetX) + 'px'; particle.style.top = (e.clientY + offsetY) + 'px';
-                const size = Math.random() * 4 + 2; particle.style.width = size + 'px'; particle.style.height = size + 'px';
-                document.body.appendChild(particle); setTimeout(() => { particle.remove(); }, 800); lastTrailTime = now;
+                const particle = document.createElement('div');
+                particle.className = 'cursor-trail';
+                const offsetX = (Math.random() - 0.5) * 8;
+                const offsetY = (Math.random() - 0.5) * 8;
+                particle.style.left = (e.clientX + offsetX) + 'px';
+                particle.style.top = (e.clientY + offsetY) + 'px';
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px'; particle.style.height = size + 'px';
+                document.body.appendChild(particle);
+                setTimeout(() => { particle.remove(); }, 800);
+                lastTrailTime = now;
             }
         });
 
+        /* ================= 音效引擎 ================= */
         let sharedAudioCtx = null;
         function getAudioCtx() {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -326,186 +568,266 @@
             if (sharedAudioCtx.state === 'suspended') sharedAudioCtx.resume();
             return sharedAudioCtx;
         }
-        function playTypewriterSound() {
+
+        /* 翻页音效 */
+        function playPageTurnSound() {
             try {
-                const audioCtx = getAudioCtx(); if (!audioCtx) return;
-                const now = audioCtx.currentTime; const bufferSize = audioCtx.sampleRate * 0.05;
+                const audioCtx = getAudioCtx();
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+                const bufferSize = audioCtx.sampleRate * 0.1;
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const data = buffer.getChannelData(0); for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
-                const source = audioCtx.createBufferSource(); source.buffer = buffer;
-                const filter = audioCtx.createBiquadFilter(); filter.type = 'highpass'; filter.frequency.value = 3000;
-                const gain = audioCtx.createGain(); gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(0.1, now + 0.01); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-                source.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination); source.start(now);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'bandpass'; filter.frequency.value = 1200; filter.Q.value = 1.0;
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(0.15, now + 0.02);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+
+                source.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+                source.start(now);
             } catch (e) {}
         }
+
+        /* 离开账房：合书音效 + 脚步声 */
         function playExitSound() {
             try {
-                const audioCtx = getAudioCtx(); if (!audioCtx) return; const now = audioCtx.currentTime;
+                const audioCtx = getAudioCtx();
+                if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+
+                const thumpOsc = audioCtx.createOscillator();
+                thumpOsc.type = 'sine';
+                thumpOsc.frequency.setValueAtTime(120, now);
+                thumpOsc.frequency.exponentialRampToValueAtTime(30, now + 0.12);
+
+                const thumpGain = audioCtx.createGain();
+                thumpGain.gain.setValueAtTime(0, now);
+                thumpGain.gain.linearRampToValueAtTime(0.6, now + 0.02);
+                thumpGain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+
+                thumpOsc.connect(thumpGain); 
+                thumpGain.connect(audioCtx.destination);
+                thumpOsc.start(now); 
+                thumpOsc.stop(now + 0.2);
+
                 for (let i = 0; i < 3; i++) {
-                    const stepTime = now + (i * 0.4); const stepOsc = audioCtx.createOscillator();
-                    stepOsc.type = 'sine'; stepOsc.frequency.setValueAtTime(80, stepTime); stepOsc.frequency.exponentialRampToValueAtTime(30, stepTime + 0.1);
-                    const stepGain = audioCtx.createGain(); stepGain.gain.setValueAtTime(0, stepTime); stepGain.gain.linearRampToValueAtTime(0.2, stepTime + 0.02); stepGain.gain.exponentialRampToValueAtTime(0.01, stepTime + 0.15);
-                    stepOsc.connect(stepGain); stepGain.connect(audioCtx.destination); stepOsc.start(stepTime); stepOsc.stop(stepTime + 0.2);
+                    const stepTime = now + 0.3 + (i * 0.4);
+                    const stepOsc = audioCtx.createOscillator();
+                    stepOsc.type = 'sine';
+                    stepOsc.frequency.setValueAtTime(80, stepTime);
+                    stepOsc.frequency.exponentialRampToValueAtTime(30, stepTime + 0.1);
+                    
+                    const stepGain = audioCtx.createGain();
+                    stepGain.gain.setValueAtTime(0, stepTime);
+                    stepGain.gain.linearRampToValueAtTime(0.2, stepTime + 0.02);
+                    stepGain.gain.exponentialRampToValueAtTime(0.01, stepTime + 0.15);
+                    
+                    stepOsc.connect(stepGain);
+                    stepGain.connect(audioCtx.destination);
+                    stepOsc.start(stepTime);
+                    stepOsc.stop(stepTime + 0.2);
                 }
             } catch (e) {}
         }
+
         function leaveRoom() {
-            playExitSound(); document.getElementById('trans-text').innerText = '洗净手上的油烟，重回寂静的大厅。';
+            playExitSound();
+            document.getElementById('trans-text').innerText = '将那些泛黄的秘密留在身后，重回寂静。';
             document.getElementById('transition-screen').classList.add('active');
-            setTimeout(() => { window.location.href = "index.html?open=true"; }, 1800);
+
+            setTimeout(() => {
+                window.location.href = "index.html?open=true";
+            }, 1800);
         }
 
-        /* ================= 图片配置 ================= */
+        /* ================= 图片地址配置 ================= */
         const IMG_BASE = 'https://miaozeze.github.io/';
         const RAW_BASE = 'https://raw.githubusercontent.com/miaozeze/miaozeze.github.io/main/';
+
         function imgTag(file, fallback, alt) {
-            const primary = IMG_BASE + file; const secondary = RAW_BASE + file;
-            return `<img src="${primary}" alt="${alt || '附件'}" data-fallback-raw="${secondary}" data-fallback-unsplash="${fallback || ''}" onerror="handleImgError(this)">`;
+            const primary = IMG_BASE + file;
+            const secondary = RAW_BASE + file;
+            return `<img src="${primary}" alt="${alt || '附件'}"
+                        data-fallback-raw="${secondary}"
+                        data-fallback-unsplash="${fallback || ''}"
+                        onerror="handleImgError(this)">`;
         }
+
         window.handleImgError = function(img) {
-            const raw = img.dataset.fallbackRaw; const unsplash = img.dataset.fallbackUnsplash;
-            if (raw && img.src !== raw) { img.src = raw; } else if (unsplash && img.src !== unsplash) { img.src = unsplash; }
+            const raw = img.dataset.fallbackRaw;
+            const unsplash = img.dataset.fallbackUnsplash;
+            if (raw && img.src !== raw) { img.src = raw; }
+            else if (unsplash && img.src !== unsplash) { img.src = unsplash; }
         };
+
+        /* ================= 账目数据 ================= */
+        const ledgerData = [
+            {
+                id: "tea", name: "大吉岭红茶（特级）", price: "£ 120", noteTitle: "// 异常采买记录",
+                noteText: `
+                    <div class="note-content"><span class="note-label">入账说明：</span>正常配给至二楼茶室。</div>
+                    <div class="note-content"><span class="note-label">退货记录：</span>莉薇娅小姐亲自验收，以“香气不对”为由退回两罐。</div>
+                    <div class="note-content"><span class="note-label">管家附言：</span>她对品质的要求，往往比预算更让人头疼。</div>
+                `,
+                imgFile: "26247621.jpg", imgFallback: "https://images.unsplash.com/photo-1576092762791-dd9e22204423?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 被退回的红茶"
+            },
+            {
+                id: "humidity", name: "温室抽湿机耗材", price: "£ 85", noteTitle: "// 环境维护账单",
+                noteText: `
+                    <div class="note-content"><span class="note-label">采购事由：</span>南方回南天，湿度超出标准阀值。</div>
+                    <div class="note-content"><span class="note-label">支出明细：</span>抽湿机滤网与干燥剂替换。</div>
+                    <div class="note-content"><span class="note-label">管家附言：</span>大小姐体寒手凉，室内温度已上调。礼服内衬修改费用走此项。</div>
+                `,
+                imgFile: "7c4b687a.jpg", imgFallback: "https://images.unsplash.com/photo-1541983860-1ad1adb8c7d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 温室一角"
+            },
+            {
+                id: "dress", name: "晚宴定制礼服", price: "£ 2,400", noteTitle: "// 专项采买",
+                noteText: `
+                    <div class="note-content"><span class="note-label">采买事由：</span>中村家联姻晚宴指定高定。</div>
+                    <div class="note-content"><span class="note-label">验收记录：</span>大小姐极度抗拒，未进行试穿。</div>
+                    <div class="note-content"><span class="note-label">管家附言：</span>内衬已暗中联系裁缝改为可拆卸设计，以备晚宴突发状况。</div>
+                `,
+                imgFile: "3673d324.jpg", imgFallback: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 晚宴礼服草图"
+            },
+            {
+                id: "cookie", name: "温室特供香草曲奇", price: "£ 45", noteTitle: "// 私人支出",
+                noteText: `
+                    <div class="note-content"><span class="note-label">入账说明：</span>自费购入顶级香草荚与黄油。</div>
+                    <div class="note-content"><span class="note-label">异常记录：</span>借用温室烤箱，未惊动厨房。</div>
+                    <div class="note-content"><span class="note-label">管家附言：</span>大小姐今天心情欠佳。这笔钱不走公账，记在我的私人名下。</div>
+                `,
+                imgFile: "a6ed3d01.jpg", imgFallback: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 刚出炉的曲奇"
+            }
+        ];
+
+        /* ================= 左页账目列表 ================= */
+        let itemsHTML = "";
+        ledgerData.forEach((item, index) => {
+            const activeClass = index === 0 ? 'active' : '';
+            itemsHTML += `
+                <div class="ledger-item-row ${activeClass}" id="row-${item.id}" onclick="selectLedgerItem('${item.id}')">
+                    <span>${item.name}</span><span>${item.price}</span>
+                </div>
+            `;
+        });
 
         /* ================= 各内容面板 ================= */
         const contentData = {
             quote: `
                 <div class="quote-image-wrapper">
-                    <img src="https://miaozeze.github.io/kitchen_quote.jpg" alt="厨房一角" data-fallback-raw="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80" onerror="this.src=this.dataset.fallbackRaw">
-                    <div class="quote-image-caption">// 一尘不染的料理台</div>
+                    <img src="https://miaozeze.github.io/ledger_quote.jpg" alt="账房一角">
+                    <div class="quote-image-caption">// 黄铜台灯下的收支账本</div>
                 </div>
-                <div class="quote-style"><p>“大小姐，这个点来厨房做什么？冷肉锁在柜子里，钥匙在我身上——您别想了。去餐桌坐着，我给您热杯牛奶。”</p></div>
+                <div class="quote-style">
+                    <p>“大小姐，来查账的话，文件在左手边第二格。要躲清静，热茶和薄荷饼干在桌上。</p>
+                    <p>至于莉薇娅小姐那边——您本来就在账房帮我核采买单，不是吗？”</p>
+                </div>
             `,
             story: `
-                <p>凌晨两点，厨房里还亮着灯。莉薇娅在擦一把银勺——擦银器这件事，她从来不看表。</p>
-                <p>听到脚步声，她没回头：“这个点来厨房做什么？冷肉锁在柜子里，钥匙在我身上。”</p>
-                <p>炉子上一直温着半壶牛奶。她说完才转过身，把杯子倒满，端到桌上，热气顶着杯沿：“只放了一点蜂蜜。糖别想——您那口牙。”</p>
-                <p>“谁特地给您热的。”她把软布折了一道，又展开，“……炉子上正好有。顺手。”</p>
-                <p>她站了一会儿，像有话要说，最后只落下半句：“明早要是再不吃饭——”</p>
-                <p>话咽了回去。她转身回了操作台，重新擦起那把早就干净的勺子：“……早点喝完。”</p>
+                <p>账房里亮着一盏黄铜台灯。桌上摊着采买单和几页账，他那杯茶已经凉透了——他聊起温室里的薄荷时总这样。</p>
+                <p>听到脚步声，他推了一下眼镜，没抬头：“大小姐，如果是来核对下个月的采买，文件在左手边第二格。”</p>
+                <p>你伸手去碰桌上那叠旧账本，他先一步抽走，换了张空白的纸推到你面前。</p>
+                <p>“这些我来整理。”他抬起头，眼里带着笑意，“饼干刚出炉，我先替您尝过一块——上一块是检查，这一块是私心。”</p>
+                <p>你把来意说了。他听完，笑意没变，只把椅子往回挪了半步。</p>
+                <p>“躲清静？可以。”他重新低下头，“莉薇娅小姐那边我替您说——她非常专业，只是脾气像只炸毛的猫。这话她听了，大概能消停半个钟头。”</p>
+                <p>你问他刚才在想什么。</p>
+                <p>“在想账单。您要听哪一页？”</p>
             `,
-            menu: `
-                <div class="kitchen-split-view">
-                    <div class="menu-ticket-wrapper">
-                        <div class="menu-ticket">
-                            <div class="slip-header">
-                                <div>AKUTAGAWA <br><span>KITCHEN</span></div>
-                                <div style="text-align:right;">DATE: 11/06<br>TIME: 02:00 AM</div>
-                            </div>
-                            <div class="slip-cols"><div class="col-qty">QTY</div><div class="col-dish">DISHES</div></div>
-
-                            <div class="slip-item active" id="slip-wellington" onclick="selectSlip('wellington', this)">
-                                <div class="col-qty"><span class="checkbox"></span>01</div><div class="col-dish">古典惠灵顿牛排</div>
-                            </div>
-                            <div class="slip-item" id="slip-consomme" onclick="selectSlip('consomme', this)">
-                                <div class="col-qty"><span class="checkbox"></span>01</div><div class="col-dish">法式清汤</div>
-                            </div>
-                            <div class="slip-item" id="slip-scone" onclick="selectSlip('scone', this)">
-                                <div class="col-qty"><span class="checkbox"></span>02</div><div class="col-dish">约克郡司康饼</div>
-                            </div>
-                            <div class="slip-item" id="slip-oxtail" onclick="selectSlip('oxtail', this)">
-                                <div class="col-qty"><span class="checkbox"></span>01</div><div class="col-dish">慢炖牛尾浓汤</div>
+            ledger: `
+                <div class="ledger-book-wrapper">
+                    <div class="book">
+                        <div class="book-page page-left">
+                            <div class="ledger-title">庄园十月收支明细</div>
+                            <div style="overflow-y: auto; padding-right: 5px; height: 100%;">${itemsHTML}</div>
+                        </div>
+                        <div class="book-page page-right" id="ledger-detail-page"></div>
+                    </div>
+                </div>
+            `,
+            secret: `
+                <div class="secret-page">
+                    <div class="secret-header">FILE NO. // 奥斯汀旧债（邓恩）</div>
+                    <div class="secret-content-layout">
+                        <div class="secret-text-area">
+                            <div class="detail-title">// 关于那笔旧债</div>
+                            <p class="detail-note" style="margin-bottom: 0;">
+                                <span class="redacted" id="debt-text">钱以杂项摊平，追债的人已经被我挡回去了。这件事，永远别让莉薇娅知道。我会把它带进棺材里。</span>
+                            </p>
+                            <div class="wax-seal-lock" id="debt-seal" onclick="unlockDebt(this)"></div>
+                        </div>
+                        <div class="secret-photo-area" id="secret-photo-area">
+                            <div class="secret-photo">
+                                ${imgTag('ff632647.jpg', RAW_BASE + 'ff632647.jpg', '债务附件')}
                             </div>
                         </div>
                     </div>
-
-                    <div class="recipe-panel-wrapper">
-                        <div class="panel-content" id="recipe-panel-content" style="width: 100%;"></div>
-                    </div>
-                </div>
-            `,
-            notes: `
-                <div class="notes-board">
-                    <div class="note-card"><div class="note-tag">MEMO 01</div><div class="note-text">厨房的采买预算又被埃德蒙那只狐狸砍了。他最好祈祷别让我发现采购单里的食材以次充好。</div></div>
-                    <div class="note-card"><div class="note-tag">MEMO 02</div><div class="note-text">星野雫今天又把机油带进厨房了。警告他，再敢用擦机器的抹布碰大小姐的骨瓷杯，我就拔了他研究室的电线。</div></div>
-                    <div class="note-card"><div class="note-tag">MEMO 03</div><div class="note-text">大小姐今天心情很差，晚饭没动。炉子上留了半碗清汤，等她半夜饿了热给她喝。别放糖。</div></div>
                 </div>
             `
         };
 
-        /* ================= 点菜单数据与交互 ================= */
-        const slipData = {
-            wellington: {
-                title: "古典惠灵顿牛排",
-                no: "RECIPE NO. 012 / MAIN COURSE",
-                desc: "金黄酥皮包裹粉嫩牛柳，黑松露与蘑菇泥香气交织。是对火候掌控的极致考验，每一口都肉汁四溢。",
-                steps: [
-                    "牛柳海盐黑胡椒腌制，煎至表面焦化。",
-                    "蘑菇洋葱切碎，黄油慢炒收干水分。",
-                    "火腿抹蘑菇泥，卷入牛柳冷藏定型。",
-                    "酥皮包裹后刷蛋黄液，烘烤至金黄。"
-                ],
-                img: imgTag('wellington.jpg', 'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=800&q=80', '惠灵顿牛排')
-            },
-            consomme: {
-                title: "法式清汤",
-                no: "RECIPE NO. 024 / SOUP",
-                desc: "看似清如白水，实则凝聚了牛肉与香草的精华。历经数小时慢熬与多次过滤，清透却滋味醇厚。",
-                steps: [
-                    "牛骨与蔬菜慢熬六小时，萃取精华。",
-                    "瘦牛肉剁成肉糜，与蛋清混合。",
-                    "肉糜入冷汤加热，用肉盖吸附杂质。",
-                    "保持微沸两小时，纱布过滤至纯净。"
-                ],
-                img: imgTag('consomme.jpg', 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80', '法式清汤')
-            },
-            scone: {
-                title: "约克郡司康饼",
-                no: "RECIPE NO. 038 / TEA",
-                desc: "外酥内软的经典英式茶点，带着淡淡的黄油香。掰开后抹上凝脂奶油与果酱，是下午茶的灵魂。",
-                steps: [
-                    "面粉与冷藏黄油搓揉成粗糙颗粒状。",
-                    "加牛奶轻拌成团，切勿过度揉搓起筋。",
-                    "擀平至两厘米厚，用圆形模具按压。",
-                    "表面刷牛奶，烘烤至金黄趁热食用。"
-                ],
-                img: imgTag('scone.jpg', 'https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&w=800&q=80', '司康饼')
-            },
-            oxtail: {
-                title: "慢炖牛尾浓汤",
-                no: "RECIPE NO. 045 / NIGHT SNACK",
-                desc: "红宝石般的汤底，牛尾经长时间慢炖软烂脱骨，胶质完全融入汤汁。搭配烤脆面包片，是冬日最深的暖意。",
-                steps: [
-                    "牛尾洗净擦干，入锅煎至各面焦糖色。",
-                    "原锅黄油炒香洋葱与番茄膏。",
-                    "倒红酒刮起锅底精华，加高汤慢炖。",
-                    "取出牛尾去骨切肉，汤汁收浓调味。"
-                ],
-                img: imgTag('oxtail.jpg', 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80', '牛尾浓汤')
-            }
-        };
-
-        function selectSlip(key, element) {
-            playTypewriterSound();
-            document.querySelectorAll('.slip-item').forEach(el => el.classList.remove('active'));
-            element.classList.add('active');
-
-            const data = slipData[key];
-            const panel = document.getElementById('recipe-panel-content');
-            
-            panel.innerHTML = `
-                <div class="print-anim editorial-cover">
-                    <!-- 左侧：全高大图 -->
-                    <div class="cover-image-left">
-                        ${data.img}
-                        <div class="cover-image-caption">// 出餐留影</div>
+        /* ================= 右页渲染 ================= */
+        function renderLedgerDetail(item) {
+            const detailPage = document.getElementById('ledger-detail-page');
+            if (!detailPage) return;
+            detailPage.innerHTML = `
+                <div class="ledger-title">批注与备忘</div>
+                <div class="detail-box">
+                    <div class="detail-note">
+                        <div class="detail-title">${item.noteTitle}</div>
+                        ${item.noteText}
                     </div>
-                    
-                    <!-- 右侧：文字区（整体垂直居中） -->
-                    <div class="cover-text-right">
-                        <h2 class="panel-title">${data.title}</h2>
-                        <div class="panel-no">${data.no}</div>
-                        
-                        <div class="sec-title">// 风味描述</div>
-                        <div class="panel-desc">${data.desc}</div>
-                        
-                        <div class="sec-title">// 制作方法</div>
-                        <div class="panel-steps">
-                            ${data.steps.map((step, i) => `<p><span>[${i+1}]</span> ${step}</p>`).join('')}
-                        </div>
+                    <div class="detail-photo">
+                        ${imgTag(item.imgFile, item.imgFallback, '附件')}
+                        <div class="photo-caption">${item.imgCaption}</div>
                     </div>
                 </div>
             `;
+        }
+
+        function initLedgerDetail() {
+            renderLedgerDetail(ledgerData[0]);
+        }
+
+        function selectLedgerItem(id) {
+            playPageTurnSound();
+            document.querySelectorAll('.ledger-item-row').forEach(el => el.classList.remove('active'));
+            const row = document.getElementById(`row-${id}`);
+            if (row) row.classList.add('active');
+
+            const itemData = ledgerData.find(d => d.id === id);
+            const detailPage = document.getElementById('ledger-detail-page');
+            if (!detailPage || !itemData) return;
+
+            detailPage.style.opacity = 0;
+            setTimeout(() => {
+                renderLedgerDetail(itemData);
+                detailPage.style.opacity = 1;
+            }, 200);
+        }
+
+        /* ================= 蜡封解密 ================= */
+        let debtUnlocked = false;
+        function unlockDebt(sealElement) {
+            debtUnlocked = true;
+            
+            sealElement.classList.add('seal-breaking');
+            const photoArea = document.getElementById('secret-photo-area');
+            if (photoArea) photoArea.classList.add('unlocked');
+
+            setTimeout(() => {
+                sealElement.style.display = 'none';
+                const text = document.getElementById('debt-text');
+                if (text) {
+                    text.classList.add('revealed');
+                    text.addEventListener('animationend', () => text.classList.remove('redacted'), { once: true });
+                }
+            }, 500);
         }
 
         /* ================= 内容切换 ================= */
@@ -514,8 +836,12 @@
             if (isAnimating) return;
             isAnimating = true;
 
+            if (type !== 'secret') {
+                debtUnlocked = false;
+            }
+
             const textBox = document.getElementById('text-content');
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item, .secret-nav').forEach(el => el.classList.remove('active'));
             const nav = document.getElementById(`nav-${type}`);
             if (nav) nav.classList.add('active');
 
@@ -524,10 +850,12 @@
             setTimeout(() => {
                 textBox.innerHTML = contentData[type];
                 textBox.scrollTop = 0;
-                
-                if (type === 'menu') {
-                    const firstItem = document.getElementById('slip-wellington');
-                    if (firstItem) selectSlip('wellington', firstItem);
+
+                if (type === 'ledger') {
+                    textBox.style.fontFamily = 'inherit';
+                    initLedgerDetail();
+                } else {
+                    textBox.style.fontFamily = '"Songti SC", "Noto Serif SC", serif';
                 }
 
                 textBox.classList.add('show');
@@ -535,6 +863,7 @@
             }, 400);
         }
 
+        /* 初始渲染 */
         document.getElementById('text-content').innerHTML = contentData.quote;
     </script>
 </body>
