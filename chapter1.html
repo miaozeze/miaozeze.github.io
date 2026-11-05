@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>第一章 | 纸页与灰烬</title>
     <style>
-        /* === 基础页面设置 === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
             font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
@@ -52,7 +51,6 @@
         }
         @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
 
-        /* === 正文区域 === */
         #story-screen {
             max-width: 680px; width: 85%; margin: 0 auto; padding: 8rem 0;
             position: relative; z-index: 2; 
@@ -93,7 +91,6 @@
             text-align: center; color: #5a4a2e; font-size: 0.85rem; letter-spacing: 0.5rem; margin: 3rem 0; 
         }
 
-        /* === 底部按钮（与序章同款） === */
         .bottom-actions { 
             display: flex; 
             flex-direction: column; 
@@ -230,20 +227,20 @@
 
         <p class="story-p">哪怕是变成一团灰烬，她也要做最傲骨铮铮的那一把。</p>
 
-        <!-- 👇 底部按钮改为和序章完全相同的样式 -->
+        <!-- 👇 修改了这里的按钮文字 -->
         <div class="bottom-actions">
             <span class="glow-btn" onclick="goToChapter2()">
                 ✦ [ 第二章：红茶与冰冷的账单 ] ✦
             </span>
             
             <span class="subtle-btn" onclick="closeBookAndGoBack()">
-                [ 合上卷宗，退回档案室 ]
+                [ 合上卷宗，退回大厅 ]
             </span>
         </div>
     </div>
 
     <script>
-        // === 音效一：纸张摩擦声（翻开/翻页） ===
+        // === 音效：翻页声 ===
         function playPaperSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -276,7 +273,7 @@
             } catch (e) {}
         }
 
-        // === 音效二：合上厚书的闷响（合上卷宗） ===
+        // === 音效：合上厚书 ===
         function playBookCloseSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -292,7 +289,7 @@
                 lowSource.buffer = lowBuffer;
                 const lowFilter = audioCtx.createBiquadFilter();
                 lowFilter.type = 'lowpass';
-                lowFilter.frequency.value = 500;
+                lowFilter.frequency.value = 500; 
 
                 const lowGain = audioCtx.createGain();
                 lowGain.gain.setValueAtTime(0, audioCtx.currentTime);
