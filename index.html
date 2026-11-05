@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>芥川庄园 | 纸页与灰烬</title>
+    <title>芥川庄园大厅 | 纸页与灰烬</title>
     <style>
-        /* === 基础页面（完全保留你原版的极简黑金） === */
+        /* === 基础页面（黑金极简） === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
             font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
@@ -43,7 +43,7 @@
         }
         @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
 
-        /* 欢迎信封（首次进入） */
+        /* 欢迎信封 */
         #welcome-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
@@ -83,6 +83,7 @@
         }
         #welcome-screen.hidden + #main-screen { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
+        /* 中心主面板 */
         .invitation {
             border: 1px solid #5a4a2e; padding: 3rem 3rem; max-width: 480px; width: 85%; text-align: center;
             position: relative; background: rgba(30, 30, 30, 0.85); z-index: 1; transition: all 0.6s ease;
@@ -112,10 +113,27 @@
         .btn .num { color: #9e8a63; font-size: 0.8rem; font-family: "Courier New", monospace; transition: color 0.3s; }
         .btn:hover .num { color: #fff; }
 
-        .reread-divider { width: 60%; border-top: 1px dashed #3a3024; margin: 2rem 0 1rem 0; }
-        .reread-btn { font-size: 0.85rem; color: #8a6e3e; letter-spacing: 0.2rem; text-decoration: none; transition: all 0.3s; padding: 5px; cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important; }
-        .reread-btn:hover { color: #f5e6c8; text-shadow: 0 0 10px rgba(245,230,200,0.3); }
+        /* === 外围空间链接（散落感） === */
+        .outer-link {
+            position: absolute; color: #5a4a2e; font-size: 0.85rem; letter-spacing: 0.2rem;
+            text-decoration: none; transition: all 0.4s; cursor: pointer;
+            font-family: "Noto Serif SC", serif;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+            z-index: 20;
+        }
+        .outer-link:hover { color: #e8d5b5; text-shadow: 0 0 10px rgba(245,230,200,0.3); }
 
+        /* 左侧：重温雷雨（主线） */
+        .link-prologue { left: 8%; top: 50%; transform: translateY(-50%) rotate(-90deg); transform-origin: left center; }
+        
+        /* 右侧：潜入资料室（支线） */
+        .link-archive { right: 8%; top: 50%; transform: translateY(-50%) rotate(90deg); transform-origin: right center; }
+        
+        /* 左下角：暗格（彩蛋） */
+        .link-vault { left: 40px; bottom: 40px; color: #3a3024; font-size: 0.75rem; }
+        .link-vault:hover { color: #8a6e3e; }
+
+        /* 离开按钮 */
         .leave-manor-btn {
             position: fixed; top: 30px; right: 40px; display: flex; align-items: center; gap: 8px;
             padding: 10px 24px; color: #e8d5b5; font-size: 0.85rem; letter-spacing: 0.2rem;
@@ -176,6 +194,11 @@
         <span>13°C 阴雨</span>
     </div>
 
+    <!-- 外围空间（散落的门） -->
+    <a href="prologue.html" class="outer-link link-prologue">[ 重温那个雷雨之夜 ]</a>
+    <a href="archive.html" class="outer-link link-archive">[ 潜入机密资料室 ]</a>
+    <a href="treasure.html" class="outer-link link-vault">[ 开启不存在的暗格 ]</a>
+
     <div id="welcome-screen">
         <div class="envelope">
             <div class="seal"></div>
@@ -196,13 +219,13 @@
             <span style="font-size: 1rem;">⎋</span> [ 离 开 庄 园 ]
         </div>
 
+        <!-- 中间主面板（干净、纯粹） -->
         <div class="invitation">
             <div class="inner-border">
                 <div class="watermark">
                     <span>P A G E S</span><span>A N D</span><span>A S H E S</span>
                 </div>
                 
-                <!-- 文案修改：不再叫档案，而是选择拜访谁 -->
                 <div class="main-text">
                     致 芥川庄园的贵客：<br>
                     昨夜的雷雨已歇，茶点已备好。<br>
@@ -220,21 +243,6 @@
                         <span>探访研究室</span><span class="num">[ 03 ]</span>
                     </span>
                 </div>
-
-                <div class="reread-divider"></div>
-                
-                <!-- 追加：庄园的其他秘密区域 -->
-                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
-                    <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
-                    <a href="archive.html" class="reread-btn">[ 潜入机密资料室 ]</a>
-                    <a href="letter.html" class="reread-btn">[ 截获一封晚宴请柬 ]</a>
-                    
-                    <!-- 暗格入口保留 -->
-                    <div style="margin-top: 15px;">
-                        <a href="treasure.html" class="reread-btn" style="font-size: 0.7rem; color: #3a3024;">[ 开启不存在的暗格 ]</a>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
@@ -257,51 +265,30 @@
     </div>
 
     <script>
-        // 音效与跳转逻辑保持不变
+        // 音效与交互逻辑
         function playBookOnShelfSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
                 if (!AudioContext) return;
                 const audioCtx = new AudioContext();
                 if (audioCtx.state === 'suspended') audioCtx.resume();
-
                 const now = audioCtx.currentTime;
                 const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.3, audioCtx.sampleRate);
                 const slideData = slideBuffer.getChannelData(0);
                 for (let i = 0; i < slideData.length; i++) { slideData[i] = Math.random() * 2 - 1; }
-                const slideSource = audioCtx.createBufferSource();
-                slideSource.buffer = slideBuffer;
-                const slideFilter = audioCtx.createBiquadFilter();
-                slideFilter.type = 'bandpass';
-                slideFilter.frequency.value = 800;
-                slideFilter.Q.value = 1.5;
-                const slideGain = audioCtx.createGain();
-                slideGain.gain.setValueAtTime(0, now);
-                slideGain.gain.linearRampToValueAtTime(0.1, now + 0.1);
-                slideGain.gain.linearRampToValueAtTime(0.2, now + 0.25);
-                slideGain.gain.linearRampToValueAtTime(0, now + 0.3);
-                slideSource.connect(slideFilter);
-                slideFilter.connect(slideGain);
-                slideGain.connect(audioCtx.destination);
-                slideSource.start(now);
+                const slideSource = audioCtx.createBufferSource(); slideSource.buffer = slideBuffer;
+                const slideFilter = audioCtx.createBiquadFilter(); slideFilter.type = 'bandpass'; slideFilter.frequency.value = 800; slideFilter.Q.value = 1.5;
+                const slideGain = audioCtx.createGain(); slideGain.gain.setValueAtTime(0, now); slideGain.gain.linearRampToValueAtTime(0.1, now + 0.1); slideGain.gain.linearRampToValueAtTime(0.2, now + 0.25); slideGain.gain.linearRampToValueAtTime(0, now + 0.3);
+                slideSource.connect(slideFilter); slideFilter.connect(slideGain); slideGain.connect(audioCtx.destination); slideSource.start(now);
 
                 setTimeout(() => {
                     const thudBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
                     const thudData = thudBuffer.getChannelData(0);
                     for (let i = 0; i < thudData.length; i++) { thudData[i] = Math.random() * 2 - 1; }
-                    const thudSource = audioCtx.createBufferSource();
-                    thudSource.buffer = thudBuffer;
-                    const thudFilter = audioCtx.createBiquadFilter();
-                    thudFilter.type = 'lowpass';
-                    thudFilter.frequency.value = 300;
-                    const thudGain = audioCtx.createGain();
-                    thudGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                    thudGain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.01);
-                    thudGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                    thudSource.connect(thudFilter);
-                    thudFilter.connect(thudGain);
-                    thudGain.connect(audioCtx.destination);
-                    thudSource.start();
+                    const thudSource = audioCtx.createBufferSource(); thudSource.buffer = thudBuffer;
+                    const thudFilter = audioCtx.createBiquadFilter(); thudFilter.type = 'lowpass'; thudFilter.frequency.value = 300;
+                    const thudGain = audioCtx.createGain(); thudGain.gain.setValueAtTime(0, audioCtx.currentTime); thudGain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.01); thudGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                    thudSource.connect(thudFilter); thudFilter.connect(thudGain); thudGain.connect(audioCtx.destination); thudSource.start();
                 }, 260);
             } catch (e) {}
         }
