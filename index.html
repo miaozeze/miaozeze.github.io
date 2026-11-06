@@ -334,18 +334,21 @@
                 </div>
 
                 <div class="btn-group">
-                    <!-- 账房入口：触发黑屏过渡 -->
+                    <!-- 账房入口 -->
                     <a href="javascript:void(0);" onclick="enterRoom('ledger.html', '穿过长廊，黄铜把手微微发凉。')" class="btn">
                         <span>拜访账房</span><span class="num">[ 01 ]</span>
                     </a>
-                    <span class="btn" onclick="openModal('livia')">
+                    
+                    <!-- 厨房入口：修改为了 enterRoom 跳转模式，并带上文案 -->
+                    <a href="javascript:void(0);" onclick="enterRoom('kitchen.html', '食物的香气盖过了灰尘的味道，炉火正旺。')" class="btn">
                         <span>前往厨房</span><span class="num">[ 02 ]</span>
-                    </span>
+                    </a>
+                    
                     <span class="btn" onclick="openModal('shizuku')">
                         <span>探访研究室</span><span class="num">[ 03 ]</span>
                     </span>
                     
-                    <!-- 档案室入口：同样适用过渡效果 -->
+                    <!-- 档案室入口 -->
                     <a href="javascript:void(0);" onclick="enterRoom('archive.html', '沿着旋梯向上，灰尘在光柱中翻涌。')" class="btn">
                         <span>前往档案室</span><span class="num">[ 04 ]</span>
                     </a>
