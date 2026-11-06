@@ -59,23 +59,48 @@
         .nav-item:hover, .nav-item.active { color: #f5e6c8; padding-left: 10px; }
         .nav-item:hover::before, .nav-item.active::before { color: #f5e6c8; }
 
-        /* 💡 隐藏触发区 */
-        .secret-trigger {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            width: 30px; height: 30px;
-            opacity: 0.05; /* 极暗，几乎看不见 */
-            transition: all 0.5s ease;
-            cursor: crosshair;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 1.2rem; color: #c9bda5;
+        /* 06 项：两行结构，保留完整标签 */
+        .nav-item-ironbox {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 3px;
+            line-height: 1.4;
         }
-        .secret-trigger:hover {
-            opacity: 0.6; /* 鼠标放上去微微发亮 */
-            text-shadow: 0 0 10px rgba(245, 230, 200, 0.8);
+        .nav-item-ironbox::before { display: none; }
+        .nav-item-ironbox .nav-num {
+            font-family: "Courier New", monospace;
+            font-size: 0.66rem;
+            letter-spacing: 0.14rem;
+            color: #5a4a2e;
         }
-        
+        .nav-item-ironbox .nav-label {
+            font-size: 0.86rem;
+            letter-spacing: 0.06rem;
+            white-space: nowrap;
+        }
+        .nav-item-ironbox:hover .nav-num,
+        .nav-item-ironbox.active .nav-num { color: #8a6e3e; }
+
+        /* 💡 隐藏触发区样式 */
+        .secret-unlock {
+            opacity: 0.25;
+            transition: all 0.4s ease;
+            margin-top: 10px;
+            animation: breathe 3s infinite alternate;
+        }
+        .secret-unlock:hover {
+            opacity: 1;
+            color: #b85c58;
+            animation: none;
+        }
+        .secret-unlock .label {
+            font-size: 0.85rem;
+            font-family: "Courier New", monospace;
+            letter-spacing: 0.1rem;
+        }
+
+        @keyframes breathe { 0% { opacity: 0.15; } 100% { opacity: 0.4; } }
+
         /* 震动动画 */
         @keyframes shake {
             0% { transform: translate(1px, 1px) rotate(0deg); }
@@ -179,7 +204,6 @@
         .panel-title { font-family: "KaiTi", "STKaiti", serif; font-size: 1.5rem; color: #f5e6c8; margin: 0 0 5px 0; font-weight: normal; }
         .panel-no { font-family: "Courier New", monospace; font-size: 0.75rem; color: #b85c58; letter-spacing: 0.15rem; margin-bottom: 15px; border-bottom: 1px dashed #3a3024; padding-bottom: 8px; }
         
-        /* 💡 全局步骤排版 */
         .panel-steps {
             font-family: "Songti SC", serif; font-size: 0.85rem; line-height: 1.55; color: #a89573;
             flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding-bottom: 10px;
@@ -187,9 +211,12 @@
         .panel-steps p { margin-top: 0; margin-bottom: 0; display: flex; text-align: justify; }
         .panel-steps span { color: #b85c58; font-weight: bold; margin-right: 8px; font-family: "Courier New", monospace; flex-shrink: 0; }
 
-        /* 打印淡入动画 */
+        /* 恢复原版的浮出动画 */
         .print-anim { animation: printOut 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
-        @keyframes printOut { 0% { opacity: 0; transform: translateY(10px); filter: blur(1px); } 100% { opacity: 1; transform: translateY(0); filter: blur(0); } }
+        @keyframes printOut {
+            0%   { opacity: 0; transform: translateY(10px); filter: blur(1px); }
+            100% { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
 
         /* ==========================================
            04 / 厨房手记（复古信纸风格）
@@ -266,7 +293,6 @@
             padding: 20px 0;
         }
 
-        /* 机打小票基础样式 */
         .grocery-receipt {
             flex: 1; 
             max-width: 340px; 
@@ -279,8 +305,15 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,0,0,0.6);
             border: 1px solid #3a3024;
             clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), 95% 100%, 90% calc(100% - 10px), 85% 100%, 80% calc(100% - 10px), 75% 100%, 70% calc(100% - 10px), 65% 100%, 60% calc(100% - 10px), 55% 100%, 50% calc(100% - 10px), 45% 100%, 40% calc(100% - 10px), 35% 100%, 30% calc(100% - 10px), 25% 100%, 20% calc(100% - 10px), 15% 100%, 10% calc(100% - 10px), 5% 100%, 0 calc(100% - 10px));
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+            box-sizing: border-box;
         }
-        
+        .grocery-receipt:hover { 
+            box-shadow: 0 18px 44px rgba(0,0,0,1), inset 0 0 24px rgba(158,138,99,0.12); 
+            border-color: rgba(158,138,99,0.4);
+        }
+
         .gr-center { text-align: center; margin-bottom: 15px; }
         .gr-title { font-size: 1rem; font-weight: bold; letter-spacing: 0.1rem; color: #f5e6c8; }
         .gr-dash { border-top: 1px dashed #3a3024; margin: 10px 0; }
@@ -299,7 +332,6 @@
 
         .gr-note { font-size: 0.75rem; color: #8a6e3e; margin-bottom: 10px; font-style: italic; line-height: 1.4; }
         
-        /* 💡 双行印章 */
         .stamp-abs {
             position: absolute !important;
             right: 24px; bottom: 30px;
@@ -324,33 +356,315 @@
         .gr-extra-note { font-family: "KaiTi", "STKaiti", serif; font-size: 0.95rem; color: #d1c5a8; line-height: 1.6; text-align: center; transform: rotate(-1deg); opacity: 0.9; letter-spacing: 0.08rem; padding: 0 5px; margin-top: 15px; }
 
         /* ==========================================
-           06 / 吊柜最里面（铁盒）
+           05b / 小票放大弹窗
            ========================================== */
-        .ironbox-wrap {
-            width: 100%; max-width: 600px; margin: 0 auto;
-            background: #14110d; border: 1px solid #3a3024;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.9), 0 15px 40px rgba(0,0,0,0.8);
-            padding: 40px;
+        .receipt-modal {
+            position: fixed; inset: 0; z-index: 1250;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity .28s ease;
+            padding: 20px;
+        }
+        .receipt-modal.open { opacity: 1; pointer-events: auto; }
+
+        .rm-back {
+            position: absolute; inset: 0;
+            background: rgba(6,6,5,.84);
+            -webkit-backdrop-filter: blur(3px);
+            backdrop-filter: blur(3px);
+        }
+
+        .rm-paper {
             position: relative;
+            z-index: 2;
+            width: min(380px, 92vw);
+            max-height: 88vh;
+            overflow-y: auto;
+            transform: translateY(14px) scale(.96);
+            transition: transform .34s cubic-bezier(.3,1.3,.5,1);
+            scrollbar-width: none;
         }
-        /* 铁盒的复古边框装饰 */
-        .ironbox-wrap::before {
-            content: ''; position: absolute; top: 15px; left: 15px; right: 15px; bottom: 15px;
-            border: 1px dashed rgba(138, 110, 62, 0.3); pointer-events: none;
+        .rm-paper::-webkit-scrollbar { display: none; }
+        .receipt-modal.open .rm-paper { transform: translateY(0) scale(1); }
+
+        /* 弹窗内强制重置尺寸，保证完美还原并且不溢出 */
+        .rm-paper .grocery-receipt {
+            width: 100%;
+            max-width: 100%;
+            min-height: 440px;
+            padding: 38px 34px 104px;
+            font-size: .85rem;
+            margin: 0;
+            rotate: 0deg !important;
+            transform: none !important;
+            animation: none !important;
+            cursor: default;
+            box-shadow: 0 22px 60px rgba(0,0,0,.65), inset 0 0 20px rgba(0,0,0,0.6);
         }
-        .ironbox-title {
+        .rm-paper .grocery-receipt:hover { box-shadow: 0 22px 60px rgba(0,0,0,.65), inset 0 0 20px rgba(0,0,0,0.6); border-color: #3a3024; }
+        .rm-paper .gr-title { font-size: 1.05rem; }
+        .rm-paper .gr-item { font-size: .88rem; }
+        .rm-paper .gr-note { font-size: .78rem; margin-bottom: 12px; }
+        .rm-paper .gr-extra-note { font-size: .98rem; margin-top: 20px; }
+
+        .rm-hint {
+            text-align: center;
+            margin-top: 16px;
+            font-family: "Courier New", monospace;
+            font-size: .68rem;
+            letter-spacing: .3em;
+            color: #5a4a2e;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ==========================================
+           06 / 吊柜最里面（真实铁盒互动）
+           ========================================== */
+        .ironbox-scene {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; min-height: 400px; position: relative;
+        }
+
+        .metal-box {
+            width: 360px; height: 230px;
+            position: relative;
+            cursor: pointer;
+            margin-bottom: 20px;
+            z-index: 5;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 18px 22px rgba(0,0,0,.75));
+        }
+        .metal-box:hover { transform: scale(1.02); }
+
+        /* ---- 盒身：冷灰铁皮 + 斜向反光 + 卷边 + 铆钉 + 角落锈斑 ---- */
+        .box-body {
+            position: absolute; bottom: 0; left: 8px; right: 8px; height: 178px;
+            background-color: #34383d;
+            background-image:
+                radial-gradient(circle at 12% 88%, rgba(140, 72, 32, .35) 0%, rgba(140, 72, 32, 0) 38%),
+                radial-gradient(circle at 88% 15%, rgba(130, 66, 28, .28) 0%, rgba(130, 66, 28, 0) 34%),
+                linear-gradient(118deg,
+                    #4a4f56 0%,
+                    #2a2d32 22%,
+                    #3d4248 40%,
+                    #23262a 58%,
+                    #474c53 78%,
+                    #2c2f34 100%),
+                linear-gradient(180deg, transparent 65%, rgba(0,0,0,.55) 100%);
+            border: 1px solid #0f1113;
+            border-radius: 3px 3px 6px 6px;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.14),
+                inset 0 -3px 6px rgba(0,0,0,.7),
+                0 2px 0 #0b0c0e,
+                0 6px 14px rgba(0,0,0,.7);
+        }
+        /* 盒身上沿卷边亮线 */
+        .box-body::before {
+            content: "";
+            position: absolute; top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(180deg, rgba(255,255,255,.28), rgba(255,255,255,0));
+            border-radius: 3px 3px 0 0;
+            pointer-events: none;
+        }
+        /* 上沿一排铆钉 */
+        .box-body::after {
+            content: "";
+            position: absolute;
+            left: 8px; right: 8px; top: 10px; height: 8px;
+            background-image: radial-gradient(circle at 4px 4px,
+                #8b9099 0 2px,
+                #2a2d32 2.6px,
+                transparent 3.2px);
+            background-size: 32px 8px;
+            background-repeat: repeat-x;
+            opacity: .8;
+            pointer-events: none;
+        }
+
+        /* ---- 盖子：比盒身宽一圈，顶面高光 + 中央凹槽 + 下沿缝 ---- */
+        .box-lid {
+            position: absolute; top: 0; left: 0; width: 100%; height: 66px;
+            background-color: #41454b;
+            background-image:
+                linear-gradient(180deg,
+                    rgba(255,255,255,.22) 0%,
+                    rgba(255,255,255,.04) 18%,
+                    transparent 40%),
+                linear-gradient(115deg,
+                    #5a6068 0%,
+                    #33363b 30%,
+                    #4d525a 52%,
+                    #2d3035 74%,
+                    #585e66 100%);
+            border: 1px solid #0f1113;
+            border-radius: 5px 5px 2px 2px;
+            z-index: 10;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.35),
+                inset 0 -2px 4px rgba(0,0,0,.5),
+                0 2px 0 #0b0c0e,
+                0 4px 8px rgba(0,0,0,.55);
+        }
+        /* 盖子下沿一条内阴影，强调盖与身之间的缝 */
+        .box-lid::after {
+            content: "";
+            position: absolute; left: 2px; right: 2px; bottom: -3px; height: 3px;
+            background: linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,0));
+            pointer-events: none;
+        }
+        /* 盖子中央小凹槽（铁皮盒常见） */
+        .box-lid::before {
+            content: "";
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+            width: 46px; height: 10px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,.45) 0%, rgba(0,0,0,0) 70%);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.08);
+        }
+
+        /* ---- 搭扣：金属片，冷色，跨在盖子前檐 ---- */
+        .box-latch {
+            position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+            width: 24px; height: 50px;
+            background:
+                linear-gradient(180deg, #8a8f97 0%, #555a61 45%, #3a3e44 100%);
+            border: 1px solid #0f1113;
+            border-radius: 3px;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.4),
+                inset 0 -2px 3px rgba(0,0,0,.6),
+                0 2px 4px rgba(0,0,0,.7);
+            z-index: 12;
+        }
+        .box-latch::after {
+            content: ''; position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+            width: 10px; height: 10px; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1a1c1f 0%, #000 100%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,.15), 0 1px 0 rgba(255,255,255,.1);
+        }
+
+        /* === 铁盒合盖反馈 === */
+        .metal-box .box-lid {
+            transform-origin: 50% 100%;
+        }
+        .metal-box.snap-close .box-lid {
+            animation: lidClose .5s cubic-bezier(.25, .9, .3, 1.1) both;
+        }
+        @keyframes lidClose {
+            0%   { transform: translateY(-38px) rotate(-1.5deg); }
+            60%  { transform: translateY(2px) rotate(0deg); }
+            78%  { transform: translateY(-2px); }
+            100% { transform: translateY(0); }
+        }
+        .metal-box.snap-close .box-latch {
+            animation: latchTick .5s ease;
+        }
+        @keyframes latchTick {
+            0%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 3px rgba(0,0,0,.6), 0 2px 4px rgba(0,0,0,.7); }
+            45%      { box-shadow: inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 3px rgba(0,0,0,.6), 0 0 12px rgba(184,90,60,.6), 0 2px 4px rgba(0,0,0,.7); }
+        }
+
+        /* ==========================================
+           弹窗（Modal）样式
+           ========================================== */
+        .tin-modal {
+            position: fixed; inset: 0; z-index: 1200;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity .28s ease;
+        }
+        .tin-modal.open { opacity: 1; pointer-events: auto; }
+
+        .tm-back {
+            position: absolute; inset: 0;
+            background: rgba(6,6,5,.82);
+            -webkit-backdrop-filter: blur(3px);
+            backdrop-filter: blur(3px);
+        }
+
+        /* 干掉项目符号，并压过页面里的 ul 规则 */
+        .tin-modal ul,
+        .tin-modal .tp-list { list-style: none; margin: 0; padding-left: 0; }
+        .tin-modal li::before { content: none; }
+
+        /* === 方案 D：从笔记本撕下的一页 === */
+        .tm-paper{
+          --lh: 28px;
+          position:relative;
+          width:min(560px,88vw);max-height:86vh;overflow:auto;
+          padding:42px 44px 30px 64px;
+          color:#3a3730;
+          background:#f3eddf;
+          box-shadow:0 22px 60px rgba(0,0,0,.65), inset 0 0 60px rgba(150,130,95,.08);
+          transform:rotate(-.65deg);
+          transition: transform .34s cubic-bezier(.3,1.3,.5,1);
+        }
+        .tin-modal.open .tm-paper{ transform: translateY(0) scale(1) rotate(-.65deg); }
+
+        /* 撕纸纤维：左边缘一条隐约的亮边 */
+        .tm-paper::before{
+          content:"";
+          position:absolute;
+          left:0;top:0;bottom:0;
+          width:10px;
+          background:linear-gradient(to right, rgba(255,253,245,.92), rgba(255,253,245,0));
+          pointer-events:none;
+        }
+
+        /* 装订孔 */
+        .tm-paper::after{
+          content:"";
+          position:absolute;
+          left:13px;top:26px;bottom:26px;
+          width:14px;
+          background:radial-gradient(circle at center, #16130f 4px, transparent 4.5px) 0 0/14px 56px repeat-y;
+          opacity:.8;
+          pointer-events:none;
+        }
+
+        /* 标题栏 */
+        .tn-head {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: calc(var(--lh) * .6);
+            padding-bottom: 8px;
+            border-bottom: 1px dashed rgba(120,105,80,.35);
+        }
+        .tn-title {
             font-family: "KaiTi", "STKaiti", serif;
-            font-size: 1.5rem; color: #e8d5b5; text-align: center; letter-spacing: 0.2rem;
-            margin-bottom: 25px; border-bottom: 1px solid #3a3024; padding-bottom: 15px;
+            font-size: 1.18rem;
+            letter-spacing: .16em;
+            color: #3a3730;
         }
-        .ironbox-content {
-            font-family: "Songti SC", serif; font-size: 1rem; color: #a89573;
-            line-height: 2.2; text-align: justify;
+
+        .tn-line{
+          position:relative;
+          margin:0;
+          font-family:"KaiTi","STKaiti","Songti SC",serif;
+          font-size:1rem;
+          line-height:var(--lh);
+          color:#3a3730;
+          letter-spacing:.03em;
         }
-        .ironbox-content p { margin-top: 0; margin-bottom: 1.2em; }
-        .ironbox-obj {
-            font-family: "Courier New", monospace; color: #b85c58;
-            background: rgba(184, 92, 88, 0.1); padding: 2px 6px; border-radius: 2px;
+        .tn-gap{ margin-top:var(--lh); }
+        .tn-h{ color:#8f3f3a; }
+        .tn-muted{ color:#7a7060; font-size:.92rem; }
+        .tn-strike{
+          color:#a5554f;
+          text-decoration:line-through;
+          text-decoration-thickness:1.5px;
+        }
+        .tn-quiet{ color:#6a6252; font-style:italic; font-size:.92rem; }
+        .tn-small{ font-size:.86rem; color:#6f6656; }
+        .tn-sign{
+          margin-top:calc(var(--lh) * .6);
+          text-align:right;
+          font-family:"KaiTi","STKaiti",serif;
+          font-size:1.3rem;
+          color:#3a3730;
+          letter-spacing:.1em;
+          padding-right:6px;
+          transform:rotate(-2deg);
         }
 
         /* === 场景过渡遮罩 === */
@@ -374,7 +688,10 @@
             .nav-item { font-size: 0.8rem; letter-spacing: 0.05rem; }
             .nav-item::before { display: none; }
             .nav-item:hover, .nav-item.active { padding-left: 0; }
-            .secret-trigger { bottom: 10px; left: 50%; transform: translateX(-50%); }
+            .nav-item-ironbox { flex-direction: row; align-items: baseline; gap: 6px; }
+            .nav-item-ironbox .nav-label { font-size: 0.8rem; }
+            .secret-unlock { margin-top: 0; }
+            .secret-unlock .label { font-size: 0.75rem; }
             .content-area { padding: 10px 0; justify-content: flex-start; }
             .text-box { max-height: none; padding-right: 0; font-size: 0.95rem; }
             .quote-image-wrapper { max-width: 100%; padding: 4px; }
@@ -406,7 +723,18 @@
             .stamp-abs { padding: 4px 8px; right: 15px; bottom: 20px; }
             .stamp-abs .en { font-size: 0.75rem; letter-spacing: 0.15rem; }
             .stamp-abs .cn { font-size: 0.9rem; letter-spacing: 0.1rem; }
-            .ironbox-wrap { padding: 25px; }
+
+            .rm-paper .grocery-receipt { padding: 28px 20px 96px; font-size: 0.8rem; min-height: 400px; }
+            .rm-paper .gr-title { font-size: 1rem; }
+            .rm-paper .gr-item { font-size: 0.82rem; }
+            .rm-paper .gr-note { font-size: 0.74rem; }
+            .rm-paper .gr-extra-note { font-size: 0.94rem; }
+            
+            .metal-box { width: 280px; height: 184px; margin-top: 30px; }
+            .box-body { height: 142px; }
+            .box-lid { height: 54px; }
+            .tm-paper { padding: 30px 24px 24px 48px; }
+            .tm-paper::after { left: 10px; }
         }
 
         /* 触屏设备：禁用鼠标拖尾与自定义光标 */
@@ -436,12 +764,18 @@
                 <div class="nav-item" id="nav-menu" onclick="switchContent('menu')">03 / 专属食单</div>
                 <div class="nav-item" id="nav-notes" onclick="switchContent('notes')">04 / 厨房手记</div>
                 <div class="nav-item" id="nav-grocery" onclick="switchContent('grocery')">05 / 采买单</div>
+                
                 <!-- 💡 隐藏选项，初始不显示 -->
-                <div class="nav-item" id="nav-ironbox" style="display: none;" onclick="switchContent('ironbox')">06 / 吊柜最里面</div>
+                <div class="nav-item nav-item-ironbox" id="nav-ironbox" style="display: none;" onclick="switchContent('ironbox')">
+                    <span class="nav-num">06</span>
+                    <span class="nav-label">吊柜最里面：一只铁盒</span>
+                </div>
+                
+                <!-- 💡 隐藏触发区，带呼吸灯动画 -->
+                <div class="nav-item secret-unlock" id="secret-trigger" onclick="unlockCabinet()">
+                    <span class="mark">?</span><span class="label">[ 摸一下 ]</span>
+                </div>
             </div>
-            
-            <!-- 💡 隐藏触发区（右下角极淡的锁孔） -->
-            <div class="secret-trigger" id="secret-trigger" onclick="unlockCabinet()" title="摸一下">☌</div>
         </div>
         <div class="content-area"><div class="text-box show" id="text-content"></div></div>
     </div>
@@ -449,6 +783,43 @@
     <!-- 过渡黑屏 -->
     <div id="transition-screen">
         <div class="trans-text" id="trans-text"></div>
+    </div>
+
+    <!-- 💡 小票放大弹窗 -->
+    <div class="receipt-modal" id="receipt-modal" onclick="closeReceipt()">
+        <div class="rm-back"></div>
+        <div class="rm-paper" id="rm-paper"></div>
+        <div class="rm-hint">点击任意处收起</div>
+    </div>
+
+    <!-- 💡 弹窗本体：点击任意处关闭 -->
+    <div class="tin-modal" id="tin-modal" onclick="closeTin()">
+        <div class="tm-back"></div>
+
+        <div class="tm-paper">
+
+          <div class="tn-head">
+            <span class="tn-title">药 · 忌 口</span>
+          </div>
+
+          <p class="tn-line"><span class="tn-h">药</span>，早晚各一粒，饭后。数着吃，别自己加量。</p>
+
+          <p class="tn-line tn-gap">不许 —— 空腹浓茶 · 冰的 · 过甜的 · 香菜（那不算菜）</p>
+
+          <p class="tn-line tn-gap tn-muted">小毛病，先按这个来：</p>
+          <p class="tn-line">夜里咳 —— 热牛奶一勺蜂蜜，别兑水。咳过三声再来叫我。</p>
+          <p class="tn-line">胃凉 —— 姜糖水，一杯。多了上火，我不熬第二回。</p>
+          <p class="tn-line">头疼 —— 先关灯。别看那块发光的板子，二十分钟再说话。</p>
+          <p class="tn-line">受了寒 —— 热水泡脚，水里放两片姜。别只用嘴说暖。</p>
+
+          <p class="tn-line tn-gap tn-strike">别让她知道</p>
+          <p class="tn-line tn-quiet">她若问，就说是我收着的。</p>
+
+          <p class="tn-line tn-gap tn-small">十一月三日 补：昨夜咳了两声。看过了，没烧。</p>
+
+          <div class="tn-sign">L.</div>
+
+        </div>
     </div>
 
     <script>
@@ -465,25 +836,89 @@
             if (isUnlocked) return;
             isUnlocked = true;
             
-            // 1. 播放音效
-            playTypewriterSound();
-            setTimeout(playTypewriterSound, 150);
-            
-            // 2. 屏幕震动
+            // 发现铁盒：播放自定义音效
+            playSound('discover');
+
             document.body.classList.add('shake-effect');
             setTimeout(() => document.body.classList.remove('shake-effect'), 500);
             
-            // 3. 移除触发区，显示导航
             const trigger = document.getElementById('secret-trigger');
-            trigger.style.opacity = '0';
+            trigger.style.display = 'none';
+            
             setTimeout(() => {
-                trigger.style.display = 'none';
                 const newNav = document.getElementById('nav-ironbox');
                 newNav.style.display = 'flex';
-                // 自动切过去，或者让玩家自己点
+                newNav.style.opacity = '0';
+                newNav.style.transition = 'opacity 0.5s';
+                setTimeout(() => { newNav.style.opacity = '1'; }, 50);
                 switchContent('ironbox');
             }, 300);
         }
+
+        /* ================= 小票弹窗控制 ================= */
+        function openReceipt(el) {
+            const modal = document.getElementById('receipt-modal');
+            const paper = document.getElementById('rm-paper');
+            if (!modal || !paper) return;
+            
+            // 播放点击小票音效
+            playSound('receipt');
+            
+            // 克隆当前小票
+            const clone = el.cloneNode(true);
+            
+            // 抹掉动画、倾斜以及点击事件
+            clone.classList.remove('print-anim');
+            clone.removeAttribute('onclick');
+            clone.style.rotate = '0deg';
+            clone.style.animation = 'none';
+            
+            paper.innerHTML = '';
+            paper.appendChild(clone);
+            
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeReceipt() {
+            const modal = document.getElementById('receipt-modal');
+            if (!modal || !modal.classList.contains('open')) return;
+            modal.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        /* ================= 弹窗控制逻辑 ================= */
+        function openTin(){
+            var m = document.getElementById('tin-modal');
+            if(!m) return;
+            // 打开铁盒：播放自定义音效，失败时回退合成音
+            playSound('open', playUnlockSound);
+            m.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeTin(){
+            var m = document.getElementById('tin-modal');
+            if(!m || !m.classList.contains('open')) return;
+            m.classList.remove('open');
+            document.body.style.overflow = '';
+
+            // 合上铁盒：播放自定义音效，失败时回退合成音，同时触发合盖动画
+            playSound('close', playLidCloseSound);
+
+            const box = document.querySelector('.metal-box');
+            if (box) {
+                box.classList.remove('snap-close');
+                void box.offsetWidth; // 强制重排，保证动画可重复触发
+                box.classList.add('snap-close');
+                setTimeout(() => box.classList.remove('snap-close'), 520);
+            }
+        }
+
+        document.addEventListener('keydown', function(e){
+            if (e.key === 'Escape') {
+                closeReceipt();
+                closeTin();
+            }
+        });
 
         /* ================= 鼠标拖尾 ================= */
         let lastTrailTime = 0;
@@ -519,7 +954,119 @@
                 source.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination); source.start(now);
             } catch (e) {}
         }
-        
+
+        /* ================= 音频预加载池 ================= */
+        const soundPool = {};
+
+        function preloadSounds() {
+            const urls = {
+                discover: 'https://miaozeze.github.io/discover.mp3',
+                open: 'https://miaozeze.github.io/open.mp3',
+                close: 'https://miaozeze.github.io/close.mp3',
+                receipt: 'https://miaozeze.github.io/receipt.mp3',
+                menu: 'https://miaozeze.github.io/menu.mp3'
+            };
+            
+            for (const key in urls) {
+                const audio = new Audio();
+                audio.src = urls[key];
+                audio.preload = "auto";
+                audio.volume = 0.6;
+                soundPool[key] = audio;
+                // 提前触发加载
+                audio.load();
+            }
+        }
+
+        // 在页面加载完成后执行预加载
+        window.addEventListener('DOMContentLoaded', preloadSounds);
+
+        // 播放函数
+        function playSound(name, fallback) {
+            const audio = soundPool[name];
+            const doFallback = () => {
+                if (typeof fallback === 'function') fallback();
+                else playTypewriterSound();
+            };
+
+            if (audio) {
+                try {
+                    audio.currentTime = 0;
+                    const p = audio.play();
+                    if (p && p.catch) {
+                        p.catch(err => {
+                            console.warn(`[sound] ${name} 播放失败：`, err);
+                            doFallback();
+                        });
+                    }
+                } catch (e) {
+                    console.warn(`[sound] ${name} 异常：`, e);
+                    doFallback();
+                }
+            } else {
+                doFallback();
+            }
+        }
+
+        // 模拟金属搭扣“咔哒”弹开的声音（open.mp3 缺失时兜底）
+        function playUnlockSound() {
+            try {
+                const audioCtx = getAudioCtx(); if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(1200, now);
+                osc.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(now); osc.stop(now + 0.1);
+                
+                setTimeout(() => {
+                    const now2 = audioCtx.currentTime;
+                    const osc2 = audioCtx.createOscillator();
+                    osc2.type = 'sine';
+                    osc2.frequency.setValueAtTime(80, now2);
+                    osc2.frequency.exponentialRampToValueAtTime(30, now2 + 0.2);
+                    const gain2 = audioCtx.createGain();
+                    gain2.gain.setValueAtTime(0.3, now2);
+                    gain2.gain.exponentialRampToValueAtTime(0.01, now2 + 0.2);
+                    osc2.connect(gain2); gain2.connect(audioCtx.destination);
+                    osc2.start(now2); osc2.stop(now2 + 0.2);
+                }, 80);
+            } catch (e) {}
+        }
+
+        // 金属扣合：短促 click + 低频 thud（close.mp3 缺失时兜底）
+        function playLidCloseSound() {
+            try {
+                const audioCtx = getAudioCtx(); if (!audioCtx) return;
+                const now = audioCtx.currentTime;
+
+                const click = audioCtx.createOscillator();
+                click.type = 'square';
+                click.frequency.setValueAtTime(2200, now);
+                click.frequency.exponentialRampToValueAtTime(900, now + 0.04);
+                const clickGain = audioCtx.createGain();
+                clickGain.gain.setValueAtTime(0.12, now);
+                clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+                click.connect(clickGain); clickGain.connect(audioCtx.destination);
+                click.start(now); click.stop(now + 0.07);
+
+                const thud = audioCtx.createOscillator();
+                thud.type = 'sine';
+                thud.frequency.setValueAtTime(140, now + 0.02);
+                thud.frequency.exponentialRampToValueAtTime(40, now + 0.18);
+                const thudGain = audioCtx.createGain();
+                thudGain.gain.setValueAtTime(0.0001, now + 0.02);
+                thudGain.gain.linearRampToValueAtTime(0.22, now + 0.03);
+                thudGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+                thud.connect(thudGain); thudGain.connect(audioCtx.destination);
+                thud.start(now + 0.02); thud.stop(now + 0.22);
+            } catch (e) {}
+        }
+
         function playDoorOpenSound() {
             try {
                 const audioCtx = getAudioCtx(); if (!audioCtx) return; 
@@ -571,21 +1118,15 @@
 
         /* ================= 图片配置 ================= */
         const IMG_BASE = 'https://miaozeze.github.io/';
-        const RAW_BASE = 'https://raw.githubusercontent.com/miaozeze/miaozeze.github.io/main/';
-        function imgTag(file, fallback, alt) {
-            const primary = IMG_BASE + file; const secondary = RAW_BASE + file;
-            return `<img src="${primary}" alt="${alt || '附件'}" data-fallback-raw="${secondary}" data-fallback-unsplash="${fallback || ''}" onerror="handleImgError(this)">`;
+        function imgTag(file, alt) {
+            return `<img src="${IMG_BASE + file}" alt="${alt || '附件'}">`;
         }
-        window.handleImgError = function(img) {
-            const raw = img.dataset.fallbackRaw; const unsplash = img.dataset.fallbackUnsplash;
-            if (raw && img.src !== raw) { img.src = raw; } else if (unsplash && img.src !== unsplash) { img.src = unsplash; }
-        };
 
         /* ================= 各内容面板 ================= */
         const contentData = {
             quote: `
                 <div class="quote-image-wrapper">
-                    <img src="https://miaozeze.github.io/kitchen_quote.jpg" alt="厨房一角" data-fallback-raw="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80" onerror="this.src=this.dataset.fallbackRaw">
+                    <img src="${IMG_BASE}kitchen_quote.jpg" alt="厨房一角">
                     <div class="quote-image-caption">// 一尘不染的料理台</div>
                 </div>
                 <div class="quote-style"><p>“大小姐，这个点来厨房做什么？冷肉锁在柜子里，钥匙在我身上——您别想了。去餐桌坐着，我给您热杯牛奶。”</p></div>
@@ -652,7 +1193,7 @@
             grocery: `
                 <div class="grocery-board">
                     <!-- 1. 采购单 -->
-                    <div class="grocery-receipt print-anim" style="transform: rotate(-1.5deg);">
+                    <div class="grocery-receipt print-anim" onclick="openReceipt(this)">
                         <div class="gr-center">
                             <div class="gr-title">*** AKUTAGAWA KITCHEN ***</div>
                             <div style="color:#5a4a2e; font-size:0.7rem; margin-top:5px;">采购处 · 凭单据结算</div>
@@ -679,7 +1220,6 @@
                         </div>
                         <div class="gr-note" style="color: #b85c58;">* 厨房窗台上那盆还活着。要新鲜的，自己上去摘。</div>
                         
-                        <!-- 💡 第一张单子：双行印章 -->
                         <div class="stamp-abs">
                             <div class="en">REJECTED</div>
                             <div class="cn">驳回 · 埃德蒙</div>
@@ -687,7 +1227,7 @@
                     </div>
 
                     <!-- 2. 私人追加单 -->
-                    <div class="grocery-receipt print-anim" style="transform: rotate(1.5deg); animation-delay: 0.1s;">
+                    <div class="grocery-receipt print-anim" style="animation-delay: 0.1s;" onclick="openReceipt(this)">
                         <div class="gr-center">
                             <div class="gr-title">*** AKUTAGAWA KITCHEN ***</div>
                             <div style="color:#5a4a2e; font-size:0.7rem; margin-top:5px;">采购处 · 私人追加清单</div>
@@ -696,7 +1236,6 @@
                         </div>
                         <div class="gr-dash"></div>
                         
-                        <!-- 💡 事项排开：直接加行内 margin 拉大间距 -->
                         <div class="gr-item" style="margin-bottom: 8px;"><span>大吉岭红茶（特级）</span><span>x 2 盒</span></div>
                         <div class="gr-note" style="margin-bottom: 22px;">* 大小姐晚上要喝，别买荷包茶的。</div>
                         
@@ -706,13 +1245,11 @@
                         <div class="gr-item" style="margin-bottom: 8px;"><span>加厚纯棉擦拭布</span><span>x 3 块</span></div>
                         <div class="gr-note" style="margin-bottom: 25px;">* 别去研究室拿抹布。他们那布上全是油。</div>
 
-                        <!-- 💡 手写附加说明 -->
                         <div class="gr-extra-note">
                             <div>付款方式：现金。不走账。</div>
                             <div>以上三项，均由我私人支出。</div>
                         </div>
 
-                        <!-- 💡 第二张单子：双行印章 -->
                         <div class="stamp-abs">
                             <div class="en">REJECTED</div>
                             <div class="cn">驳回 · 埃德蒙</div>
@@ -720,18 +1257,14 @@
                     </div>
                 </div>
             `,
-            /* 💡 铁盒隐藏内容 */
+            /* 💡 铁盒触发区 */
             ironbox: `
-                <div class="ironbox-wrap print-anim">
-                    <div class="ironbox-title">吊柜最里面：一只铁盒</div>
-                    <div class="ironbox-content">
-                        <p>你搬来一把高脚凳，踩上去，踮起脚尖，把手伸进最深处的阴影里。指尖先是碰到了粗糙的木板，接着，摸到一个冰凉、边缘有些生锈的金属物件。</p>
-                        <p>你把它拿下来。那是一只老式的铁皮饼干盒，上面的图案已经褪色得看不清了。</p>
-                        <p>打开盒盖，一股陈旧的纸张混合着淡淡的铁锈味扑面而来。里面没有饼干，只有两样东西：</p>
-                        <p>一把<b class="ironbox-obj">黄铜钥匙</b>。比庄园里任何一扇门的钥匙都要小，也更旧。</p>
-                        <p>还有一张折叠得整整齐齐的<b class="ironbox-obj">旧船票</b>。出发地是这里，目的地是一个你从未听说过的地方。日期，是十年前的某个雷雨夜。</p>
-                        <p>你翻过船票，背面用钢笔写着一行娟秀的字迹（不是莉薇娅的）：</p>
-                        <p style="font-style: italic; color: #b85c58; text-indent: 2em;">“如果那晚没有下雨，我大概就真的走了。”</p>
+                <div class="ironbox-scene">
+                    <div class="metal-box" onclick="openTin()" title="点击打开铁盒">
+                        <div class="box-lid"></div>
+                        <div class="box-body">
+                            <div class="box-latch"></div>
+                        </div>
                     </div>
                 </div>
             `
@@ -743,30 +1276,32 @@
                 title: "古典惠灵顿牛排", no: "档案编号 012 · 主菜", desc: "金黄酥皮包裹粉嫩牛柳，黑松露与蘑菇泥香气浓郁，是对火候掌控的极致考验。",
                 ingredients: ["菲力牛柳 200g", "千层酥皮 1张", "新鲜蘑菇 200g", "帕尔马火腿 4片", "黑松露酱 1勺", "洋葱 半颗", "无盐黄油 20g", "蛋黄液 少许"],
                 steps: ["牛柳海盐黑胡椒腌制，入极热平底锅，快速煎至表面焦化锁住肉汁。","蘑菇与洋葱切碎，用黄油慢炒至水分收干，拌入黑松露酱制成菌菇泥。","铺开帕尔马火腿片，均匀抹上菌菇泥，放上牛柳卷紧，冷藏定型。","用千层酥皮包裹定型好的牛柳，表面刷蛋黄液并刻出花纹。","送入烤箱烘烤至酥皮膨胀金黄，取出静置十分钟后切开。"],
-                img: imgTag('wellington.jpg', 'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=800&q=80', '惠灵顿牛排')
+                img: imgTag('wellington.jpg', '惠灵顿牛排')
             },
             consomme: {
                 title: "法式清汤", no: "档案编号 024 · 汤品", desc: "看似清如白水，实则凝聚了牛肉、蔬菜与香草的精华。清澈见底的琥珀色液体中，蕴含着极深的鲜美。",
                 ingredients: ["牛骨/牛筋 1kg", "瘦牛肉糜 300g", "蛋清 2个", "胡萝卜/洋葱 各1个", "西芹 2根", "百里香/香叶 1束"],
                 steps: ["将牛骨、牛筋与胡萝卜等蔬菜慢熬六小时，萃取浓郁高汤。","将瘦牛肉剁成极细的肉糜，与蛋清、切碎的蔬菜混合均匀。","将肉糜混合物放入冷高汤中，小火缓慢加热并不断搅拌。","肉糜浮起形成“肉盖”吸附杂质，保持微沸状态炖煮两小时。","小心地将清汤从边缘舀出，用细纱布反复过滤至纯净。"],
-                img: imgTag('consomme.jpg', 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80', '法式清汤')
+                img: imgTag('consomme.jpg', '法式清汤')
             },
             scone: {
                 title: "约克郡司康饼", no: "档案编号 038 · 茶点", desc: "外酥内软的经典英式茶点，带着淡淡的黄油与麦香。掰开后抹上奶油与果酱，是下午茶的灵魂。",
                 ingredients: ["低筋面粉 200g", "泡打粉 2茶匙", "冷藏黄油 50g", "纯牛奶 100ml", "细砂糖 30g", "盐 1小撮", "凝脂奶油/果酱 适量"],
                 steps: ["将低筋面粉、泡打粉、盐和细砂糖混合过筛，加入冷藏切块的黄油。","用手指尖将黄油与面粉快速搓揉，直至混合物呈现粗糙的面包糠状。","在中间挖一个坑，倒入冷牛奶，用刮刀轻轻翻拌成团，切勿过度揉搓。","将面团移到撒了薄粉的案板上，轻轻擀平至两厘米厚，用圆形模具按压出形状。","表面刷上牛奶，送入预热好的烤箱，烘烤至表面金黄膨胀。"],
-                img: imgTag('scone.jpg', 'https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&w=800&q=80', '司康饼')
+                img: imgTag('scone.jpg', '司康饼')
             },
             oxtail: {
                 title: "慢炖牛尾浓汤", no: "档案编号 045 · 夜宵", desc: "红宝石般的浓郁汤底，牛尾经长时间慢炖变得软烂脱骨，丰富的胶质完全融入汤汁，冬日最暖。",
                 ingredients: ["牛尾段 500g", "红葡萄酒 200ml", "洋葱/胡萝卜/西芹 各1个", "番茄膏 2勺", "牛骨高汤 1L", "无盐黄油 20g", "香料束 1束"],
                 steps: ["牛尾洗净擦干，入极热厚底锅煎至各面焦糖色。","原锅加黄油，下洋葱、胡萝卜、西芹与番茄膏炒香。","倒入红酒，刮起锅底焦化层，煮至酒精完全挥发。","牛尾回锅，加高汤与香料束，烧开后转至最小火。","慢炖三小时后去骨切肉，收浓汤汁，加盐与胡椒调味。"],
-                img: imgTag('oxtail.jpg', 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80', '牛尾浓汤')
+                img: imgTag('oxtail.jpg', '牛尾浓汤')
             }
         };
 
         function selectSlip(key, element) {
-            playTypewriterSound();
+            // 点击食单：播放自定义音效
+            playSound('menu');
+
             document.querySelectorAll('.slip-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
             const data = slipData[key];
