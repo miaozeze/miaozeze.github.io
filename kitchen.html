@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>厨房 | 纸页与灰烬</title>
+    <style>
+        /* === 基础页面 === */
+        body {
+            margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
+            font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
+            height: 100vh; display: flex; justify-content: center; align-items: center;
+            background-image: radial-gradient(circle at 50% 30%, #151515 0%, #050505 70%);
+            overflow: hidden; -webkit-font-smoothing: antialiased;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
+        }
+
+        .hud-info {
+            position: fixed; top: 30px; left: 40px; font-family: "Courier New", monospace;
+            color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem; z-index: 102;
+            display: flex; gap: 15px;
+        }
+        .hud-info span { padding-bottom: 3px; border-bottom: 1px solid rgba(138, 110, 62, 0.3); }
+
+        .back-btn {
+            position: fixed; top: 30px; right: 40px; padding: 10px 24px; color: #e8d5b5; font-size: 0.85rem; letter-spacing: 0.2rem;
+            border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8); border-radius: 4px; text-decoration: none; z-index: 102; transition: all 0.3s ease;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .back-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.2); }
+
+        /* 鼠标拖尾 */
+        .cursor-trail {
+            position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
+            pointer-events: none; z-index: 9999; box-shadow: 0 0 10px 2px rgba(245, 230, 200, 0.8);
+            animation: fadeOutTrail 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
+
+        /* === 核心布局 === */
+        .layout {
+            display: flex; width: 95%; max-width: 1280px; height: 85vh; gap: 40px;
+        }
+
+        /* 左侧导航 */
+        .sidebar {
+            width: 240px; display: flex; flex-direction: column; justify-content: center;
+            border-right: 1px solid rgba(90, 74, 46, 0.3); padding-right: 40px;
+            position: relative; flex-shrink: 0;
+        }
+        .room-name { font-size: 3rem; color: #f5e6c8; margin: 0 0 0.5rem 0; font-weight: normal; letter-spacing: 0.2rem; }
+        .room-desc { font-family: "Courier New", monospace; font-size: 0.75rem; color: #8a6e3e; letter-spacing: 0.15rem; text-transform: uppercase; margin-bottom: 4rem; }
+        .nav-list { display: flex; flex-direction: column; gap: 20px; }
+        .nav-item {
+            font-size: 1rem; color: #8a6e3e; letter-spacing: 0.15rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 10px;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .nav-item::before { content: '—'; color: transparent; transition: color 0.3s; }
+        .nav-item:hover, .nav-item.active { color: #f5e6c8; padding-left: 10px; }
+        .nav-item:hover::before, .nav-item.active::before { color: #f5e6c8; }
+
+        /* 右侧内容 */
+        .content-area { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 2rem 0; position: relative; }
+        .text-box {
+            max-height: 75vh; overflow-y: auto; padding-right: 20px; font-family: "Songti SC", "Noto Serif SC", serif;
+            font-size: 1.1rem; color: #d1c5a8; line-height: 2.2; text-align: justify; letter-spacing: 0.05rem;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        .text-box::-webkit-scrollbar { display: none; }
+        .text-box.show { opacity: 1; }
+
+        /* ==========================================
+           01 / 语录宽幅图片
+           ========================================== */
+        .quote-image-wrapper {
+            width: 100%; max-width: 600px; margin: 0 auto 2.5rem auto;
+            background: #12100d; border: 2px solid #6e5a3a; padding: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 15px 15px -10px rgba(158, 138, 99, 0.1);
+        }
+        .quote-image-wrapper img {
+            width: 100%; height: 240px; object-fit: cover; object-position: center;
+            filter: sepia(40%) grayscale(30%) brightness(0.7); display: block;
+        }
+        .quote-image-caption {
+            text-align: center; font-family: "Courier New", monospace; font-size: 0.75rem;
+            color: #8a6e3e; margin-top: 10px; letter-spacing: 0.15rem;
+        }
+        .quote-style {
+            font-style: italic; font-size: 1.25rem; color: #e8d5b5; line-height: 2.2; text-indent: 2em;
+            padding: 1.5rem 2rem; background: rgba(20,20,20,0.4); border-left: 2px solid #5a4a2e;
+        }
+
+        /* ==========================================
+           03 / 专属食单
+           ========================================== */
+        .kitchen-split-view {
+            display: flex; width: 100%; max-width: 1100px; height: 70vh; max-height: 600px; margin: 0 auto; gap: 25px;
+        }
+        .menu-ticket-wrapper {
+            width: 250px; flex-shrink: 0; background: #14110d; padding: 12px; border-radius: 6px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,0,0,0.8); border: 2px solid #2a2015; position: relative;
+        }
+        .menu-ticket-wrapper::before {
+            content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 25px; background: linear-gradient(to bottom, #d0d0d0, #505050);
+            border-radius: 4px 4px 8px 8px; z-index: 10;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.5); clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+        }
+        .menu-ticket {
+            background: #1c1a17; background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
+            border: 1px solid #3a3024; padding: 20px 15px; height: 100%; box-sizing: border-box; color: #a89573; font-family: "Courier New", monospace;
+        }
+        .slip-header { display: flex; justify-content: space-between; border-bottom: 2px dashed #3a3024; padding-bottom: 12px; margin-bottom: 15px; font-size: 0.7rem; letter-spacing: 0.1rem; }
+        .slip-header span { color: #b85c58; }
+        .slip-cols { display: flex; font-size: 0.65rem; color: #5a4a2e; border-bottom: 1px solid #3a3024; padding-bottom: 6px; margin-bottom: 10px; }
+        .col-qty { width: 50px; display: flex; align-items: center; gap: 5px; }
+        .col-dish { flex: 1; }
+        .slip-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px dotted #2a2218; cursor: pointer; transition: all 0.3s; font-size: 0.9rem; }
+        .slip-item:hover { background: rgba(158,138,99,0.05); padding-left: 5px; }
+        .slip-item.active { color: #f5e6c8; }
+        .slip-item.active .col-qty { color: #b85c58; font-weight: bold; }
+        .checkbox { display: inline-block; width: 12px; height: 12px; border: 1px solid #5a4a2e; position: relative; transition: all 0.3s; flex-shrink: 0; }
+        .slip-item.active .checkbox { background: #b85c58; border-color: #b85c58; }
+        .slip-item.active .checkbox::after { content: '✓'; color: #1c1a17; position: absolute; top: -4px; left: 0px; font-size: 11px; font-weight: bold; }
+
+        .recipe-panel-wrapper {
+            flex: 1; background: rgba(20, 20, 20, 0.6); border: 1px solid #3a3024; border-radius: 6px;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.9), 0 20px 50px rgba(0,0,0,0.8); position: relative; padding: 30px; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .recipe-panel-wrapper::before { content: ''; position: absolute; top: 30px; bottom: 30px; left: 0; width: 3px; background: #b85c58; }
+        .panel-content { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+        .editorial-layout { display: flex; gap: 30px; height: 100%; }
+        .editorial-left { width: 45%; display: flex; flex-direction: column; }
+        .photo-wrapper { width: 100%; height: 130px; background: #12100d; border: 1px solid #3a3024; padding: 4px; margin-bottom: 15px; position: relative; flex-shrink: 0; }
+        .photo-wrapper img { width: 100%; height: 100%; object-fit: cover; filter: sepia(30%) contrast(1.1) brightness(0.85); display: block; }
+        .photo-caption { position: absolute; bottom: 8px; right: 12px; font-family: "Courier New", monospace; font-size: 0.7rem; color: #d1c5a8; background: rgba(10,10,0.7); padding: 2px 6px; letter-spacing: 0.1rem; }
+        .desc-box { margin-bottom: 15px; }
+        .sec-title { font-family: "Courier New", monospace; font-size: 0.8rem; color: #8a6e3e; letter-spacing: 0.1rem; margin: 0 0 8px 0; border-bottom: 1px dotted rgba(138,110,62,0.3); padding-bottom: 5px; }
+        .panel-desc { font-size: 0.92rem; line-height: 1.6; color: #d1c5a8; text-align: justify; }
+        .ingredients-box { flex: 1; }
+        .ingredients-list { display: flex; flex-direction: column; gap: 6px; list-style: none; padding: 0; margin: 0; }
+        .ingredients-list li { font-family: "Songti SC", serif; font-size: 0.85rem; color: #c9bda5; position: relative; padding-left: 15px; line-height: 1.4; }
+        .ingredients-list li::before { content: '•'; color: #b85c58; position: absolute; left: 0; top: 0; font-size: 1.2rem; }
+        
+        .editorial-right { flex: 1; display: flex; flex-direction: column; }
+        .panel-title { font-family: "KaiTi", "STKaiti", serif; font-size: 1.5rem; color: #f5e6c8; margin: 0 0 5px 0; font-weight: normal; }
+        .panel-no { font-family: "Courier New", monospace; font-size: 0.75rem; color: #b85c58; letter-spacing: 0.15rem; margin-bottom: 15px; border-bottom: 1px dashed #3a3024; padding-bottom: 8px; }
+        
+        /* 💡 全局步骤排版：利用 Flex 撑满剩余高度并均匀分布 */
+        .panel-steps {
+            font-family: "Songti SC", serif; 
+            font-size: 0.85rem; 
+            line-height: 1.55;
+            color: #a89573;
+            flex: 1; /* 占满下方的所有空间 */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* 将步骤均匀排开 */
+            padding-bottom: 10px;
+        }
+        .panel-steps p { 
+            margin-top: 0; 
+            margin-bottom: 0; /* 移除默认边距，由 space-between 统一控制 */
+            display: flex; 
+            text-align: justify; 
+        }
+        .panel-steps span { 
+            color: #b85c58; 
+            font-weight: bold; 
+            margin-right: 8px; 
+            font-family: "Courier New", monospace; 
+            flex-shrink: 0; 
+        }
+
+        /* 打印淡入动画 */
+        .print-anim { animation: printOut 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards; }
+        @keyframes printOut { 0% { opacity: 0; transform: translateY(10px); filter: blur(1px); } 100% { opacity: 1; transform: translateY(0); filter: blur(0); } }
+
+        /* ==========================================
+           04 / 厨房手记（复古信纸风格）
+           ========================================== */
+        .letter-wrap { width: 100%; max-width: 760px; margin: 0 auto; padding: 4px 0 8px; }
+        .letter-sheet {
+            position: relative; padding: 38px 62px 56px 88px;
+            background-color: #efe9d9;
+            background-image:
+                radial-gradient(120% 80% at 10% 0%, rgba(255, 252, 240, 0.5), rgba(255, 252, 240, 0) 62%),
+                repeating-linear-gradient(to bottom, rgba(96, 84, 62, 0) 0 25px, rgba(96, 84, 62, 0.14) 25px 26px);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5), inset 0 0 70px rgba(150, 130, 96, 0.1);
+            transform: rotate(-0.32deg);
+        }
+        .letter-sheet::before {
+            content: ""; position: absolute; left: 68px; top: 0; bottom: 0; width: 1px;
+            background: rgba(176, 74, 68, 0.38);
+        }
+        .letter-fold {
+            position: absolute; left: 0; right: 0; top: 52%; height: 14px; pointer-events: none;
+            background: linear-gradient(to bottom, rgba(120, 104, 74, 0) 0%, rgba(120, 104, 74, 0.16) 45%, rgba(255, 252, 240, 0.28) 55%, rgba(120, 104, 74, 0) 100%);
+            transform: translateY(-7px);
+        }
+        .letter-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+        .letter-to { font-family: "KaiTi", "STKaiti", serif; font-size: 1.02rem; color: #5e5747; letter-spacing: 0.06rem; }
+        .letter-to em { display: inline-block; width: 180px; margin-left: 6px; border-bottom: 1px solid rgba(106, 96, 76, 0.32); transform: translateY(-4px); }
+        .letter-date { font-family: "Courier New", monospace; font-size: 0.72rem; letter-spacing: 0.18rem; color: rgba(110, 94, 68, 0.92); text-transform: uppercase; }
+        .letter-body { position: relative; }
+        .lg {
+            position: relative; margin: 0 0 9px; font-family: "KaiTi", "STKaiti", serif;
+            font-size: 0.97rem; line-height: 26px; color: #3f3a31;
+            text-shadow: 0 0 0.4px rgba(63, 58, 49, 0.45);
+        }
+        .lg:nth-of-type(1) { opacity: 0.55; }
+        .lg:nth-of-type(2) { opacity: 0.62; }
+        .lg:nth-of-type(3) { opacity: 0.7; }
+        .lg:nth-of-type(4) { opacity: 0.78; }
+        .lg:nth-of-type(5) { opacity: 0.87; }
+        .lg:nth-of-type(6) { opacity: 0.94; }
+        .lg:nth-of-type(7) { opacity: 1; }
+        .lg-n {
+            position: absolute; left: -56px; top: 2px; font-family: "Courier New", monospace;
+            font-size: 0.66rem; letter-spacing: 0.1rem; color: rgba(110, 94, 68, 0.7);
+        }
+        .lg-old { color: #6b6455; }
+        .lg-sig-date { font-family: "Courier New", monospace; font-size: 0.66rem; letter-spacing: 0.14rem; color: rgba(110, 94, 68, 0.58); margin-left: 10px; }
+        .lg-struck { text-decoration: line-through; text-decoration-thickness: 1.5px; color: rgba(63, 58, 49, 0.45); }
+        .lg-slash { color: #b0544f; opacity: 0.75; margin-left: 10px; letter-spacing: 2px; }
+        .lg-greasy { color: rgba(63, 58, 49, 0.38); }
+        .lg-smudge {
+            position: absolute; left: 18%; top: -14%; width: 150px; height: 62px;
+            background: radial-gradient(closest-side, rgba(104, 74, 36, 0.42), rgba(104, 74, 36, 0.2) 58%, rgba(104, 74, 36, 0) 100%);
+            filter: blur(5px); transform: rotate(-7deg); pointer-events: none;
+        }
+        .letter-sign {
+            margin-top: 18px; text-align: right; font-family: "KaiTi", "STKaiti", serif;
+            font-size: 1.32rem; color: #3f3a31; letter-spacing: 0.1rem; opacity: 0.85;
+            transform: rotate(-2deg); text-shadow: 0 0 0.5px rgba(75, 70, 60, 0.5);
+        }
+
+        /* ==========================================
+           05 / 采买单（机打小票暗色版）
+           ========================================== */
+        .grocery-receipt {
+            width: 340px; margin: 0 auto;
+            background: #181614; /* 暗色底 */
+            color: #a89573; /* 灰金文字 */
+            padding: 30px 25px 55px 25px; position: relative;
+            font-family: "Courier New", monospace; font-size: 0.8rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9), inset 0 0 20px rgba(0,0,0,0.6);
+            border: 1px solid #3a3024;
+            /* 锯齿边缘 */
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), 95% 100%, 90% calc(100% - 10px), 85% 100%, 80% calc(100% - 10px), 75% 100%, 70% calc(100% - 10px), 65% 100%, 60% calc(100% - 10px), 55% 100%, 50% calc(100% - 10px), 45% 100%, 40% calc(100% - 10px), 35% 100%, 30% calc(100% - 10px), 25% 100%, 20% calc(100% - 10px), 15% 100%, 10% calc(100% - 10px), 5% 100%, 0 calc(100% - 10px));
+        }
+        .gr-center { text-align: center; margin-bottom: 15px; }
+        .gr-title { font-size: 1rem; font-weight: bold; letter-spacing: 0.1rem; color: #f5e6c8; }
+        .gr-dash { border-top: 1px dashed #3a3024; margin: 10px 0; }
+        .gr-item { display: flex; justify-content: space-between; margin-bottom: 5px; font-weight: bold; color: #c9bda5; }
+        .gr-note { font-size: 0.75rem; color: #8a6e3e; margin-bottom: 10px; font-style: italic; line-height: 1.4; }
+        
+        /* 小票专属红章 */
+        .gr-stamp {
+            position: absolute; bottom: 25px; right: 20px;
+            border: 2px solid #b85c58; color: #b85c58;
+            padding: 6px 12px; font-family: "KaiTi", "STKaiti", serif;
+            font-size: 1.1rem; font-weight: bold; letter-spacing: 0.1rem;
+            transform: rotate(-15deg); opacity: 0.75;
+            border-radius: 4px; pointer-events: none;
+            box-shadow: inset 0 0 5px rgba(184,92,88,0.2);
+        }
+        
+        /* === 场景过渡遮罩 === */
+        #transition-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #050505; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 1s ease; }
+        #transition-screen.active { opacity: 1; pointer-events: auto; }
+        .trans-text { color: #8a6e3e; font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem; opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s; text-align: center; padding: 0 20px; }
+        #transition-screen.active .trans-text { opacity: 1; transform: translateY(0); }
+
+        /* ==========================================================
+           手机浏览器兼容（< 900px）
+           ========================================================== */
+        @media (max-width: 900px) {
+            .hud-info {
+                top: 15px; left: 15px;
+                font-size: 0.65rem; gap: 8px;
+                flex-wrap: wrap;
+            }
+            .hud-info span { border-bottom: none; }
+            .back-btn {
+                top: 15px; right: 15px;
+                padding: 6px 12px;
+                font-size: 0.7rem;
+                letter-spacing: 0.1rem;
+            }
+
+            .layout {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+                padding: 60px 15px 30px;
+                box-sizing: border-box;
+                gap: 20px;
+                width: 100%;
+                max-width: 100%;
+                overflow-y: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(90, 74, 46, 0.3);
+                padding-right: 0;
+                padding-bottom: 15px;
+                flex-direction: column;
+                align-items: center;
+            }
+            .room-name { font-size: 2rem; margin-bottom: 0.2rem; }
+            .room-desc { margin-bottom: 1.5rem; font-size: 0.65rem; }
+            .nav-list {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px 15px;
+            }
+            .nav-item {
+                font-size: 0.8rem;
+                letter-spacing: 0.05rem;
+            }
+            .nav-item::before { display: none; }
+            .nav-item:hover, .nav-item.active { padding-left: 0; }
+
+            .content-area {
+                padding: 10px 0;
+                justify-content: flex-start;
+            }
+            .text-box {
+                max-height: none;
+                padding-right: 0;
+                font-size: 0.95rem;
+            }
+
+            .quote-image-wrapper { max-width: 100%; padding: 4px; }
+            .quote-image-wrapper img { height: 180px; }
+            .quote-style { font-size: 1rem; padding: 1rem; line-height: 1.8; }
+
+            .kitchen-split-view {
+                flex-direction: column;
+                height: auto;
+                gap: 15px;
+            }
+            .menu-ticket-wrapper {
+                width: 100%;
+                padding: 8px;
+            }
+            .menu-ticket { padding: 15px; }
+            .recipe-panel-wrapper {
+                padding: 20px;
+            }
+            .editorial-layout {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .editorial-left { width: 100%; }
+            .photo-wrapper { height: 160px; }
+            .panel-steps { flex: none; justify-content: flex-start; padding-bottom: 0; }
+            .panel-steps p { margin-bottom: 10px; }
+
+            .letter-wrap { width: 100%; padding: 0; }
+            .letter-sheet { padding: 25px 20px 35px 40px; transform: none; }
+            .letter-sheet::before { left: 24px; }
+            .lg { font-size: 0.85rem; line-height: 22px; }
+            .lg-n { left: -32px; font-size: 0.55rem; top: 4px; }
+            .letter-head { flex-direction: column; align-items: flex-start; gap: 5px; }
+            .letter-to em { width: 120px; }
+            .letter-sign { font-size: 1.1rem; margin-top: 10px; }
+
+            .grocery-receipt {
+                width: 100%;
+                box-sizing: border-box;
+            }
+        }
+
+        /* 触屏设备：禁用鼠标拖尾与自定义光标 */
+        @media (pointer: coarse) {
+            body { cursor: auto; }
+            .cursor-trail { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部 HUD 区域 -->
+    <div class="hud-info">
+        <span id="current-time">00:00</span>
+        <span>室内 21°C · 炉火未熄</span>
+        <span>芥川庄园 · 一楼厨房</span>
+    </div>
+
+    <a href="javascript:void(0)" class="back-btn" onclick="leaveRoom()">⎋ [ 离开厨房 ]</a>
+
+    <div class="layout">
+        <div class="sidebar">
+            <h2 class="room-name">厨房</h2>
+            <div class="room-desc">专属女仆 / 莉薇娅</div>
+            <div class="nav-list">
+                <div class="nav-item active" id="nav-quote" onclick="switchContent('quote')">01 / 她的语录</div>
+                <div class="nav-item" id="nav-story" onclick="switchContent('story')">02 / 旧日往事</div>
+                <div class="nav-item" id="nav-menu" onclick="switchContent('menu')">03 / 专属食单</div>
+                <div class="nav-item" id="nav-notes" onclick="switchContent('notes')">04 / 厨房手记</div>
+                <div class="nav-item" id="nav-grocery" onclick="switchContent('grocery')">05 / 采买单</div>
+            </div>
+        </div>
+        <div class="content-area"><div class="text-box show" id="text-content"></div></div>
+    </div>
+    
+    <!-- 过渡黑屏 -->
+    <div id="transition-screen" class="active">
+        <div class="trans-text" id="trans-text">食物的香气盖过了灰尘的味道，炉火正旺。</div>
+    </div>
+
+    <script>
+        /* ================= 系统基础逻辑 ================= */
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+        setInterval(updateTime, 1000); updateTime();
+
+        /* ================= 页面入场动画 ================= */
+        window.addEventListener('load', () => {
+            const ts = document.getElementById('transition-screen');
+            // 页面加载后，延迟2秒开始淡出黑屏
+            setTimeout(() => {
+                ts.classList.remove('active');
+            }, 2000); 
+        });
+
+        /* ================= 鼠标拖尾 ================= */
+        let lastTrailTime = 0;
+        document.addEventListener('mousemove', function(e) {
+            const now = Date.now();
+            if (now - lastTrailTime > 30) {
+                const particle = document.createElement('div'); particle.className = 'cursor-trail';
+                const offsetX = (Math.random() - 0.5) * 8; const offsetY = (Math.random() - 0.5) * 8;
+                particle.style.left = (e.clientX + offsetX) + 'px'; particle.style.top = (e.clientY + offsetY) + 'px';
+                const size = Math.random() * 4 + 2; particle.style.width = size + 'px'; particle.style.height = size + 'px';
+                document.body.appendChild(particle); setTimeout(() => { particle.remove(); }, 800); lastTrailTime = now;
+            }
+        });
+
+        /* ================= 音频引擎 ================= */
+        let sharedAudioCtx = null;
+        function getAudioCtx() {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return null;
+            if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') sharedAudioCtx = new AudioContext();
+            if (sharedAudioCtx.state === 'suspended') sharedAudioCtx.resume();
+            return sharedAudioCtx;
+        }
+        function playTypewriterSound() {
+            try {
+                const audioCtx = getAudioCtx(); if (!audioCtx) return;
+                const now = audioCtx.currentTime; const bufferSize = audioCtx.sampleRate * 0.05;
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0); for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+                const source = audioCtx.createBufferSource(); source.buffer = buffer;
+                const filter = audioCtx.createBiquadFilter(); filter.type = 'highpass'; filter.frequency.value = 3000;
+                const gain = audioCtx.createGain(); gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(0.1, now + 0.01); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                source.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination); source.start(now);
+            } catch (e) {}
+        }
+        
+        // 💡 替换为完整的推门音效（吱呀声 + 脚步声）
+        function playDoorOpenSound() {
+            try {
+                const audioCtx = getAudioCtx(); if (!audioCtx) return; 
+                const now = audioCtx.currentTime;
+                
+                // 木门推开的“吱呀”声
+                const creakBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.4, audioCtx.sampleRate);
+                const creakData = creakBuffer.getChannelData(0);
+                for (let i = 0; i < creakData.length; i++) { creakData[i] = Math.random() * 2 - 1; }
+                
+                const creakSource = audioCtx.createBufferSource(); 
+                creakSource.buffer = creakBuffer;
+                
+                const creakFilter = audioCtx.createBiquadFilter(); 
+                creakFilter.type = 'bandpass'; 
+                creakFilter.frequency.setValueAtTime(800, now);
+                creakFilter.frequency.linearRampToValueAtTime(400, now + 0.4); 
+                creakFilter.Q.value = 2;
+                
+                const creakGain = audioCtx.createGain(); 
+                creakGain.gain.setValueAtTime(0, now); 
+                creakGain.gain.linearRampToValueAtTime(0.08, now + 0.1); 
+                creakGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                
+                creakSource.connect(creakFilter); 
+                creakFilter.connect(creakGain); 
+                creakGain.connect(audioCtx.destination); 
+                creakSource.start(now);
+
+                // 脚步声（三下闷响）
+                for (let i = 0; i < 3; i++) {
+                    const stepTime = now + 0.2 + (i * 0.4);
+                    const stepOsc = audioCtx.createOscillator();
+                    stepOsc.type = 'sine';
+                    stepOsc.frequency.setValueAtTime(80, stepTime);
+                    stepOsc.frequency.exponentialRampToValueAtTime(30, stepTime + 0.1);
+                    
+                    const stepGain = audioCtx.createGain();
+                    stepGain.gain.setValueAtTime(0, stepTime);
+                    stepGain.gain.linearRampToValueAtTime(0.2, stepTime + 0.02);
+                    stepGain.gain.exponentialRampToValueAtTime(0.01, stepTime + 0.15);
+                    
+                    stepOsc.connect(stepGain);
+                    stepGain.connect(audioCtx.destination);
+                    stepOsc.start(stepTime);
+                    stepOsc.stop(stepTime + 0.2);
+                }
+            } catch (e) {}
+        }
+
+        function leaveRoom() {
+            playDoorOpenSound(); 
+            // 💡 离开时的文案
+            document.getElementById('trans-text').innerText = '炉火留在身后，长夜仍在继续。';
+            
+            const ts = document.getElementById('transition-screen');
+            ts.classList.add('active');
+            setTimeout(() => { window.location.href = "index.html?open=true"; }, 1800);
+        }
+
+        /* ================= 图片配置 ================= */
+        const IMG_BASE = 'https://miaozeze.github.io/';
+        const RAW_BASE = 'https://raw.githubusercontent.com/miaozeze/miaozeze.github.io/main/';
+        function imgTag(file, fallback, alt) {
+            const primary = IMG_BASE + file; const secondary = RAW_BASE + file;
+            return `<img src="${primary}" alt="${alt || '附件'}" data-fallback-raw="${secondary}" data-fallback-unsplash="${fallback || ''}" onerror="handleImgError(this)">`;
+        }
+        window.handleImgError = function(img) {
+            const raw = img.dataset.fallbackRaw; const unsplash = img.dataset.fallbackUnsplash;
+            if (raw && img.src !== raw) { img.src = raw; } else if (unsplash && img.src !== unsplash) { img.src = unsplash; }
+        };
+
+        /* ================= 各内容面板 ================= */
+        const contentData = {
+            quote: `
+                <div class="quote-image-wrapper">
+                    <img src="https://miaozeze.github.io/kitchen_quote.jpg" alt="厨房一角" data-fallback-raw="https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80" onerror="this.src=this.dataset.fallbackRaw">
+                    <div class="quote-image-caption">// 一尘不染的料理台</div>
+                </div>
+                <div class="quote-style"><p>“大小姐，这个点来厨房做什么？冷肉锁在柜子里，钥匙在我身上——您别想了。去餐桌坐着，我给您热杯牛奶。”</p></div>
+            `,
+            story: `
+                <p>凌晨两点，厨房里还亮着灯。莉薇娅在擦一把银勺——擦银器这件事，她从来不看表。</p>
+                <p>听到脚步声，她没回头：“这个点来厨房做什么？冷肉锁在柜子里，钥匙在我身上。”</p>
+                <p>炉子上一直温着半壶牛奶。她说完才转过身，把杯子倒满，端到桌上，热气顶着杯沿：“只放了一点蜂蜜。糖别想——您那口牙。”</p>
+                <p>“谁特地给您热的。”她把软布折了一道，又展开，“……炉子上正好有。顺手。”</p>
+                <p>她站了一会儿，像有话要说，最后只落下半句：“明早要是再不吃饭——”</p>
+                <p>话咽了回去。她转身回了操作台，重新擦起那把早就干净的勺子：“……早点喝完。”</p>
+            `,
+            menu: `
+                <div class="kitchen-split-view">
+                    <div class="menu-ticket-wrapper">
+                        <div class="menu-ticket">
+                            <div class="slip-header">
+                                <div>AKUTAGAWA <br><span>KITCHEN</span></div>
+                                <div style="text-align:right;">ORDER<br>SLIP</div>
+                            </div>
+                            <div class="slip-cols"><div class="col-qty">QTY</div><div class="col-dish">DISHES</div></div>
+
+                            <div class="slip-item active" id="slip-wellington" onclick="selectSlip('wellington', this)">
+                                <div class="col-qty"><span class="checkbox"></span>01</div><div class="col-dish">古典惠灵顿牛排</div>
+                            </div>
+                            <div class="slip-item" id="slip-consomme" onclick="selectSlip('consomme', this)">
+                                <div class="col-qty"><span class="checkbox"></span>01</div><div class="col-dish">法式清汤</div>
+                            </div>
+                            <div class="slip-item" id="slip-scone" onclick="selectSlip('scone', this)">
+                                <div class="col-qty"><span class="checkbox"></span>02</div><div class="col-dish">约克郡司康饼</div>
+                            </div>
+                            <div class="slip-item" id="slip-oxtail" onclick="selectSlip('oxtail', this)">
+                                <div class="col-qty"><span class="checkbox"></span>01</div><div class="col-dish">慢炖牛尾浓汤</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recipe-panel-wrapper">
+                        <div class="panel-content" id="recipe-panel-content"></div>
+                    </div>
+                </div>
+            `,
+            notes: `
+                <div class="letter-wrap">
+                    <div class="letter-sheet">
+                        <div class="letter-head">
+                            <span class="letter-to">To.<em></em></span>
+                            <span class="letter-date">NOV. 6</span>
+                        </div>
+                        <div class="letter-body">
+                            <p class="lg lg-old"><span class="lg-n">01</span>第一夜。厨房朝东。灶台比我原来那间矮两寸。<span class="lg-sig-date">19 NOV</span></p>
+                            <p class="lg"><span class="lg-n">02</span><span class="lg-struck">明天问问她要不要——</span><span class="lg-slash">／／／</span></p>
+                            <p class="lg lg-greasy"><span class="lg-n">03</span>炖过一锅，倒了。……别放太咸<em class="lg-smudge"></em></p>
+                            <p class="lg"><span class="lg-n">04</span>黄油要冷的，手要快。面粉只买城东那家。别急。</p>
+                            <p class="lg"><span class="lg-n">05</span>大小姐今天心情很差，晚饭没动。炉子上留了半碗清汤，等她半夜饿了热给她喝。别放糖。</p>
+                            <p class="lg"><span class="lg-n">06</span>星野雫今天又把机油带进厨房了。警告他：再敢用擦机器的抹布碰大小姐的骨瓷杯，我就拔了他研究室的电线。抹布分开。</p>
+                            <p class="lg"><span class="lg-n">07</span>鳕鱼又薄了半寸。退回。他没话说。</p>
+                        </div>
+                        <div class="letter-sign">L.</div>
+                        <div class="letter-fold"></div>
+                    </div>
+                </div>
+            `,
+            grocery: `
+                <div class="grocery-receipt print-anim">
+                    <div class="gr-center">
+                        <div class="gr-title">*** AKUTAGAWA KITCHEN ***</div>
+                        <div style="color:#5a4a2e; font-size:0.7rem; margin-top:5px;">采购处 · 凭单据结算</div>
+                        <div style="color:#8a6e3e; font-size:0.7rem;">REF: AK-1106</div>
+                        <div style="color:#8a6e3e; font-size:0.7rem;">2026-11-06 21:56</div>
+                    </div>
+                    <div class="gr-dash"></div>
+                    
+                    <div class="gr-item"><span>牛尾段（带骨）</span><span>x 1.5 kg</span></div>
+                    <div class="gr-note">* 两指厚。薄了退。</div>
+                    
+                    <div class="gr-item"><span>无盐发酵黄油</span><span>x 500 g</span></div>
+                    <div class="gr-note">* 别买劣质品。大小姐的酥皮经不起廉价油脂。</div>
+
+                    <div class="gr-item"><span>红葡萄酒（干型）</span><span>x 2 瓶</span></div>
+                    <div class="gr-note">* 原单 3 瓶。做菜留 1 瓶。</div>
+
+                    <div class="gr-item"><span>亚麻厨房抹布</span><span>x 6 条</span></div>
+                    <div class="gr-note">* 专门擦餐具。某人再敢拿去擦机械零件……</div>
+                    
+                    <div class="gr-item"><span>新鲜百里香 / 迷迭香</span><span>x 2 束</span></div>
+
+                    <!-- 埃德蒙盖印 -->
+                    <div class="gr-stamp">驳回 · 埃德蒙</div>
+                </div>
+            `
+        };
+
+        /* ================= 点菜单数据与交互 ================= */
+        const slipData = {
+            wellington: {
+                title: "古典惠灵顿牛排", no: "档案编号 012 · 主菜", desc: "金黄酥皮包裹粉嫩牛柳，黑松露与蘑菇泥香气浓郁，是对火候掌控的极致考验。",
+                ingredients: ["菲力牛柳 200g", "千层酥皮 1张", "新鲜蘑菇 200g", "帕尔马火腿 4片", "黑松露酱 1勺", "洋葱 半颗", "无盐黄油 20g", "蛋黄液 少许"],
+                steps: ["牛柳海盐黑胡椒腌制，入极热平底锅，快速煎至表面焦化锁住肉汁。","蘑菇与洋葱切碎，用黄油慢炒至水分收干，拌入黑松露酱制成菌菇泥。","铺开帕尔马火腿片，均匀抹上菌菇泥，放上牛柳卷紧，冷藏定型。","用千层酥皮包裹定型好的牛柳，表面刷蛋黄液并刻出花纹。","送入烤箱烘烤至酥皮膨胀金黄，取出静置十分钟后切开。"],
+                img: imgTag('wellington.jpg', 'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=800&q=80', '惠灵顿牛排')
+            },
+            consomme: {
+                title: "法式清汤", no: "档案编号 024 · 汤品", desc: "看似清如白水，实则凝聚了牛肉、蔬菜与香草的精华。清澈见底的琥珀色液体中，蕴含着极深的鲜美。",
+                ingredients: ["牛骨/牛筋 1kg", "瘦牛肉糜 300g", "蛋清 2个", "胡萝卜/洋葱 各1个", "西芹 2根", "百里香/香叶 1束"],
+                steps: ["将牛骨、牛筋与胡萝卜等蔬菜慢熬六小时，萃取浓郁高汤。","将瘦牛肉剁成极细的肉糜，与蛋清、切碎的蔬菜混合均匀。","将肉糜混合物放入冷高汤中，小火缓慢加热并不断搅拌。","肉糜浮起形成“肉盖”吸附杂质，保持微沸状态炖煮两小时。","小心地将清汤从边缘舀出，用细纱布反复过滤至纯净。"],
+                img: imgTag('consomme.jpg', 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=800&q=80', '法式清汤')
+            },
+            scone: {
+                title: "约克郡司康饼", no: "档案编号 038 · 茶点", desc: "外酥内软的经典英式茶点，带着淡淡的黄油与麦香。掰开后抹上奶油与果酱，是下午茶的灵魂。",
+                ingredients: ["低筋面粉 200g", "泡打粉 2茶匙", "冷藏黄油 50g", "纯牛奶 100ml", "细砂糖 30g", "盐 1小撮", "凝脂奶油/果酱 适量"],
+                steps: ["将低筋面粉、泡打粉、盐和细砂糖混合过筛，加入冷藏切块的黄油。","用手指尖将黄油与面粉快速搓揉，直至混合物呈现粗糙的面包糠状。","在中间挖一个坑，倒入冷牛奶，用刮刀轻轻翻拌成团，切勿过度揉搓。","将面团移到撒了薄粉的案板上，轻轻擀平至两厘米厚，用圆形模具按压出形状。","表面刷上牛奶，送入预热好的烤箱，烘烤至表面金黄膨胀。"],
+                img: imgTag('scone.jpg', 'https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&w=800&q=80', '司康饼')
+            },
+            oxtail: {
+                title: "慢炖牛尾浓汤", no: "档案编号 045 · 夜宵", desc: "红宝石般的浓郁汤底，牛尾经长时间慢炖变得软烂脱骨，丰富的胶质完全融入汤汁，冬日最暖。",
+                ingredients: ["牛尾段 500g", "红葡萄酒 200ml", "洋葱/胡萝卜/西芹 各1个", "番茄膏 2勺", "牛骨高汤 1L", "无盐黄油 20g", "香料束 1束"],
+                steps: ["牛尾洗净擦干，入极热厚底锅煎至各面焦糖色。","原锅加黄油，下洋葱、胡萝卜、西芹与番茄膏炒香。","倒入红酒，刮起锅底焦化层，煮至酒精完全挥发。","牛尾回锅，加高汤与香料束，烧开后转至最小火。","慢炖三小时后去骨切肉，收浓汤汁，加盐与胡椒调味。"],
+                img: imgTag('oxtail.jpg', 'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80', '牛尾浓汤')
+            }
+        };
+
+        function selectSlip(key, element) {
+            playTypewriterSound();
+            document.querySelectorAll('.slip-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            const data = slipData[key];
+            const panel = document.getElementById('recipe-panel-content');
+            const ingredientsHTML = data.ingredients.map(ing => `<li>${ing}</li>`).join('');
+            
+            // 全局 CSS 已经解决了排开的问题，JS 里不需要再加行内样式了
+            const stepsHTML = data.steps.map((step, i) => `<p><span>[${i+1}]</span> ${step}</p>`).join('');
+
+            panel.innerHTML = `
+                <div class="print-anim editorial-layout">
+                    <div class="editorial-left">
+                        <div class="photo-wrapper">${data.img}<div class="photo-caption">// 出餐留影</div></div>
+                        <div class="desc-box"><div class="sec-title">// 风味描述</div><div class="panel-desc">${data.desc}</div></div>
+                        <div class="ingredients-box"><div class="sec-title">// 准备食材</div><ul class="ingredients-list">${ingredientsHTML}</ul></div>
+                    </div>
+                    <div class="editorial-right">
+                        <h2 class="panel-title">${data.title}</h2>
+                        <div class="panel-no">${data.no}</div>
+                        <div class="sec-title">// 制作方法</div>
+                        <div class="panel-steps">${stepsHTML}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ================= 内容切换 ================= */
+        let isAnimating = false;
+        function switchContent(type) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const textBox = document.getElementById('text-content');
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const nav = document.getElementById(`nav-${type}`);
+            if (nav) nav.classList.add('active');
+
+            textBox.classList.remove('show');
+
+            setTimeout(() => {
+                textBox.innerHTML = contentData[type];
+                textBox.scrollTop = 0;
+                
+                if (type === 'menu') {
+                    const firstItem = document.getElementById('slip-wellington');
+                    if (firstItem) selectSlip('wellington', firstItem);
+                }
+
+                textBox.classList.add('show');
+                isAnimating = false;
+            }, 400);
+        }
+
+        document.getElementById('text-content').innerHTML = contentData.quote;
+    </script>
+</body>
+</html>
