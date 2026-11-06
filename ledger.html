@@ -499,7 +499,7 @@
 <body>
     <div class="hud-info">
         <span id="current-time">00:00</span>
-        <span>13°C 阴雨</span>
+        <span>室内 19°C · 茶烟已冷</span>
         <span>芥川庄园 · 一楼账房</span>
     </div>
 
@@ -559,7 +559,7 @@
             }
         });
 
-        /* ================= 音效引擎 ================= */
+        /* ================= 音频引擎 ================= */
         let sharedAudioCtx = null;
         function getAudioCtx() {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -569,7 +569,7 @@
             return sharedAudioCtx;
         }
 
-        /* 翻页音效 */
+        /* 翻页音效（兜底用） */
         function playPageTurnSound() {
             try {
                 const audioCtx = getAudioCtx();
@@ -592,6 +592,53 @@
                 source.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
                 source.start(now);
             } catch (e) {}
+        }
+
+        /* ================= 音频预加载池 ================= */
+        const soundPool = {};
+
+        function preloadSounds() {
+            const urls = {
+                ledger: 'https://miaozeze.github.io/ledger.mp3',
+                seal: 'https://miaozeze.github.io/seal.mp3'
+            };
+            
+            for (const key in urls) {
+                const audio = new Audio();
+                audio.src = urls[key];
+                audio.preload = "auto";
+                audio.volume = 0.6;
+                soundPool[key] = audio;
+                audio.load();
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', preloadSounds);
+
+        function playSound(name, fallback) {
+            const audio = soundPool[name];
+            const doFallback = () => {
+                if (typeof fallback === 'function') fallback();
+                else playPageTurnSound();
+            };
+
+            if (audio) {
+                try {
+                    audio.currentTime = 0;
+                    const p = audio.play();
+                    if (p && p.catch) {
+                        p.catch(err => {
+                            console.warn(`[sound] ${name} 播放失败：`, err);
+                            doFallback();
+                        });
+                    }
+                } catch (e) {
+                    console.warn(`[sound] ${name} 异常：`, e);
+                    doFallback();
+                }
+            } else {
+                doFallback();
+            }
         }
 
         /* 离开账房：合书音效 + 脚步声 */
@@ -795,7 +842,9 @@
         }
 
         function selectLedgerItem(id) {
-            playPageTurnSound();
+            // 播放账目点击音效
+            playSound('ledger', playPageTurnSound);
+            
             document.querySelectorAll('.ledger-item-row').forEach(el => el.classList.remove('active'));
             const row = document.getElementById(`row-${id}`);
             if (row) row.classList.add('active');
@@ -814,6 +863,9 @@
         /* ================= 蜡封解密 ================= */
         let debtUnlocked = false;
         function unlockDebt(sealElement) {
+            // 播放蜡封解密音效
+            playSound('seal', playPageTurnSound);
+
             debtUnlocked = true;
             
             sealElement.classList.add('seal-breaking');
