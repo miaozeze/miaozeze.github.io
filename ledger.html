@@ -39,14 +39,14 @@
 
         /* === 核心布局 === */
         .layout {
-            display: flex; width: 95%; max-width: 1200px; height: 85vh; gap: 50px;
+            display: flex; width: 95%; max-width: 1280px; height: 85vh; gap: 40px;
         }
 
         /* 左侧：导航 */
         .sidebar {
-            width: 280px; display: flex; flex-direction: column; justify-content: center;
+            width: 240px; display: flex; flex-direction: column; justify-content: center;
             border-right: 1px solid rgba(90, 74, 46, 0.3); padding-right: 40px;
-            position: relative;
+            position: relative; flex-shrink: 0;
         }
 
         .room-name { font-size: 3rem; color: #f5e6c8; margin: 0 0 0.5rem 0; font-weight: normal; letter-spacing: 0.2rem; }
@@ -232,6 +232,92 @@
         .detail-photo:hover .photo-caption {
             color: #f5e6c8; 
         }
+
+        /* ==========================================
+           专属排版：建筑平面图
+           ========================================== */
+        .map-container {
+            position: relative; width: 100%; max-width: 900px; height: 70vh; max-height: 600px;
+            margin: 0 auto; background-color: #1a1612;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 80%),
+                repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(138, 110, 62, 0.05) 39px, rgba(138, 110, 62, 0.05) 40px),
+                repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(138, 110, 62, 0.05) 39px, rgba(138, 110, 62, 0.05) 40px);
+            border: 4px solid #2a2015; border-radius: 4px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.95), inset 0 0 100px rgba(0,0,0,0.9);
+            overflow: hidden;
+        }
+        .map-title {
+            position: absolute; top: 20px; left: 30px;
+            font-family: "Courier New", monospace; font-size: 0.9rem; color: #5a4a2e;
+            letter-spacing: 0.2rem; border-bottom: 1px dashed #3a3024; padding-bottom: 5px;
+        }
+        .zone {
+            position: absolute; border: 2px solid #3a3024;
+            background: rgba(20, 20, 20, 0.4);
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.3s; border-radius: 2px;
+        }
+        .zone-name {
+            font-family: "Courier New", monospace; font-size: 0.75rem; color: #5a4a2e;
+            position: absolute; pointer-events: none; letter-spacing: 0.1rem;
+        }
+        .zone-main { top: 15%; left: 25%; width: 50%; height: 35%; border-style: double; border-width: 4px; }
+        .zone-side { top: 15%; left: 5%; width: 15%; height: 35%; border-right: none; }
+        .zone-ledger { top: 55%; left: 55%; width: 25%; height: 30%; }
+        .zone-kitchen { top: 55%; left: 20%; width: 30%; height: 30%; }
+        .zone-cellar { top: 75%; left: 5%; width: 15%; height: 20%; border-style: dashed; }
+        .zone-lab { top: 10%; left: 80%; width: 15%; height: 25%; border-style: dashed; border-color: #1f1a14; }
+
+        .map-pin {
+            position: absolute; width: 40px; height: 40px;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; transform: translate(-50%, -50%); z-index: 10;
+            transition: all 0.3s;
+        }
+        .map-pin:hover { transform: translate(-50%, -50%) scale(1.2); }
+        .map-pin::before {
+            content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%;
+            background: radial-gradient(circle, rgba(209, 181, 128, 0.4) 0%, transparent 70%);
+            animation: pulse 2s infinite alternate; opacity: 0.6;
+        }
+        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.3; } 100% { transform: scale(1.3); opacity: 0.8; } }
+        .map-pin.active::before { background: radial-gradient(circle, rgba(184, 92, 88, 0.6) 0%, transparent 70%); animation: none; transform: scale(1.4); }
+        
+        .pin-icon {
+            width: 16px; height: 20px; background: #d1b580; border-radius: 8px 8px 4px 4px;
+            position: relative; z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.8);
+            display: flex; justify-content: center; align-items: center;
+        }
+        .pin-icon::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #111; }
+        .pin-icon::after { content: ''; position: absolute; bottom: 0; width: 6px; height: 8px; background: #111; }
+
+        .map-pin.unlisted { opacity: 0.4; filter: grayscale(1); }
+        .map-pin.unlisted:hover { opacity: 0.8; filter: grayscale(0.5); }
+        .map-pin.unlisted .pin-icon { background: #555; }
+
+        .map-card {
+            position: absolute; bottom: 20px; right: 20px; width: 320px;
+            background: #efe9d9;
+            padding: 25px 30px; border-radius: 2px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(150, 130, 96, 0.1);
+            transform: rotate(-1.5deg); opacity: 0; visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 20;
+            background-image: repeating-linear-gradient(to bottom, transparent 0 24px, rgba(96, 84, 62, 0.15) 24px 25px);
+            border-left: 1px solid rgba(176, 74, 68, 0.3);
+        }
+        .map-card.show { opacity: 1; visibility: visible; transform: rotate(-1.5deg) translateY(0); }
+        .map-card::before {
+            content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 15px; background: rgba(138, 110, 62, 0.8);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.5); opacity: 0.7;
+        }
+
+        .card-title { font-family: "KaiTi", serif; font-size: 1.4rem; color: #3a3730; margin-bottom: 15px; font-weight: bold; }
+        .card-meta { font-family: "Courier New", monospace; font-size: 0.75rem; color: #8f3f3a; margin-bottom: 15px; letter-spacing: 0.05rem; }
+        .card-rule { font-family: "KaiTi", serif; font-size: 0.95rem; color: #3a3730; line-height: 1.6; margin-bottom: 15px; }
+        .card-note { font-family: "KaiTi", serif; font-size: 0.9rem; color: #6a6252; font-style: italic; padding-top: 10px; border-top: 1px dashed rgba(120, 105, 80, 0.4); }
 
         /* ==========================================
            专属排版：奥斯汀旧债（独立解密页面）
@@ -464,7 +550,19 @@
             }
             .photo-caption { font-size: 0.7rem; }
 
-            /* 9. 暗门页面 */
+            /* 9. 建筑平面图 */
+            .map-container { height: 450px; margin-top: 20px; }
+            .zone-main { left: 20%; width: 60%; }
+            .zone-side { left: 5%; width: 10%; }
+            .zone-ledger { left: 60%; width: 30%; }
+            .zone-kitchen { left: 20%; width: 35%; }
+            .zone-lab { left: 80%; width: 15%; }
+            .map-card { width: 280px; padding: 15px; bottom: 10px; right: 10px; }
+            .card-title { font-size: 1.2rem; }
+            .card-meta { font-size: 0.65rem; }
+            .card-rule { font-size: 0.85rem; }
+
+            /* 10. 暗门页面 */
             .secret-page { max-width: 100%; }
             .secret-header { font-size: 0.8rem; margin-bottom: 1rem; }
             .secret-content-layout { flex-direction: column; gap: 20px; align-items: stretch; }
@@ -476,7 +574,7 @@
             .wax-seal-lock { width: 64px; height: 64px; }
             .wax-seal-lock::after { font-size: 1.2rem; }
 
-            /* 10. 过渡文字：适配手机，防止溢出并居中 */
+            /* 11. 过渡文字：适配手机，防止溢出并居中 */
             .trans-text {
                 width: 80%;
                 max-width: 320px;
@@ -514,6 +612,7 @@
                 <div class="nav-item active" id="nav-quote" onclick="switchContent('quote')">01 / 他的语录</div>
                 <div class="nav-item" id="nav-story" onclick="switchContent('story')">02 / 旧日往事</div>
                 <div class="nav-item" id="nav-ledger" onclick="switchContent('ledger')">03 / 收支账本</div>
+                <div class="nav-item" id="nav-keys" onclick="switchContent('keys')">04 / 门禁与钥匙</div>
             </div>
 
             <div class="secret-nav" id="nav-secret" onclick="switchContent('secret')">
@@ -764,6 +863,43 @@
             `;
         });
 
+        /* ================= 平面图 HTML ================= */
+        const mapHTML = `
+            <div class="map-container">
+                <div class="map-title">GROUND FLOOR / SECURITY PLAN</div>
+                
+                <!-- 建筑区块 -->
+                <div class="zone zone-main"></div><div class="zone-name" style="top: 32%; left: 45%;">主楼 / MAIN HALL</div>
+                <div class="zone zone-side"></div><div class="zone-name" style="top: 32%; left: 6%; transform: rotate(-90deg);">侧门</div>
+                <div class="zone zone-ledger"></div><div class="zone-name" style="top: 68%; left: 62%;">账房</div>
+                <div class="zone zone-kitchen"></div><div class="zone-name" style="top: 68%; left: 28%;">厨房</div>
+                <div class="zone zone-cellar"></div><div class="zone-name" style="top: 84%; left: 7%;">酒窖</div>
+                <div class="zone zone-lab"></div><div class="zone-name" style="top: 22%; left: 82%; font-size: 0.65rem;">研究室</div>
+
+                <!-- 发光锁孔点位 (百分比定位) -->
+                <div class="map-pin" style="top: 32%; left: 50%;" onclick="selectMapKey('main', this)"><div class="pin-icon"></div></div>
+                <div class="map-pin" style="top: 32%; left: 12%;" onclick="selectMapKey('side', this)"><div class="pin-icon"></div></div>
+                <div class="map-pin" style="top: 70%; left: 67%;" onclick="selectMapKey('ledger', this)"><div class="pin-icon"></div></div>
+                <div class="map-pin" style="top: 70%; left: 35%;" onclick="selectMapKey('kitchen', this)"><div class="pin-icon"></div></div>
+                <div class="map-pin" style="top: 85%; left: 12%;" onclick="selectMapKey('cellar', this)"><div class="pin-icon"></div></div>
+                <div class="map-pin unlisted" style="top: 22%; left: 87%;" onclick="selectMapKey('lab', this)"><div class="pin-icon"></div></div>
+
+                <!-- 详情卡片 -->
+                <div class="map-card" id="map-card">
+                    <!-- 动态填充 -->
+                </div>
+            </div>
+        `;
+
+        const keyData = {
+            main: { name: "正门", type: "铜", holder: "托马斯 / 门房", rule: "夜里廿二时前必须交回门房。", note: "“钥匙在谁手上，门就是谁管的。这门太重，托马斯一个人推不开，但他从不抱怨。”" },
+            side: { name: "侧门", type: "铁", holder: "老周", rule: "早六点领，晚六点还。", note: "“老周每天来得比鸡早。这扇门开得早，是为了让外面的新鲜东西能进来。”" },
+            ledger: { name: "账房", type: "铜", holder: "埃德蒙", rule: "随身，不离身。丢了先报我，不必报官。", note: "“这里面装的不是钱，是庄园的底。我把它揣在最里面的口袋，连睡觉都不摘。”" },
+            cellar: { name: "酒窖", type: "铁", holder: "埃德蒙", rule: "随身。取酒需登记：日期、几瓶、给谁。", note: "“大小姐偶尔会来拿一瓶。她不懂酒，但每次拿走的，都是她父亲生前喜欢的年份。”" },
+            kitchen: { name: "厨房", type: "铁", holder: "莉薇娅", rule: "开厨房、储藏间、冷柜。旁人不借，我也不借。", note: "“她说厨房归她，钥匙就归她。这规矩我守得很严——我连碗都不碰，何况是钥匙。”" },
+            lab: { name: "研究室", type: "铜", holder: "星野雫", rule: "册子里没有这一行。只在我心里记着。", note: "“他说过，‘我只管电’。我没把这把写进册子，也从不问他几点锁门。这房子里，总得有一把不用登记的钥匙。”" }
+        };
+
         /* ================= 各内容面板 ================= */
         const contentData = {
             quote: `
@@ -797,6 +933,7 @@
                     </div>
                 </div>
             `,
+            keys: mapHTML,
             secret: `
                 <div class="secret-page">
                     <div class="secret-header">FILE NO. // 奥斯汀旧债（邓恩）</div>
@@ -842,7 +979,6 @@
         }
 
         function selectLedgerItem(id) {
-            // 播放账目点击音效
             playSound('ledger', playPageTurnSound);
             
             document.querySelectorAll('.ledger-item-row').forEach(el => el.classList.remove('active'));
@@ -860,12 +996,30 @@
             }, 200);
         }
 
+        /* ================= 平面图交互 ================= */
+        function selectMapKey(id, el) {
+            playSound('ledger', playPageTurnSound);
+            
+            document.querySelectorAll('.map-pin').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+
+            const d = keyData[id];
+            const card = document.getElementById('map-card');
+            if (!card) return;
+
+            card.innerHTML = `
+                <div class="card-title">${d.name}</div>
+                <div class="card-meta">材质：${d.type} // 持有人：${d.holder}</div>
+                <div class="card-rule"><span style="color:#8a6e3e">规矩：</span>${d.rule}</div>
+                <div class="card-note">${d.note}</div>
+            `;
+            card.classList.add('show');
+        }
+
         /* ================= 蜡封解密 ================= */
         let debtUnlocked = false;
         function unlockDebt(sealElement) {
-            // 播放蜡封解密音效
             playSound('seal', playPageTurnSound);
-
             debtUnlocked = true;
             
             sealElement.classList.add('seal-breaking');
@@ -906,6 +1060,12 @@
                 if (type === 'ledger') {
                     textBox.style.fontFamily = 'inherit';
                     initLedgerDetail();
+                } else if (type === 'keys') {
+                    textBox.style.fontFamily = 'inherit';
+                    setTimeout(() => {
+                        const defaultPin = document.querySelectorAll('.map-pin')[2]; // 第三个是账房
+                        if(defaultPin) selectMapKey('ledger', defaultPin);
+                    }, 50);
                 } else {
                     textBox.style.fontFamily = '"Songti SC", "Noto Serif SC", serif';
                 }
