@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>账房 | 纸页与灰烬</title>
     <style>
-        /* === 基础页面 === */
+        /* === 基础页面：默认使用羽毛笔 === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
             font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
             height: 100vh; display: flex; justify-content: center; align-items: center;
             background-image: radial-gradient(circle at 50% 30%, #151515 0%, #050505 70%);
             overflow: hidden; -webkit-font-smoothing: antialiased;
+            /* 羽毛笔指针 */
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
 
@@ -22,6 +23,7 @@
         }
         .hud-info span { padding-bottom: 3px; border-bottom: 1px solid rgba(138, 110, 62, 0.3); }
 
+        /* 返回按钮：放大镜指针 */
         .back-btn {
             position: fixed; top: 30px; right: 40px; padding: 10px 24px; color: #e8d5b5; font-size: 0.85rem; letter-spacing: 0.2rem;
             border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8); border-radius: 4px; text-decoration: none; z-index: 102; transition: all 0.3s ease;
@@ -54,8 +56,9 @@
 
         .nav-list { display: flex; flex-direction: column; gap: 20px; }
 
+        /* 导航菜单：放大镜指针 */
         .nav-item {
-            font-size: 1rem; color: #8a6e3e; letter-spacing: 0.15rem; cursor: pointer;
+            font-size: 1rem; color: #8a6e3e; letter-spacing: 0.15rem; 
             transition: all 0.3s; display: flex; align-items: center; gap: 10px;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
@@ -63,10 +66,10 @@
         .nav-item:hover, .nav-item.active { color: #f5e6c8; padding-left: 10px; }
         .nav-item:hover::before, .nav-item.active::before { color: #f5e6c8; }
 
-        /* 隐藏的暗门触发 */
+        /* 隐藏的暗门触发：放大镜指针 */
         .secret-nav {
             margin-top: 3rem; font-family: "Courier New", monospace; font-size: 0.75rem;
-            color: #1f1a14; letter-spacing: 0.1rem; cursor: pointer; transition: all 0.5s ease;
+            color: #1f1a14; letter-spacing: 0.1rem; transition: all 0.5s ease;
             user-select: none;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
@@ -87,35 +90,25 @@
         }
         .text-box::-webkit-scrollbar { display: none; }
         .text-box.show { opacity: 1; }
+        
+        .text-box.keys-view { overflow: visible; max-height: none; }
 
         /* ==========================================
            语录上方的宽幅图片
            ========================================== */
         .quote-image-wrapper {
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto 2.5rem auto;
-            background: #12100d;
-            border: 2px solid #6e5a3a;
-            padding: 8px;
+            width: 100%; max-width: 600px; margin: 0 auto 2.5rem auto;
+            background: #12100d; border: 2px solid #6e5a3a; padding: 8px;
             box-sizing: border-box;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(158, 138, 99, 0.1);
         }
         .quote-image-wrapper img {
-            width: 100%;
-            height: 240px;
-            object-fit: cover;
-            object-position: center 35%;
-            filter: sepia(40%) grayscale(30%) brightness(0.7);
-            display: block;
+            width: 100%; height: 240px; object-fit: cover; object-position: center 35%;
+            filter: sepia(40%) grayscale(30%) brightness(0.7); display: block;
         }
         .quote-image-caption {
-            text-align: center;
-            font-family: "Courier New", monospace;
-            font-size: 0.75rem;
-            color: #8a6e3e;
-            margin-top: 10px;
-            letter-spacing: 0.15rem;
+            text-align: center; font-family: "Courier New", monospace; font-size: 0.75rem;
+            color: #8a6e3e; margin-top: 10px; letter-spacing: 0.15rem;
         }
 
         .quote-style {
@@ -155,10 +148,11 @@
             letter-spacing: 0.2rem; flex-shrink: 0;
         }
 
+        /* 账目列表：放大镜指针 */
         .ledger-item-row {
             display: flex; justify-content: space-between; align-items: center; font-family: "Courier New", monospace;
             font-size: 0.95rem; color: #c9bda5; border-bottom: 1px dotted #3a3024;
-            padding: 16px 10px; cursor: pointer; transition: all 0.3s; border-left: 2px solid transparent;
+            padding: 16px 10px; transition: all 0.3s; border-left: 2px solid transparent;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
         .ledger-item-row:hover { background: rgba(158, 138, 99, 0.05); color: #fff; }
@@ -178,391 +172,249 @@
 
         /* ✨ 极简暗金 ✨ */
         .detail-photo {
-            width: 180px; 
-            height: 230px; 
-            align-self: flex-end; 
-            position: relative; 
-            flex-shrink: 0;
-            margin-right: 0; 
-            margin-bottom: 20px; 
-            transition: all 0.3s ease;
-            
-            background: #12100d;
-            border: 2px solid #6e5a3a; 
-            padding: 6px; 
-            box-sizing: border-box;
-            box-shadow: 0 0 15px rgba(158, 138, 99, 0.15), -5px 5px 20px rgba(0,0,0,0.8); 
-            transform: rotate(2deg);
-            
-            display: flex;
-            flex-direction: column;
+            width: 180px; height: 230px; align-self: flex-end; position: relative; flex-shrink: 0;
+            margin-right: 0; margin-bottom: 20px; transition: all 0.3s ease;
+            background: #12100d; border: 2px solid #6e5a3a; padding: 6px; box-sizing: border-box;
+            box-shadow: 0 0 15px rgba(158, 138, 99, 0.15), -5px 5px 20px rgba(0,0,0,0.8); transform: rotate(2deg);
+            display: flex; flex-direction: column;
+            /* 照片悬停：放大镜指针 */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
-        
-        .detail-photo:hover { 
-            transform: rotate(0deg) scale(1.04); 
-            border-color: #d1b580; 
-            box-shadow: 0 0 25px rgba(209, 181, 128, 0.3), -5px 8px 25px rgba(0,0,0,0.9);
-        }
-
-        .detail-photo img { 
-            width: 100%; 
-            flex: 1; 
-            object-fit: cover; 
-            filter: sepia(20%) grayscale(10%) brightness(0.9); 
-            transition: all 0.3s ease;
-            display: block;
-        }
-        
-        .detail-photo:hover img {
-            filter: sepia(10%) grayscale(0%) brightness(1.05); 
-        }
-
+        .detail-photo:hover { transform: rotate(0deg) scale(1.04); border-color: #d1b580; box-shadow: 0 0 25px rgba(209, 181, 128, 0.3), -5px 8px 25px rgba(0,0,0,0.9); }
+        .detail-photo img { width: 100%; flex: 1; object-fit: cover; filter: sepia(20%) grayscale(10%) brightness(0.9); transition: all 0.3s ease; display: block; }
+        .detail-photo:hover img { filter: sepia(10%) grayscale(0%) brightness(1.05); }
         .photo-caption {
-            height: 28px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: "Courier New", monospace; 
-            font-size: 0.75rem; 
-            color: #d1c5a8; 
-            letter-spacing: 1px;
-            transition: color 0.3s;
-            margin-top: 4px; 
+            height: 28px; display: flex; align-items: center; justify-content: center;
+            font-family: "Courier New", monospace; font-size: 0.75rem; color: #d1c5a8; 
+            letter-spacing: 1px; transition: color 0.3s; margin-top: 4px; 
         }
-        .detail-photo:hover .photo-caption {
-            color: #f5e6c8; 
-        }
+        .detail-photo:hover .photo-caption { color: #f5e6c8; }
 
         /* ==========================================
-           专属排版：建筑平面图
+           ✨ 专属排版：门禁密钥卡套 ✨
            ========================================== */
-        .map-container {
-            position: relative; width: 100%; max-width: 900px; height: 70vh; max-height: 600px;
-            margin: 0 auto; background-color: #1a1612;
+        .sleeve-wrapper {
+            display: flex; width: 100%; max-width: 850px; height: 65vh; max-height: 550px;
+            margin: 0 auto; gap: 50px; justify-content: center; align-items: center;
+        }
+
+        .key-selectors { display: flex; flex-direction: column; gap: 15px; }
+        /* 圆钮：放大镜指针 */
+        .key-sel-item {
+            width: 58px; height: 58px; border-radius: 50%;
+            border: 1px solid #333; display: flex; justify-content: center; align-items: center;
+            font-family: "KaiTi", serif; font-size: 0.85rem; color: #888;
+            letter-spacing: 1px; transition: all 0.3s; background: #111;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+        .key-sel-item:hover { border-color: #cfa861; color: #cfa861; }
+        .key-sel-item.active { border-color: #cfa861; color: #111; background: #cfa861; box-shadow: 0 0 20px rgba(207,168,97,0.4); font-weight: bold; }
+        .key-sel-item.unlisted { opacity: 0.4; }
+        .key-sel-item.unlisted.active { opacity: 1; background: #8a6e3e; border-color: #8a6e3e; color: #111; }
+
+        /* 卡套容器：放大镜指针 */
+        .sleeve-container { 
+            position: relative; width: 340px; height: 480px; 
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        }
+
+        .sleeve-back {
+            position: absolute; top: 40px; left: 0; width: 100%; height: 440px;
+            background-color: #1a1a1a;
             background-image: 
-                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 80%),
-                repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(138, 110, 62, 0.05) 39px, rgba(138, 110, 62, 0.05) 40px),
-                repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(138, 110, 62, 0.05) 39px, rgba(138, 110, 62, 0.05) 40px);
-            border: 4px solid #2a2015; border-radius: 4px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.95), inset 0 0 100px rgba(0,0,0,0.9);
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 8px),
+                url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.08"/></svg>');
+            border-radius: 8px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.95), inset 0 0 40px rgba(0,0,0,0.6);
+            z-index: 5; border: 1px solid #0f0f0f;
+            -webkit-mask-image: radial-gradient(circle at 50% 0, transparent 25px, black 26px);
+            mask-image: radial-gradient(circle at 50% 0, transparent 25px, black 26px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.4s, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        .sleeve-emboss {
+            font-family: "Times New Roman", serif; font-size: 3.2rem; font-weight: bold;
+            color: #cfa861; letter-spacing: 0.2rem; text-shadow: 1px 1px 0 rgba(0,0,0,0.8);
+            position: absolute; top: 45%; transform: translateY(-50%);
+            opacity: 0.9; transition: opacity 0.4s, transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        .sleeve-logo {
+            position: absolute; bottom: 30px; font-family: "Times New Roman", serif;
+            font-size: 1rem; color: #cfa861; letter-spacing: 0.4rem; opacity: 0.8;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .sleeve-container.pulled .sleeve-back { opacity: 0.15; transform: translateY(50px); }
+        .sleeve-container.pulled .sleeve-emboss { opacity: 0.1; transform: translateY(calc(-50% + 50px)); }
+        .sleeve-container.pulled .sleeve-logo { transform: translateY(50px); }
+
+        .access-card {
+            position: absolute; top: 0; left: 20px; width: 300px; height: 440px;
+            background-color: #0c0c0c;
+            background-image: 
+                linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 40%, rgba(0,0,0,0.6) 100%),
+                url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.05"/></svg>');
+            border-radius: 6px;
+            box-shadow: 
+                0 10px 20px rgba(0,0,0,0.9), 
+                0 2px 4px rgba(0,0,0,0.8),
+                inset 0 0 0 1px rgba(207, 168, 97, 0.3), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.1); 
+            z-index: 2;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), z-index 0s, box-shadow 0.6s;
+            padding: 25px 20px; box-sizing: border-box;
+            display: flex; flex-direction: column; transform: translateY(0);
             overflow: hidden;
         }
-        .map-title {
-            position: absolute; top: 20px; left: 30px;
-            font-family: "Courier New", monospace; font-size: 0.9rem; color: #5a4a2e;
-            letter-spacing: 0.2rem; border-bottom: 1px dashed #3a3024; padding-bottom: 5px;
-        }
-        .zone {
-            position: absolute; border: 2px solid #3a3024;
-            background: rgba(20, 20, 20, 0.4);
-            display: flex; justify-content: center; align-items: center;
-            transition: all 0.3s; border-radius: 2px;
-        }
-        .zone-name {
-            font-family: "Courier New", monospace; font-size: 0.75rem; color: #5a4a2e;
-            position: absolute; pointer-events: none; letter-spacing: 0.1rem;
-        }
-        .zone-main { top: 15%; left: 25%; width: 50%; height: 35%; border-style: double; border-width: 4px; }
-        .zone-side { top: 15%; left: 5%; width: 15%; height: 35%; border-right: none; }
-        .zone-ledger { top: 55%; left: 55%; width: 25%; height: 30%; }
-        .zone-kitchen { top: 55%; left: 20%; width: 30%; height: 30%; }
-        .zone-cellar { top: 75%; left: 5%; width: 15%; height: 20%; border-style: dashed; }
-        .zone-lab { top: 10%; left: 80%; width: 15%; height: 25%; border-style: dashed; border-color: #1f1a14; }
 
-        .map-pin {
-            position: absolute; width: 40px; height: 40px;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transform: translate(-50%, -50%); z-index: 10;
-            transition: all 0.3s;
+        .access-card::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.02) 40%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.02) 60%, transparent 100%);
+            transform: rotate(25deg) translateX(-100%); transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); pointer-events: none; z-index: 3;
         }
-        .map-pin:hover { transform: translate(-50%, -50%) scale(1.2); }
-        .map-pin::before {
-            content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%;
-            background: radial-gradient(circle, rgba(209, 181, 128, 0.4) 0%, transparent 70%);
-            animation: pulse 2s infinite alternate; opacity: 0.6;
-        }
-        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.3; } 100% { transform: scale(1.3); opacity: 0.8; } }
-        .map-pin.active::before { background: radial-gradient(circle, rgba(184, 92, 88, 0.6) 0%, transparent 70%); animation: none; transform: scale(1.4); }
-        
-        .pin-icon {
-            width: 16px; height: 20px; background: #d1b580; border-radius: 8px 8px 4px 4px;
-            position: relative; z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.8);
-            display: flex; justify-content: center; align-items: center;
-        }
-        .pin-icon::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #111; }
-        .pin-icon::after { content: ''; position: absolute; bottom: 0; width: 6px; height: 8px; background: #111; }
+        .sleeve-container:hover .access-card::after { transform: rotate(25deg) translateX(50%); }
+        .sleeve-container:hover:not(.pulled) .access-card { transform: translateY(-30px); }
 
-        .map-pin.unlisted { opacity: 0.4; filter: grayscale(1); }
-        .map-pin.unlisted:hover { opacity: 0.8; filter: grayscale(0.5); }
-        .map-pin.unlisted .pin-icon { background: #555; }
-
-        .map-card {
-            position: absolute; bottom: 20px; right: 20px; width: 320px;
-            background: #efe9d9;
-            padding: 25px 30px; border-radius: 2px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(150, 130, 96, 0.1);
-            transform: rotate(-1.5deg); opacity: 0; visibility: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 20;
-            background-image: repeating-linear-gradient(to bottom, transparent 0 24px, rgba(96, 84, 62, 0.15) 24px 25px);
-            border-left: 1px solid rgba(176, 74, 68, 0.3);
-        }
-        .map-card.show { opacity: 1; visibility: visible; transform: rotate(-1.5deg) translateY(0); }
-        .map-card::before {
-            content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-            width: 40px; height: 15px; background: rgba(138, 110, 62, 0.8);
-            box-shadow: 0 3px 5px rgba(0,0,0,0.5); opacity: 0.7;
+        .sleeve-container.pulled .access-card {
+            transform: translateY(-160px) scale(1.05); z-index: 10;
+            box-shadow: 
+                0 40px 100px rgba(0,0,0,1), 
+                0 5px 15px rgba(0,0,0,0.9),
+                inset 0 0 0 1px rgba(207, 168, 97, 0.6), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
 
-        .card-title { font-family: "KaiTi", serif; font-size: 1.4rem; color: #3a3730; margin-bottom: 15px; font-weight: bold; }
-        .card-meta { font-family: "Courier New", monospace; font-size: 0.75rem; color: #8f3f3a; margin-bottom: 15px; letter-spacing: 0.05rem; }
-        .card-rule { font-family: "KaiTi", serif; font-size: 0.95rem; color: #3a3730; line-height: 1.6; margin-bottom: 15px; }
-        .card-note { font-family: "KaiTi", serif; font-size: 0.9rem; color: #6a6252; font-style: italic; padding-top: 10px; border-top: 1px dashed rgba(120, 105, 80, 0.4); }
+        .key-object {
+            position: absolute; width: 140px; height: 140px; bottom: -10px; right: -60px; opacity: 0;
+            transform: translateY(30px) scale(0.8) rotate(-20deg); transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 1; pointer-events: none; 
+        }
+        .key-object svg { width: 100%; height: 100%; filter: drop-shadow(6px 10px 12px rgba(0,0,0,0.9)) drop-shadow(0 0 15px rgba(207, 168, 97, 0.3)); }
+        .sleeve-container.pulled .key-object { opacity: 1; transform: translateY(-160px) scale(1) rotate(15deg); z-index: 11; }
+
+        .card-content { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; align-items: center; }
+        .card-head {
+            width: 100%; display: flex; justify-content: space-between; align-items: baseline;
+            font-family: "Times New Roman", serif; font-size: 0.7rem; color: #c4b18e; letter-spacing: 0.15rem;
+            border-bottom: 1px solid rgba(207, 168, 97, 0.3); padding-bottom: 10px;
+            margin-bottom: 20px; text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+        .card-body { display: flex; flex-direction: column; align-items: center; width: 100%; height: 100%; }
+        .card-title {
+            font-family: "KaiTi", serif; font-size: 1.8rem; color: #f5e6c8; font-weight: bold; letter-spacing: 0.1rem;
+            margin-top: 10px; text-shadow: 1px 2px 4px rgba(0,0,0,0.8), 0 0 10px rgba(245, 230, 200, 0.2);
+        }
+        .card-en-small { font-family: "Times New Roman", serif; font-size: 0.75rem; color: #888; letter-spacing: 0.2rem; margin-top: 5px; margin-bottom: 25px; }
+        .card-rule {
+            font-family: "KaiTi", serif; font-size: 1rem; color: #c9bda5; line-height: 1.9;
+            text-align: center; padding: 15px; background: rgba(0,0,0,0.3);
+            border-radius: 4px; border: 1px dashed rgba(207, 168, 97, 0.25);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.6), inset 0 1px 2px rgba(0,0,0,0.8); width: 100%;
+        }
+        .card-note { font-family: "KaiTi", serif; font-size: 0.9rem; color: #8a6e3e; font-style: italic; margin-top: auto; text-align: right; width: 100%; padding-top: 15px; }
+
 
         /* ==========================================
            专属排版：奥斯汀旧债（独立解密页面）
            ========================================== */
-        .secret-page {
-            position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center;
-            max-width: 750px;
-        }
-
-        .secret-header {
-            font-family: "Courier New", monospace; font-size: 1rem; color: #8a6e3e;
-            margin-bottom: 2rem; letter-spacing: 0.2rem;
-        }
-
+        .secret-page { position: relative; height: 100%; display: flex; flex-direction: column; justify-content: center; max-width: 750px; }
+        .secret-header { font-family: "Courier New", monospace; font-size: 1rem; color: #8a6e3e; margin-bottom: 2rem; letter-spacing: 0.2rem; }
         .secret-content-layout { display: flex; gap: 40px; align-items: center; }
-
-        .secret-text-area {
-            flex: 1; position: relative; padding: 2rem; border-left: 2px solid #b85c58;
-            background: rgba(20, 10, 10, 0.4); min-height: 200px; display: flex; flex-direction: column; justify-content: center;
-        }
-
-        .secret-photo-area {
-            width: 260px; flex-shrink: 0;
-            transition: opacity 1.5s ease, visibility 1.5s ease, transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
-            opacity: 0; visibility: hidden; transform: translateX(30px);
-        }
-
-        .secret-photo {
-            background: #111;
-            border: 1px solid #3a3024;
-            padding: 10px 10px 35px 10px;
-            box-shadow: -8px 12px 30px rgba(0,0,0,0.9);
-            transform: rotate(-3deg);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative; overflow: hidden; cursor: pointer;
-        }
-
-        .secret-photo:hover {
-            transform: rotate(0deg) scale(1.08) translateY(-5px);
-            box-shadow: -12px 18px 40px rgba(0,0,0,0.95), 0 0 20px rgba(158,138,99,0.2);
-            border-color: #9e8a63;
-        }
-
-        .secret-photo img {
-            width: 100%; height: 240px; object-fit: cover;
-            filter: sepia(80%) grayscale(100%) brightness(0.5) blur(3px);
-            transform: scale(1.1);
-            transition: all 1s ease; display: block;
-        }
-
-        .secret-photo::after {
-            content: '// 附件：债务清算证明'; position: absolute; bottom: 10px; left: 0; width: 100%;
-            text-align: center; font-family: "Courier New", monospace;
-            font-size: 0.75rem; color: #5a4a2e; transition: color 0.3s;
-        }
-        .secret-photo:hover::after { color: #9e8a63; }
-
-        .secret-photo-area.unlocked { opacity: 1; visibility: visible; transform: translateX(0); }
-        .secret-photo-area.unlocked .secret-photo img {
-            filter: sepia(30%) grayscale(20%) brightness(0.8) blur(0px); transform: scale(1.05);
-        }
-
-        .redacted {
-            background-color: #050505; color: transparent; user-select: none;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.9);
-        }
-
-        .wax-seal-lock {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 80px; height: 80px; border-radius: 50%;
-            background: radial-gradient(circle, #8b2c2c 0%, #4a1515 100%);
-            border: 2px solid #6e2424;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.5);
-            display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s; z-index: 10;
+        .secret-text-area { flex: 1; position: relative; padding: 2rem; border-left: 2px solid #b85c58; background: rgba(20, 10, 10, 0.4); min-height: 200px; display: flex; flex-direction: column; justify-content: center; }
+        .secret-photo-area { width: 260px; flex-shrink: 0; transition: opacity 1.5s ease, visibility 1.5s ease, transform 1.5s cubic-bezier(0.25, 1, 0.5, 1); opacity: 0; visibility: hidden; transform: translateX(30px); }
+        
+        /* 旧债照片：放大镜指针 */
+        .secret-photo { 
+            background: #111; border: 1px solid #3a3024; padding: 10px 10px 35px 10px; box-shadow: -8px 12px 30px rgba(0,0,0,0.9); transform: rotate(-3deg); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; 
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
+        .secret-photo:hover { transform: rotate(0deg) scale(1.08) translateY(-5px); box-shadow: -12px 18px 40px rgba(0,0,0,0.95), 0 0 20px rgba(158,138,99,0.2); border-color: #9e8a63; }
+        .secret-photo img { width: 100%; height: 240px; object-fit: cover; filter: sepia(80%) grayscale(100%) brightness(0.5) blur(3px); transform: scale(1.1); transition: all 1s ease; display: block; }
+        .secret-photo::after { content: '// 附件：债务清算证明'; position: absolute; bottom: 10px; left: 0; width: 100%; text-align: center; font-family: "Courier New", monospace; font-size: 0.75rem; color: #5a4a2e; transition: color 0.3s; }
+        .secret-photo:hover::after { color: #9e8a63; }
+        .secret-photo-area.unlocked { opacity: 1; visibility: visible; transform: translateX(0); }
+        .secret-photo-area.unlocked .secret-photo img { filter: sepia(30%) grayscale(20%) brightness(0.8) blur(0px); transform: scale(1.05); }
+        
+        .redacted { background-color: #050505; color: transparent; user-select: none; box-shadow: inset 0 0 5px rgba(0,0,0,0.9); }
+        
+        /* 火漆印章：放大镜指针 */
+        .wax-seal-lock { 
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, #8b2c2c 0%, #4a1515 100%); border: 2px solid #6e2424; box-shadow: 0 5px 15px rgba(0,0,0,0.8), inset 0 0 10px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; transition: all 0.3s; z-index: 10; 
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important; 
+        }
         .wax-seal-lock::after { content: '解'; color: #d1c5a8; font-size: 1.5rem; font-family: "Songti SC"; font-weight: bold; }
-        .wax-seal-lock:hover {
-            transform: translate(-50%, -50%) scale(1.05) rotate(5deg);
-            box-shadow: 0 0 15px rgba(139,44,44,0.4), inset 0 0 10px rgba(0,0,0,0.5);
-            border-color: #a84a46;
-        }
-
-        @keyframes sealBreak {
-            0% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
-            50% { transform: translate(-50%, -50%) scale(1.1) rotate(15deg); opacity: 0.5; filter: blur(2px); }
-            100% { transform: translate(-50%, -50%) scale(0) rotate(30deg); opacity: 0; filter: blur(5px); }
-        }
+        .wax-seal-lock:hover { transform: translate(-50%, -50%) scale(1.05) rotate(5deg); box-shadow: 0 0 15px rgba(139,44,44,0.4), inset 0 0 10px rgba(0,0,0,0.5); border-color: #a84a46; }
+        @keyframes sealBreak { 0% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; } 50% { transform: translate(-50%, -50%) scale(1.1) rotate(15deg); opacity: 0.5; filter: blur(2px); } 100% { transform: translate(-50%, -50%) scale(0) rotate(30deg); opacity: 0; filter: blur(5px); } }
         .seal-breaking { animation: sealBreak 0.6s forwards; }
-
         @keyframes textReveal { 0% { background-color: #050505; color: transparent; } 100% { background-color: transparent; color: #b85c58; } }
         .revealed { animation: textReveal 1s forwards; }
 
         #ledger-detail-page { transition: opacity 0.2s ease; }
 
         /* === 场景过渡遮罩 === */
-        #transition-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #050505; z-index: 999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: opacity 1s ease;
-        }
+        #transition-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #050505; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 1s ease; }
         #transition-screen.active { opacity: 1; pointer-events: auto; }
-        
-        .trans-text {
-            color: #8a6e3e; font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem;
-            opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s;
-        }
-        #transition-screen.active .trans-text {
-            opacity: 1; transform: translateY(0);
-        }
+        .trans-text { color: #8a6e3e; font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem; opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s; }
+        #transition-screen.active .trans-text { opacity: 1; transform: translateY(0); }
 
         /* ==========================================================
            移动端适配（< 900px）
            ========================================================== */
         @media (max-width: 900px) {
-
-            /* 1. 页面基础：允许纵向滚动，顶部留出 HUD 空间 */
-            body {
-                display: block;
-                height: auto;
-                min-height: 100vh;
-                overflow-y: auto;
-                overflow-x: hidden;
-                padding: 64px 0 40px 0;
-                box-sizing: border-box;
-            }
-
-            /* 2. 顶部 HUD 与返回按钮 */
-            .hud-info {
-                top: 12px;
-                left: 12px;
-                font-size: 0.65rem;
-                gap: 8px;
-                flex-wrap: wrap;
-                max-width: 58%;
-            }
+            body { display: block; height: auto; min-height: 100vh; overflow-y: auto; overflow-x: hidden; padding: 64px 0 40px 0; box-sizing: border-box; }
+            .hud-info { top: 12px; left: 12px; font-size: 0.65rem; gap: 8px; flex-wrap: wrap; max-width: 58%; }
             .hud-info span { border-bottom: none; padding-bottom: 0; }
-
-            .back-btn {
-                top: 12px;
-                right: 12px;
-                padding: 6px 12px;
-                font-size: 0.7rem;
-                letter-spacing: 0.1rem;
-            }
-
-            /* 3. 主布局：左右并排 → 上下堆叠 */
-            .layout {
-                flex-direction: column;
-                width: 100%;
-                max-width: 100%;
-                height: auto;
-                gap: 20px;
-                padding: 0 16px;
-                box-sizing: border-box;
-            }
-
-            /* 4. 左侧导航 */
-            .sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid rgba(90, 74, 46, 0.3);
-                padding: 0 0 16px 0;
-                flex-direction: column;
-                justify-content: flex-start;
-            }
+            .back-btn { top: 12px; right: 12px; padding: 6px 12px; font-size: 0.7rem; letter-spacing: 0.1rem; }
+            
+            .layout { flex-direction: column; width: 100%; max-width: 100%; height: auto; gap: 20px; padding: 0 16px; box-sizing: border-box; }
+            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid rgba(90, 74, 46, 0.3); padding: 0 0 16px 0; flex-direction: column; justify-content: flex-start; }
             .room-name { font-size: 2rem; }
             .room-desc { margin-bottom: 1.5rem; }
             .nav-list { flex-direction: row; flex-wrap: wrap; gap: 12px 20px; }
             .nav-item { font-size: 0.85rem; letter-spacing: 0.08rem; }
             .secret-nav { margin-top: 1.2rem; font-size: 0.7rem; }
+            
+            .content-area { padding: 0; justify-content: flex-start; }
+            .text-box { max-height: none; overflow: visible; padding-right: 0; font-size: 1rem; line-height: 1.9; }
 
-            /* 5. 右侧内容区 */
-            .content-area {
-                padding: 0;
-                justify-content: flex-start;
-            }
-            .text-box {
-                max-height: none;
-                overflow: visible;
-                padding-right: 0;
-                font-size: 1rem;
-                line-height: 1.9;
-            }
-
-            /* 6. 语录图片 */
+            /* 语录 */
             .quote-image-wrapper { max-width: 100%; margin-bottom: 1.5rem; }
             .quote-image-wrapper img { height: 160px; }
             .quote-style { font-size: 1rem; padding: 1rem 1.2rem; line-height: 1.9; }
 
-            /* 7. 账本：左右两页 → 上下两页 */
+            /* 账本 */
             .ledger-book-wrapper { height: auto; }
-            .book {
-                width: 100%;
-                height: auto;
-                max-height: none;
-                flex-direction: column;
-                transform: none;
-                border-radius: 6px;
-            }
+            .book { width: 100%; height: auto; max-height: none; flex-direction: column; transform: none; border-radius: 6px; }
             .book:hover { transform: none; }
             .book::after { display: none; }
             .book-page { padding: 20px 16px; }
-            .page-left {
-                border-right: none;
-                border-bottom: 1px solid rgba(90, 74, 46, 0.4);
-            }
+            .page-left { border-right: none; border-bottom: 1px solid rgba(90, 74, 46, 0.4); }
             .page-right { border-left: none; }
             .ledger-title { font-size: 0.85rem; padding-bottom: 10px; margin-bottom: 16px; }
             .ledger-item-row { font-size: 0.85rem; padding: 12px 6px; }
-
-            /* 左页内部的滚动容器改为自然高度 */
-            .page-left > div[style*="overflow-y"] {
-                height: auto !important;
-                overflow: visible !important;
-            }
-
-            /* 8. 账目详情 */
+            .page-left > div[style*="overflow-y"] { height: auto !important; overflow: visible !important; }
             .detail-box { gap: 16px; justify-content: flex-start; }
             .detail-note { font-size: 0.95rem; line-height: 1.7; transform: none; }
             .detail-title { font-size: 1.05rem; }
             .note-content { margin-bottom: 10px; }
-            .detail-photo {
-                width: 140px;
-                height: 180px;
-                align-self: center;
-                margin-bottom: 12px;
-                transform: rotate(1deg);
-            }
+            .detail-photo { width: 140px; height: 180px; align-self: center; margin-bottom: 12px; transform: rotate(1deg); }
             .photo-caption { font-size: 0.7rem; }
 
-            /* 9. 建筑平面图 */
-            .map-container { height: 450px; margin-top: 20px; }
-            .zone-main { left: 20%; width: 60%; }
-            .zone-side { left: 5%; width: 10%; }
-            .zone-ledger { left: 60%; width: 30%; }
-            .zone-kitchen { left: 20%; width: 35%; }
-            .zone-lab { left: 80%; width: 15%; }
-            .map-card { width: 280px; padding: 15px; bottom: 10px; right: 10px; }
-            .card-title { font-size: 1.2rem; }
-            .card-meta { font-size: 0.65rem; }
-            .card-rule { font-size: 0.85rem; }
+            /* 卡套抽出移动端适配 */
+            .sleeve-wrapper { flex-direction: column; height: auto; max-height: none; gap: 30px; padding-top: 50px; padding-bottom: 50px;}
+            .key-selectors { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px; }
+            .key-sel-item { width: 48px; height: 48px; font-size: 0.8rem; }
+            .sleeve-container { width: 290px; height: 430px; }
+            .sleeve-back { height: 400px; }
+            .access-card { width: 260px; height: 400px; padding: 20px 15px; }
+            .sleeve-container.pulled .access-card { transform: translateY(-130px) scale(1.02); }
+            .key-object { width: 100px; height: 100px; bottom: 10px; right: -30px; }
+            .sleeve-container.pulled .key-object { transform: translateY(-130px) scale(0.95) rotate(15deg); }
+            .card-title { font-size: 1.5rem; }
 
-            /* 10. 暗门页面 */
+            /* 旧债 */
             .secret-page { max-width: 100%; }
             .secret-header { font-size: 0.8rem; margin-bottom: 1rem; }
             .secret-content-layout { flex-direction: column; gap: 20px; align-items: stretch; }
@@ -574,22 +426,14 @@
             .wax-seal-lock { width: 64px; height: 64px; }
             .wax-seal-lock::after { font-size: 1.2rem; }
 
-            /* 11. 过渡文字：适配手机，防止溢出并居中 */
-            .trans-text {
-                width: 80%;
-                max-width: 320px;
-                text-align: center;
-                font-size: 0.95rem;
-                letter-spacing: 0.15rem;
-                line-height: 1.8;
-                padding: 0 16px;
-                box-sizing: border-box;
-            }
+            .trans-text { width: 80%; max-width: 320px; text-align: center; font-size: 0.95rem; letter-spacing: 0.15rem; line-height: 1.8; padding: 0 16px; box-sizing: border-box; }
         }
 
         /* 触屏设备：禁用鼠标拖尾与自定义光标 */
         @media (pointer: coarse) {
-            body { cursor: auto; }
+            body, .back-btn, .nav-item, .secret-nav, .ledger-item-row, .detail-photo, .key-sel-item, .sleeve-container, .secret-photo, .wax-seal-lock { 
+                cursor: auto !important; 
+            }
             .cursor-trail { display: none; }
         }
     </style>
@@ -625,7 +469,6 @@
         </div>
     </div>
 
-    <!-- 过渡遮罩层 -->
     <div id="transition-screen">
         <div class="trans-text" id="trans-text"></div>
     </div>
@@ -668,38 +511,58 @@
             return sharedAudioCtx;
         }
 
-        /* 翻页音效（兜底用） */
-        function playPageTurnSound() {
+        // 离开账房的合成音效（合书声 + 脚步声）
+        function playExitSound() {
             try {
                 const audioCtx = getAudioCtx();
                 if (!audioCtx) return;
                 const now = audioCtx.currentTime;
-                const bufferSize = audioCtx.sampleRate * 0.1;
-                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
 
-                const source = audioCtx.createBufferSource();
-                source.buffer = buffer;
-                const filter = audioCtx.createBiquadFilter();
-                filter.type = 'bandpass'; filter.frequency.value = 1200; filter.Q.value = 1.0;
-                const gain = audioCtx.createGain();
-                gain.gain.setValueAtTime(0, now);
-                gain.gain.linearRampToValueAtTime(0.15, now + 0.02);
-                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                // 1. 沉闷的合书声
+                const thumpOsc = audioCtx.createOscillator();
+                thumpOsc.type = 'sine';
+                thumpOsc.frequency.setValueAtTime(120, now);
+                thumpOsc.frequency.exponentialRampToValueAtTime(30, now + 0.12);
+                const thumpGain = audioCtx.createGain();
+                thumpGain.gain.setValueAtTime(0, now);
+                thumpGain.gain.linearRampToValueAtTime(0.6, now + 0.02);
+                thumpGain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                thumpOsc.connect(thumpGain); thumpGain.connect(audioCtx.destination);
+                thumpOsc.start(now); thumpOsc.stop(now + 0.2);
 
-                source.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
-                source.start(now);
+                // 2. 渐行渐远的脚步声
+                for (let i = 0; i < 3; i++) {
+                    const stepTime = now + 0.3 + (i * 0.4);
+                    const stepOsc = audioCtx.createOscillator();
+                    stepOsc.type = 'sine';
+                    stepOsc.frequency.setValueAtTime(80, stepTime);
+                    stepOsc.frequency.exponentialRampToValueAtTime(30, stepTime + 0.1);
+                    const stepGain = audioCtx.createGain();
+                    stepGain.gain.setValueAtTime(0, stepTime);
+                    stepGain.gain.linearRampToValueAtTime(0.2, stepTime + 0.02);
+                    stepGain.gain.exponentialRampToValueAtTime(0.01, stepTime + 0.15);
+                    stepOsc.connect(stepGain); stepGain.connect(audioCtx.destination);
+                    stepOsc.start(stepTime); stepOsc.stop(stepTime + 0.2);
+                }
             } catch (e) {}
         }
 
-        /* ================= 音频预加载池 ================= */
-        const soundPool = {};
+        function leaveRoom() {
+            playExitSound();
+            document.getElementById('trans-text').innerText = '将那些泛黄的秘密留在身后，重回寂静。';
+            document.getElementById('transition-screen').classList.add('active');
+            setTimeout(() => { window.location.href = "index.html?open=true"; }, 1800);
+        }
 
+        /* ================= 外部音效预加载池 ================= */
+        const soundPool = {};
         function preloadSounds() {
             const urls = {
                 ledger: 'https://miaozeze.github.io/ledger.mp3',
-                seal: 'https://miaozeze.github.io/seal.mp3'
+                seal: 'https://miaozeze.github.io/seal.mp3',
+                // ⬇️ 请在这里换上你上传后的两个音频真实链接 ⬇️
+                cardOut1: 'https://miaozeze.github.io/card_out1.mp3', 
+                cardOut2: 'https://miaozeze.github.io/card_out2.mp3'  
             };
             
             for (const key in urls) {
@@ -711,100 +574,26 @@
                 audio.load();
             }
         }
-
         window.addEventListener('DOMContentLoaded', preloadSounds);
 
-        function playSound(name, fallback) {
+        function playSound(name) {
             const audio = soundPool[name];
-            const doFallback = () => {
-                if (typeof fallback === 'function') fallback();
-                else playPageTurnSound();
-            };
-
             if (audio) {
                 try {
                     audio.currentTime = 0;
-                    const p = audio.play();
-                    if (p && p.catch) {
-                        p.catch(err => {
-                            console.warn(`[sound] ${name} 播放失败：`, err);
-                            doFallback();
-                        });
-                    }
-                } catch (e) {
-                    console.warn(`[sound] ${name} 异常：`, e);
-                    doFallback();
-                }
-            } else {
-                doFallback();
+                    audio.play().catch(err => console.log("音频播放受阻:", err));
+                } catch (e) {}
             }
-        }
-
-        /* 离开账房：合书音效 + 脚步声 */
-        function playExitSound() {
-            try {
-                const audioCtx = getAudioCtx();
-                if (!audioCtx) return;
-                const now = audioCtx.currentTime;
-
-                const thumpOsc = audioCtx.createOscillator();
-                thumpOsc.type = 'sine';
-                thumpOsc.frequency.setValueAtTime(120, now);
-                thumpOsc.frequency.exponentialRampToValueAtTime(30, now + 0.12);
-
-                const thumpGain = audioCtx.createGain();
-                thumpGain.gain.setValueAtTime(0, now);
-                thumpGain.gain.linearRampToValueAtTime(0.6, now + 0.02);
-                thumpGain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-
-                thumpOsc.connect(thumpGain); 
-                thumpGain.connect(audioCtx.destination);
-                thumpOsc.start(now); 
-                thumpOsc.stop(now + 0.2);
-
-                for (let i = 0; i < 3; i++) {
-                    const stepTime = now + 0.3 + (i * 0.4);
-                    const stepOsc = audioCtx.createOscillator();
-                    stepOsc.type = 'sine';
-                    stepOsc.frequency.setValueAtTime(80, stepTime);
-                    stepOsc.frequency.exponentialRampToValueAtTime(30, stepTime + 0.1);
-                    
-                    const stepGain = audioCtx.createGain();
-                    stepGain.gain.setValueAtTime(0, stepTime);
-                    stepGain.gain.linearRampToValueAtTime(0.2, stepTime + 0.02);
-                    stepGain.gain.exponentialRampToValueAtTime(0.01, stepTime + 0.15);
-                    
-                    stepOsc.connect(stepGain);
-                    stepGain.connect(audioCtx.destination);
-                    stepOsc.start(stepTime);
-                    stepOsc.stop(stepTime + 0.2);
-                }
-            } catch (e) {}
-        }
-
-        function leaveRoom() {
-            playExitSound();
-            document.getElementById('trans-text').innerText = '将那些泛黄的秘密留在身后，重回寂静。';
-            document.getElementById('transition-screen').classList.add('active');
-
-            setTimeout(() => {
-                window.location.href = "index.html?open=true";
-            }, 1800);
         }
 
         /* ================= 图片地址配置 ================= */
         const IMG_BASE = 'https://miaozeze.github.io/';
         const RAW_BASE = 'https://raw.githubusercontent.com/miaozeze/miaozeze.github.io/main/';
-
         function imgTag(file, fallback, alt) {
             const primary = IMG_BASE + file;
             const secondary = RAW_BASE + file;
-            return `<img src="${primary}" alt="${alt || '附件'}"
-                        data-fallback-raw="${secondary}"
-                        data-fallback-unsplash="${fallback || ''}"
-                        onerror="handleImgError(this)">`;
+            return `<img src="${primary}" alt="${alt || '附件'}" data-fallback-raw="${secondary}" data-fallback-unsplash="${fallback || ''}" onerror="handleImgError(this)">`;
         }
-
         window.handleImgError = function(img) {
             const raw = img.dataset.fallbackRaw;
             const unsplash = img.dataset.fallbackUnsplash;
@@ -814,93 +603,75 @@
 
         /* ================= 账目数据 ================= */
         const ledgerData = [
-            {
-                id: "tea", name: "大吉岭红茶（特级）", price: "£ 120", noteTitle: "// 异常采买记录",
-                noteText: `
-                    <div class="note-content"><span class="note-label">入账说明：</span>正常配给至二楼茶室。</div>
-                    <div class="note-content"><span class="note-label">退货记录：</span>莉薇娅小姐亲自验收，以“香气不对”为由退回两罐。</div>
-                    <div class="note-content"><span class="note-label">管家附言：</span>她对品质的要求，往往比预算更让人头疼。</div>
-                `,
-                imgFile: "26247621.jpg", imgFallback: "https://images.unsplash.com/photo-1576092762791-dd9e22204423?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 被退回的红茶"
-            },
-            {
-                id: "humidity", name: "温室抽湿机耗材", price: "£ 85", noteTitle: "// 环境维护账单",
-                noteText: `
-                    <div class="note-content"><span class="note-label">采购事由：</span>南方回南天，湿度超出标准阀值。</div>
-                    <div class="note-content"><span class="note-label">支出明细：</span>抽湿机滤网与干燥剂替换。</div>
-                    <div class="note-content"><span class="note-label">管家附言：</span>大小姐体寒手凉，室内温度已上调。礼服内衬修改费用走此项。</div>
-                `,
-                imgFile: "7c4b687a.jpg", imgFallback: "https://images.unsplash.com/photo-1541983860-1ad1adb8c7d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 温室一角"
-            },
-            {
-                id: "dress", name: "晚宴定制礼服", price: "£ 2,400", noteTitle: "// 专项采买",
-                noteText: `
-                    <div class="note-content"><span class="note-label">采买事由：</span>中村家联姻晚宴指定高定。</div>
-                    <div class="note-content"><span class="note-label">验收记录：</span>大小姐极度抗拒，未进行试穿。</div>
-                    <div class="note-content"><span class="note-label">管家附言：</span>内衬已暗中联系裁缝改为可拆卸设计，以备晚宴突发状况。</div>
-                `,
-                imgFile: "3673d324.jpg", imgFallback: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 晚宴礼服草图"
-            },
-            {
-                id: "cookie", name: "温室特供香草曲奇", price: "£ 45", noteTitle: "// 私人支出",
-                noteText: `
-                    <div class="note-content"><span class="note-label">入账说明：</span>自费购入顶级香草荚与黄油。</div>
-                    <div class="note-content"><span class="note-label">异常记录：</span>借用温室烤箱，未惊动厨房。</div>
-                    <div class="note-content"><span class="note-label">管家附言：</span>大小姐今天心情欠佳。这笔钱不走公账，记在我的私人名下。</div>
-                `,
-                imgFile: "a6ed3d01.jpg", imgFallback: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 刚出炉的曲奇"
-            }
+            { id: "tea", name: "大吉岭红茶（特级）", price: "£ 120", noteTitle: "// 异常采买记录", noteText: `<div class="note-content"><span class="note-label">入账说明：</span>正常配给至二楼茶室。</div><div class="note-content"><span class="note-label">退货记录：</span>莉薇娅小姐亲自验收，以“香气不对”为由退回两罐。</div><div class="note-content"><span class="note-label">管家附言：</span>她对品质的要求，往往比预算更让人头疼。</div>`, imgFile: "26247621.jpg", imgFallback: "https://images.unsplash.com/photo-1576092762791-dd9e22204423?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 被退回的红茶" },
+            { id: "humidity", name: "温室抽湿机耗材", price: "£ 85", noteTitle: "// 环境维护账单", noteText: `<div class="note-content"><span class="note-label">采购事由：</span>南方回南天，湿度超出标准阀值。</div><div class="note-content"><span class="note-label">支出明细：</span>抽湿机滤网与干燥剂替换。</div><div class="note-content"><span class="note-label">管家附言：</span>大小姐体寒手凉，室内温度已上调。礼服内衬修改费用走此项。</div>`, imgFile: "7c4b687a.jpg", imgFallback: "https://images.unsplash.com/photo-1541983860-1ad1adb8c7d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 温室一角" },
+            { id: "dress", name: "晚宴定制礼服", price: "£ 2,400", noteTitle: "// 专项采买", noteText: `<div class="note-content"><span class="note-label">采买事由：</span>中村家联姻晚宴指定高定。</div><div class="note-content"><span class="note-label">验收记录：</span>大小姐极度抗拒，未进行试穿。</div><div class="note-content"><span class="note-label">管家附言：</span>内衬已暗中联系裁缝改为可拆卸设计，以备晚宴突发状况。</div>`, imgFile: "3673d324.jpg", imgFallback: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 晚宴礼服草图" },
+            { id: "cookie", name: "温室特供香草曲奇", price: "£ 45", noteTitle: "// 私人支出", noteText: `<div class="note-content"><span class="note-label">入账说明：</span>自费购入顶级香草荚与黄油。</div><div class="note-content"><span class="note-label">异常记录：</span>借用温室烤箱，未惊动厨房。</div><div class="note-content"><span class="note-label">管家附言：</span>大小姐今天心情欠佳。这笔钱不走公账，记在我的私人名下。</div>`, imgFile: "a6ed3d01.jpg", imgFallback: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80", imgCaption: "// 刚出炉的曲奇" }
         ];
 
-        /* ================= 左页账目列表 ================= */
         let itemsHTML = "";
         ledgerData.forEach((item, index) => {
             const activeClass = index === 0 ? 'active' : '';
-            itemsHTML += `
-                <div class="ledger-item-row ${activeClass}" id="row-${item.id}" onclick="selectLedgerItem('${item.id}')">
-                    <span>${item.name}</span><span>${item.price}</span>
-                </div>
-            `;
+            itemsHTML += `<div class="ledger-item-row ${activeClass}" id="row-${item.id}" onclick="selectLedgerItem('${item.id}')"><span>${item.name}</span><span>${item.price}</span></div>`;
         });
 
-        /* ================= 平面图 HTML ================= */
-        const mapHTML = `
-            <div class="map-container">
-                <div class="map-title">GROUND FLOOR / SECURITY PLAN</div>
-                
-                <!-- 建筑区块 -->
-                <div class="zone zone-main"></div><div class="zone-name" style="top: 32%; left: 45%;">主楼 / MAIN HALL</div>
-                <div class="zone zone-side"></div><div class="zone-name" style="top: 32%; left: 6%; transform: rotate(-90deg);">侧门</div>
-                <div class="zone zone-ledger"></div><div class="zone-name" style="top: 68%; left: 62%;">账房</div>
-                <div class="zone zone-kitchen"></div><div class="zone-name" style="top: 68%; left: 28%;">厨房</div>
-                <div class="zone zone-cellar"></div><div class="zone-name" style="top: 84%; left: 7%;">酒窖</div>
-                <div class="zone zone-lab"></div><div class="zone-name" style="top: 22%; left: 82%; font-size: 0.65rem;">研究室</div>
+        const sleeveHTML = `
+            <div class="sleeve-wrapper">
+                <div class="key-selectors">
+                    <div class="key-sel-item active" onclick="updateSleeveContent('ledger', this)">账房</div>
+                    <div class="key-sel-item" onclick="updateSleeveContent('main', this)">正门</div>
+                    <div class="key-sel-item" onclick="updateSleeveContent('side', this)">侧门</div>
+                    <div class="key-sel-item" onclick="updateSleeveContent('kitchen', this)">厨房</div>
+                    <div class="key-sel-item" onclick="updateSleeveContent('cellar', this)">酒窖</div>
+                    <div class="key-sel-item unlisted" onclick="updateSleeveContent('lab', this)">研究室</div>
+                </div>
 
-                <!-- 发光锁孔点位 (百分比定位) -->
-                <div class="map-pin" style="top: 32%; left: 50%;" onclick="selectMapKey('main', this)"><div class="pin-icon"></div></div>
-                <div class="map-pin" style="top: 32%; left: 12%;" onclick="selectMapKey('side', this)"><div class="pin-icon"></div></div>
-                <div class="map-pin" style="top: 70%; left: 67%;" onclick="selectMapKey('ledger', this)"><div class="pin-icon"></div></div>
-                <div class="map-pin" style="top: 70%; left: 35%;" onclick="selectMapKey('kitchen', this)"><div class="pin-icon"></div></div>
-                <div class="map-pin" style="top: 85%; left: 12%;" onclick="selectMapKey('cellar', this)"><div class="pin-icon"></div></div>
-                <div class="map-pin unlisted" style="top: 22%; left: 87%;" onclick="selectMapKey('lab', this)"><div class="pin-icon"></div></div>
+                <div class="sleeve-container" id="sleeve-container" onclick="toggleSleeve()">
+                    <div class="sleeve-back">
+                        <div class="sleeve-emboss" id="sleeve-emboss-text">LEDGER</div>
+                        <div class="sleeve-logo">AKUTAGAWA</div>
+                    </div>
+                    
+                    <div class="access-card">
+                        <div class="card-content" id="sleeve-card-content"></div>
+                    </div>
 
-                <!-- 详情卡片 -->
-                <div class="map-card" id="map-card">
-                    <!-- 动态填充 -->
+                    <div class="key-object" id="key-object">
+                        <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="brassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#f5e6c8" /><stop offset="40%" stop-color="#cfa861" />
+                                    <stop offset="70%" stop-color="#8a6e3e" /><stop offset="100%" stop-color="#4a3715" />
+                                </linearGradient>
+                                <linearGradient id="brassDark" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#6e542a" /><stop offset="50%" stop-color="#cfa861" /><stop offset="100%" stop-color="#3a2b12" />
+                                </linearGradient>
+                            </defs>
+                            <path d="M 50 15 C 30 15, 20 30, 20 45 C 20 55, 25 62, 32 66 L 32 75 L 68 75 L 68 66 C 75 62, 80 55, 80 45 C 80 30, 70 15, 50 15 Z" fill="url(#brassGrad)" stroke="#2b1d09" stroke-width="2"/>
+                            <path d="M 50 22 C 38 22, 28 32, 28 45 C 28 53, 35 60, 42 62 L 42 68 L 58 68 L 58 62 C 65 60, 72 53, 72 45 C 72 32, 62 22, 50 22 Z" fill="#0a0a0a"/>
+                            <rect x="38" y="36" width="24" height="24" rx="4" fill="url(#brassDark)" stroke="#2b1d09" stroke-width="1.5"/>
+                            <text x="50" y="53" fill="#0a0a0a" font-size="14" font-family="KaiTi" font-weight="bold" text-anchor="middle" id="key-label-text">账</text>
+                            <rect x="42" y="75" width="16" height="8" rx="2" fill="url(#brassGrad)" stroke="#2b1d09" stroke-width="1.5"/>
+                            <rect x="44" y="83" width="12" height="6" fill="url(#brassDark)" />
+                            <rect x="46" y="89" width="8" height="40" fill="url(#brassGrad)" stroke="#2b1d09" stroke-width="1"/>
+                            <path d="M 46 110 L 70 110 L 70 116 L 54 116 L 54 120 L 64 120 L 64 126 L 46 126 Z" fill="url(#brassGrad)" stroke="#2b1d09" stroke-width="1.5"/>
+                            <line x1="58" y1="110" x2="58" y2="116" stroke="#2b1d09" stroke-width="2"/>
+                            <line x1="56" y1="120" x2="56" y2="126" stroke="#2b1d09" stroke-width="2"/>
+                        </svg>
+                    </div>
                 </div>
             </div>
         `;
 
         const keyData = {
-            main: { name: "正门", type: "铜", holder: "托马斯 / 门房", rule: "夜里廿二时前必须交回门房。", note: "“钥匙在谁手上，门就是谁管的。这门太重，托马斯一个人推不开，但他从不抱怨。”" },
-            side: { name: "侧门", type: "铁", holder: "老周", rule: "早六点领，晚六点还。", note: "“老周每天来得比鸡早。这扇门开得早，是为了让外面的新鲜东西能进来。”" },
-            ledger: { name: "账房", type: "铜", holder: "埃德蒙", rule: "随身，不离身。丢了先报我，不必报官。", note: "“这里面装的不是钱，是庄园的底。我把它揣在最里面的口袋，连睡觉都不摘。”" },
-            cellar: { name: "酒窖", type: "铁", holder: "埃德蒙", rule: "随身。取酒需登记：日期、几瓶、给谁。", note: "“大小姐偶尔会来拿一瓶。她不懂酒，但每次拿走的，都是她父亲生前喜欢的年份。”" },
-            kitchen: { name: "厨房", type: "铁", holder: "莉薇娅", rule: "开厨房、储藏间、冷柜。旁人不借，我也不借。", note: "“她说厨房归她，钥匙就归她。这规矩我守得很严——我连碗都不碰，何况是钥匙。”" },
-            lab: { name: "研究室", type: "铜", holder: "星野雫", rule: "册子里没有这一行。只在我心里记着。", note: "“他说过，‘我只管电’。我没把这把写进册子，也从不问他几点锁门。这房子里，总得有一把不用登记的钥匙。”" }
+            main: { name: "正门", en: "MAIN", holder: "托马斯（随车）", rule: "夜里廿二时前交回门房。", note: "“钥匙在谁手上，门就是谁管的。这门太重，托马斯一个人推不开，但他从不抱怨。”" },
+            side: { name: "侧门", en: "SIDE", holder: "老周", rule: "早六点领，晚六点还。", note: "“老周每天来得比鸡早。这扇门开得早，是为了让外面的新鲜东西能进来。”" },
+            ledger: { name: "账房", en: "LEDGER", holder: "埃德蒙", rule: "随身带着，不要离身。丢了不必报官，先报你。", note: "“这里面装的不是钱，是庄园的底。我把它揣在最里面的口袋，连睡觉都不摘。”" },
+            cellar: { name: "酒窖", en: "CELLAR", holder: "埃德蒙", rule: "随身带着。取酒登记：日期、几瓶、给谁。", note: "“大小姐偶尔会来拿一瓶。她不懂酒，但每次拿走的，都是她父亲生前喜欢的年份。”" },
+            kitchen: { name: "厨房", en: "KITCHEN", holder: "莉薇娅小姐", rule: "能开厨房、储藏间和冷柜。旁人不借，你也不借——她说厨房归她，钥匙就归她。", note: "“她说厨房归她，钥匙就归她。这规矩我守得很严——我连碗都不碰，何况是钥匙。”" },
+            lab: { name: "研究室", en: "UNLISTED", holder: "星野雫", rule: "册子里没有这一行。只在我心里记着。", note: "“他说过，‘我只管电’。我没把这把写进册子，也从不问他几点锁门。这房子里，总得有一把不用登记的钥匙。”" }
         };
 
-        /* ================= 各内容面板 ================= */
         const contentData = {
             quote: `
                 <div class="quote-image-wrapper">
@@ -933,7 +704,7 @@
                     </div>
                 </div>
             `,
-            keys: mapHTML,
+            keys: sleeveHTML,
             secret: `
                 <div class="secret-page">
                     <div class="secret-header">FILE NO. // 奥斯汀旧债（邓恩）</div>
@@ -955,7 +726,6 @@
             `
         };
 
-        /* ================= 右页渲染 ================= */
         function renderLedgerDetail(item) {
             const detailPage = document.getElementById('ledger-detail-page');
             if (!detailPage) return;
@@ -974,13 +744,10 @@
             `;
         }
 
-        function initLedgerDetail() {
-            renderLedgerDetail(ledgerData[0]);
-        }
+        function initLedgerDetail() { renderLedgerDetail(ledgerData[0]); }
 
         function selectLedgerItem(id) {
-            playSound('ledger', playPageTurnSound);
-            
+            playSound('ledger');
             document.querySelectorAll('.ledger-item-row').forEach(el => el.classList.remove('active'));
             const row = document.getElementById(`row-${id}`);
             if (row) row.classList.add('active');
@@ -996,30 +763,49 @@
             }, 200);
         }
 
-        /* ================= 平面图交互 ================= */
-        function selectMapKey(id, el) {
-            playSound('ledger', playPageTurnSound);
-            
-            document.querySelectorAll('.map-pin').forEach(p => p.classList.remove('active'));
+        function updateSleeveContent(id, el) {
+            document.querySelectorAll('.key-sel-item').forEach(p => p.classList.remove('active'));
             el.classList.add('active');
 
             const d = keyData[id];
-            const card = document.getElementById('map-card');
-            if (!card) return;
+            const content = document.getElementById('sleeve-card-content');
+            const embossText = document.getElementById('sleeve-emboss-text');
+            const container = document.getElementById('sleeve-container'); 
+            const keyLabel = document.getElementById('key-label-text'); 
+            
+            embossText.textContent = d.en;
+            if (keyLabel) keyLabel.textContent = d.name[0];
 
-            card.innerHTML = `
-                <div class="card-title">${d.name}</div>
-                <div class="card-meta">材质：${d.type} // 持有人：${d.holder}</div>
-                <div class="card-rule"><span style="color:#8a6e3e">规矩：</span>${d.rule}</div>
-                <div class="card-note">${d.note}</div>
+            content.innerHTML = `
+                <div class="card-head">
+                    <span>${d.holder}</span>
+                    <span>AKUTAGAWA MANOR</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">${d.name}</div>
+                    <div class="card-en-small">${d.en} GATE</div>
+                    <div class="card-rule">${d.rule}</div>
+                    <div class="card-note">${d.note}</div>
+                </div>
             `;
-            card.classList.add('show');
+            
+            if (container.classList.contains('pulled')) {
+                container.classList.remove('pulled');
+            }
         }
 
-        /* ================= 蜡封解密 ================= */
+        function toggleSleeve() {
+            const container = document.getElementById('sleeve-container');
+            
+            container.classList.toggle('pulled');
+            
+            playSound('cardOut1'); 
+            playSound('cardOut2'); 
+        }
+
         let debtUnlocked = false;
         function unlockDebt(sealElement) {
-            playSound('seal', playPageTurnSound);
+            playSound('seal');
             debtUnlocked = true;
             
             sealElement.classList.add('seal-breaking');
@@ -1036,15 +822,12 @@
             }, 500);
         }
 
-        /* ================= 内容切换 ================= */
         let isAnimating = false;
         function switchContent(type) {
             if (isAnimating) return;
             isAnimating = true;
 
-            if (type !== 'secret') {
-                debtUnlocked = false;
-            }
+            if (type !== 'secret') { debtUnlocked = false; }
 
             const textBox = document.getElementById('text-content');
             document.querySelectorAll('.nav-item, .secret-nav').forEach(el => el.classList.remove('active'));
@@ -1058,15 +841,18 @@
                 textBox.scrollTop = 0;
 
                 if (type === 'ledger') {
+                    textBox.classList.remove('keys-view');
                     textBox.style.fontFamily = 'inherit';
                     initLedgerDetail();
                 } else if (type === 'keys') {
+                    textBox.classList.add('keys-view');
                     textBox.style.fontFamily = 'inherit';
-                    setTimeout(() => {
-                        const defaultPin = document.querySelectorAll('.map-pin')[2]; // 第三个是账房
-                        if(defaultPin) selectMapKey('ledger', defaultPin);
-                    }, 50);
+                    const defaultSlot = document.querySelector('.key-sel-item');
+                    if (defaultSlot) updateSleeveContent('ledger', defaultSlot);
+                    const sleeveContainer = document.getElementById('sleeve-container');
+                    if (sleeveContainer) sleeveContainer.classList.remove('pulled');
                 } else {
+                    textBox.classList.remove('keys-view');
                     textBox.style.fontFamily = '"Songti SC", "Noto Serif SC", serif';
                 }
 
@@ -1075,7 +861,6 @@
             }, 400);
         }
 
-        /* 初始渲染 */
         document.getElementById('text-content').innerHTML = contentData.quote;
     </script>
 </body>
