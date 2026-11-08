@@ -277,21 +277,24 @@
             }
             .card-actions { gap: 10px; flex-wrap: wrap; }
             .action-btn { font-size: 0.75rem; padding: 8px 14px; letter-spacing: 0.1rem; }
+            
+            /* 6. 过渡文字手机端适配 */
+            .trans-text {
+                width: 80%;
+                max-width: 320px;
+                text-align: center;
+                font-size: 0.95rem;
+                letter-spacing: 0.15rem;
+                line-height: 1.8;
+                padding: 0 16px;
+                box-sizing: border-box;
+            }
         }
 
         /* 触屏设备：禁用鼠标拖尾与自定义光标 */
         @media (pointer: coarse) {
             body { cursor: auto; }
             .cursor-trail { display: none; }
-        }
-
-        /* ==========================================================
-           进入暗格时的退场效果：与「离开暗格」镜像对称
-           ========================================================== */
-        body.leaving {
-            opacity: 0;
-            filter: blur(10px) brightness(0);
-            pointer-events: none;
         }
     </style>
 </head>
@@ -339,14 +342,15 @@
                         <span>拜访账房</span><span class="num">[ 01 ]</span>
                     </a>
                     
-                    <!-- 💡 厨房入口：已改为跳转接口 -->
+                    <!-- 💡 厨房入口 -->
                     <a href="javascript:void(0);" onclick="enterRoom('kitchen.html', '食物的香气盖过了灰尘的味道，炉火正旺。')" class="btn">
                         <span>前往厨房</span><span class="num">[ 02 ]</span>
                     </a>
                     
-                    <span class="btn" onclick="openModal('shizuku')">
+                    <!-- 研究室入口 -->
+                    <a href="javascript:void(0);" onclick="enterRoom('research.html', '属于机械与电波的冷冽气息迎面而来。')" class="btn">
                         <span>探访研究室</span><span class="num">[ 03 ]</span>
-                    </span>
+                    </a>
                     
                     <!-- 档案室入口 -->
                     <a href="javascript:void(0);" onclick="enterRoom('archive.html', '沿着旋梯向上，灰尘在光柱中翻涌。')" class="btn">
@@ -518,10 +522,15 @@
             window.location.href = 'prologue.html';
         }
 
+        // 统一暗格的过场方式
         function goToTreasure() {
             playVaultOpenSound();
-            document.body.classList.add('leaving');
-            setTimeout(() => { window.location.href = 'treasure.html'; }, 700);
+            document.getElementById('trans-text').innerText = '暗格开启，往昔的秘密在黑暗中低语。';
+            const screen = document.getElementById('transition-screen');
+            screen.classList.add('active');
+            setTimeout(() => { 
+                window.location.href = 'treasure.html'; 
+            }, 1800);
         }
 
         function leaveManor() {
