@@ -747,11 +747,11 @@
             document.body.style.overflow = '';
         }
 
-        /* ================= 弹窗控制逻辑 ================= */
+        /* ================= 弹窗控制逻辑 (已静音) ================= */
         function openTin(){
             var m = document.getElementById('tin-modal');
             if(!m) return;
-            playSound('open', playUnlockSound);
+            // playSound('open', playUnlockSound);  // 注释掉了音效
             m.classList.add('open');
             document.body.style.overflow = 'hidden';
         }
@@ -761,7 +761,7 @@
             m.classList.remove('open');
             document.body.style.overflow = '';
 
-            playSound('close', playLidCloseSound);
+            // playSound('close', playLidCloseSound); // 注释掉了音效
 
             const box = document.querySelector('.metal-box');
             if (box) {
@@ -864,7 +864,7 @@
             }
         }
 
-        // 模拟金属搭扣“咔哒”弹开的声音
+        // 模拟金属搭扣“咔哒”弹开的声音 (保留代码以防未来需要用，但目前openTin不再调用)
         function playUnlockSound() {
             try {
                 const audioCtx = getAudioCtx(); if (!audioCtx) return;
@@ -894,7 +894,7 @@
             } catch (e) {}
         }
 
-        // 金属扣合
+        // 金属扣合 (保留代码以防未来需要用，但目前closeTin不再调用)
         function playLidCloseSound() {
             try {
                 const audioCtx = getAudioCtx(); if (!audioCtx) return;
