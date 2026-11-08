@@ -313,8 +313,19 @@
             border-radius: 4px; border: 1px dashed rgba(207, 168, 97, 0.25);
             box-shadow: inset 0 2px 5px rgba(0,0,0,0.6), inset 0 1px 2px rgba(0,0,0,0.8); width: 100%;
         }
-        .card-note { font-family: "KaiTi", serif; font-size: 0.9rem; color: #8a6e3e; font-style: italic; margin-top: auto; text-align: right; width: 100%; padding-top: 15px; }
 
+        /* ✨ 统一修改：所有卡片的批注都像研究室一样自然换行、两端对齐 ✨ */
+        .card-note { 
+            font-family: "KaiTi", serif; 
+            font-size: 0.9rem; 
+            color: #8a6e3e; 
+            font-style: italic; 
+            margin-top: auto; 
+            text-align: justify; /* 改为两端对齐，自然换行 */
+            width: 100%; 
+            padding-top: 15px;
+            line-height: 1.6; 
+        }
 
         /* ==========================================
            专属排版：奥斯汀旧债（独立解密页面）
@@ -667,7 +678,7 @@
             main: { name: "正门", en: "MAIN", holder: "托马斯（随车）", rule: "夜里廿二时前交回门房。", note: "“钥匙在谁手上，门就是谁管的。这门太重，托马斯一个人推不开，但他从不抱怨。”" },
             side: { name: "侧门", en: "SIDE", holder: "老周", rule: "早六点领，晚六点还。", note: "“老周每天来得比鸡早。这扇门开得早，是为了让外面的新鲜东西能进来。”" },
             ledger: { name: "账房", en: "LEDGER", holder: "埃德蒙", rule: "随身带着，不要离身。丢了不必报官，先报你。", note: "“这里面装的不是钱，是庄园的底。我把它揣在最里面的口袋，连睡觉都不摘。”" },
-            cellar: { name: "酒窖", en: "CELLAR", holder: "埃德蒙", rule: "随身带着。取酒登记：日期、几瓶、给谁。", note: "“大小姐偶尔会来拿一瓶。她不懂酒，但每次拿走的，都是她父亲生前喜欢的年份。”" },
+            cellar: { name: "酒窖", en: "CELLAR", holder: "埃德蒙", rule: "随身带着。取酒登记：日期、几瓶、给谁。", note: "“大小姐偶尔会来拿一瓶。她不懂酒。她只认得那个味道——家主常喝的那个年份。”" },
             kitchen: { name: "厨房", en: "KITCHEN", holder: "莉薇娅小姐", rule: "能开厨房、储藏间和冷柜。旁人不借，你也不借——她说厨房归她，钥匙就归她。", note: "“她说厨房归她，钥匙就归她。这规矩我守得很严——我连碗都不碰，何况是钥匙。”" },
             lab: { name: "研究室", en: "UNLISTED", holder: "星野雫", rule: "册子里没有这一行。只在我心里记着。", note: "“他说过，‘我只管电’。我没把这把写进册子，也从不问他几点锁门。这房子里，总得有一把不用登记的钥匙。”" }
         };
