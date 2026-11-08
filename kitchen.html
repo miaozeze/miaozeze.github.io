@@ -478,36 +478,74 @@
         #transition-screen.active .trans-text { opacity: 1; transform: translateY(0); }
 
         /* ==========================================================
-           手机端兼容 (< 900px)
+           移动端适配（< 900px）
            ========================================================== */
         @media (max-width: 900px) {
-            .hud-info { top: 15px; left: 15px; font-size: 0.65rem; gap: 8px; flex-wrap: wrap; max-width: 60%; }
-            .hud-info span { border-bottom: none; }
-            .back-btn { top: 15px; right: 15px; padding: 6px 12px; font-size: 0.7rem; letter-spacing: 0.1rem; }
+            /* 1. 基础页面：允许纵向滚动，顶部留出 HUD 空间 */
+            body { 
+                display: block; 
+                height: auto; 
+                min-height: 100vh; 
+                overflow-y: auto; 
+                overflow-x: hidden; 
+                padding: 64px 0 40px 0; 
+                box-sizing: border-box; 
+            }
             
-            .layout { flex-direction: column; height: auto; min-height: 100vh; padding: 60px 15px 30px; box-sizing: border-box; gap: 20px; width: 100%; max-width: 100%; overflow-y: auto; }
-            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid rgba(90, 74, 46, 0.3); padding-right: 0; padding-bottom: 15px; flex-direction: column; align-items: center; }
+            /* 2. 顶部 HUD 与返回按钮 */
+            .hud-info { top: 12px; left: 12px; font-size: 0.65rem; gap: 8px; flex-wrap: wrap; max-width: 58%; }
+            .hud-info span { border-bottom: none; padding-bottom: 0; }
+            .back-btn { top: 12px; right: 12px; padding: 6px 12px; font-size: 0.7rem; letter-spacing: 0.1rem; }
+            
+            /* 3. 主布局：左右并排 → 上下堆叠 */
+            .layout { 
+                flex-direction: column; 
+                width: 100%; 
+                max-width: 100%; 
+                height: auto; 
+                gap: 20px; 
+                padding: 0 16px; 
+                box-sizing: border-box; 
+            }
+            
+            /* 4. 左侧导航 */
+            .sidebar { 
+                width: 100%; 
+                border-right: none; 
+                border-bottom: 1px solid rgba(90, 74, 46, 0.3); 
+                padding: 0 0 16px 0; 
+                flex-direction: column; 
+                justify-content: flex-start; 
+            }
             .room-name { font-size: 2rem; margin-bottom: 0.2rem; }
-            .room-desc { margin-bottom: 1.5rem; font-size: 0.65rem; }
+            .room-desc { margin-bottom: 1.5rem; font-size: 0.75rem; }
             
-            .nav-list { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 10px 15px; }
-            .nav-item { font-size: 0.8rem; letter-spacing: 0.05rem; }
+            .nav-list { flex-direction: row; flex-wrap: wrap; gap: 12px 20px; }
+            .nav-item { font-size: 0.85rem; letter-spacing: 0.08rem; }
             .nav-item::before { display: none; }
             .nav-item:hover, .nav-item.active { padding-left: 0; }
             .nav-item-ironbox { flex-direction: row; align-items: baseline; gap: 6px; }
-            .nav-item-ironbox .nav-label { font-size: 0.8rem; }
+            .nav-item-ironbox .nav-num { font-size: 0.6rem; }
+            .nav-item-ironbox .nav-label { font-size: 0.85rem; }
             .secret-unlock { margin-top: 0; }
             .secret-unlock .label { font-size: 0.75rem; }
             
-            .content-area { padding: 10px 0; justify-content: flex-start; }
-            .text-box { max-height: none; padding-right: 0; font-size: 0.95rem; }
+            /* 5. 右侧内容区 */
+            .content-area { padding: 0; justify-content: flex-start; }
+            .text-box { 
+                max-height: none; 
+                overflow: visible; 
+                padding-right: 0; 
+                font-size: 1rem; 
+                line-height: 1.9; 
+            }
 
-            /* 01 / 语录 */
-            .quote-image-wrapper { max-width: 100%; padding: 4px; }
-            .quote-image-wrapper img { height: 180px; }
-            .quote-style { font-size: 1rem; padding: 1rem; line-height: 1.8; }
+            /* 6. 语录图片 */
+            .quote-image-wrapper { max-width: 100%; margin-bottom: 1.5rem; padding: 4px; }
+            .quote-image-wrapper img { height: 160px; }
+            .quote-style { font-size: 1rem; padding: 1rem 1.2rem; line-height: 1.9; }
 
-            /* 03 / 专属食单 */
+            /* 7. 专属食单 */
             .kitchen-split-view { flex-direction: column; height: auto; max-height: none; gap: 15px; }
             .menu-ticket-wrapper { width: 100%; padding: 8px; }
             .menu-ticket { padding: 15px; }
@@ -518,7 +556,7 @@
             .panel-steps { flex: none; justify-content: flex-start; padding-bottom: 0; }
             .panel-steps p { margin-bottom: 10px; }
 
-            /* 04 / 厨房手记 */
+            /* 8. 厨房手记 */
             .letter-wrap { width: 100%; padding: 0; }
             .letter-sheet { padding: 25px 20px 35px 40px; transform: none; }
             .letter-sheet::before { left: 24px; }
@@ -528,7 +566,7 @@
             .letter-to em { width: 120px; }
             .letter-sign { font-size: 1.1rem; margin-top: 10px; }
 
-            /* 05 / 采买单 */
+            /* 9. 采买单 */
             .grocery-board { flex-direction: column; gap: 20px; padding-top: 0; }
             .grocery-receipt { width: 100%; max-width: 100%; min-height: auto; padding: 25px 20px 88px 20px; font-size: 0.75rem; }
             .gr-title { font-size: 0.9rem; }
@@ -539,25 +577,28 @@
             .stamp-abs .en { font-size: 0.75rem; letter-spacing: 0.15rem; }
             .stamp-abs .cn { font-size: 0.9rem; letter-spacing: 0.1rem; }
 
-            /* 弹窗 */
+            /* 10. 弹窗 (小票) */
             .rm-paper .grocery-receipt { padding: 28px 20px 96px; font-size: 0.8rem; min-height: 400px; }
             .rm-paper .gr-title { font-size: 1rem; }
             .rm-paper .gr-item { font-size: 0.82rem; }
             .rm-paper .gr-note { font-size: 0.74rem; }
             .rm-paper .gr-extra-note { font-size: 0.94rem; }
             
-            /* 06 / 铁盒 */
+            /* 11. 铁盒与便签 */
             .metal-box { width: 280px; height: 184px; margin-top: 30px; }
             .box-body { height: 142px; }
             .box-lid { height: 54px; }
             .tm-paper { padding: 30px 24px 24px 34px; }
-            .tm-paper::after { display: none; } /* 移除装订孔，防止屏幕太窄遮挡文字 */
+            .tm-paper::after { display: none; }
             .tm-paper::before { width: 6px; }
+            
+            /* 12. 过渡文字 */
+            .trans-text { width: 80%; max-width: 320px; text-align: center; font-size: 0.95rem; letter-spacing: 0.15rem; line-height: 1.8; padding: 0 16px; box-sizing: border-box; }
         }
 
         /* 触屏设备：禁用鼠标拖尾与自定义光标 */
         @media (pointer: coarse) {
-            body, .back-btn, .nav-item, .secret-unlock, .slip-item, .grocery-receipt, .metal-box { 
+            body, .back-btn, .nav-item, .secret-unlock, .slip-item, .grocery-receipt, .metal-box, .tin-modal, .receipt-modal, .close-btn { 
                 cursor: auto !important; 
             }
             .cursor-trail { display: none; }
