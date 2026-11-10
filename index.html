@@ -5,346 +5,329 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>芥川庄园大厅 | 纸页与灰烬</title>
     <style>
-        /* === 基础页面：复古噪点与空间纵深 === */
+        /* === 基础环境 === */
+        :root {
+            --gold-dark: #5a4a2e;
+            --gold: #8a6e3e;
+            --gold-light: #cfa861;
+            --gold-glow: rgba(207, 168, 97, 0.4);
+            --bg-dark: #050505;
+            --wood-dark: #12100d;
+        }
+
         body {
-            margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
-            font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
-            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            margin: 0; padding: 0; background-color: var(--bg-dark); color: #c9bda5;
+            font-family: Georgia, "Noto Serif SC", "Songti SC", serif;
+            height: 100vh; overflow: hidden;
             background-image: 
-                /* 顶部的微弱光束 */
-                radial-gradient(ellipse at 50% -20%, rgba(138, 110, 62, 0.15) 0%, transparent 60%),
-                /* 地板的微弱反光 */
-                linear-gradient(to bottom, transparent 80%, rgba(0,0,0,0.8) 100%),
-                /* 基础底色 */
-                radial-gradient(circle at center, #151515 0%, #050505 80%),
-                /* 噪点材质 */
-                url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>');
-            background-blend-mode: overlay, normal, normal, normal;
-            overflow: hidden; -webkit-font-smoothing: antialiased;
+                radial-gradient(circle at 50% 20%, #1c1814 0%, #050505 70%),
+                url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noise"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.05"/></svg>');
+            -webkit-font-smoothing: antialiased;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
 
-        /* 灰烬飘浮特效 */
-        .ash-particle {
-            position: fixed; bottom: -10px; background: #8a6e3e; border-radius: 50%;
-            pointer-events: none; z-index: 5; opacity: 0; filter: blur(0.5px);
+        /* 顶部 HUD */
+        .hud-info {
+            position: fixed; top: 30px; left: 40px; font-family: "Courier New", monospace;
+            color: var(--gold); font-size: 0.8rem; letter-spacing: 0.15rem; pointer-events: none; z-index: 100; display: flex; gap: 15px;
+        }
+        .hud-info span { border-bottom: 1px solid rgba(138, 110, 62, 0.3); padding-bottom: 3px; }
+
+        /* 氛围特效（灰烬） */
+        .ash {
+            position: fixed; bottom: -10px; background: var(--gold); border-radius: 50%;
+            pointer-events: none; z-index: 5; opacity: 0;
             animation: floatUp linear forwards;
         }
         @keyframes floatUp {
             0% { transform: translateY(0) translateX(0); opacity: 0; }
-            20% { opacity: 0.6; }
-            80% { opacity: 0.2; }
-            100% { transform: translateY(-110vh) translateX(20px); opacity: 0; }
+            20% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
         }
 
-        .hud-info {
-            position: fixed; top: 30px; left: 40px; font-family: "Courier New", monospace;
-            color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.15rem; pointer-events: none; z-index: 102; display: flex; gap: 15px; align-items: center;
-        }
-        .hud-info span { border-bottom: 1px solid rgba(138, 110, 62, 0.3); padding-bottom: 3px; }
-        
-        .cursor-trail {
-            position: fixed; width: 4px; height: 4px; background: #f5e6c8; border-radius: 50%;
-            pointer-events: none; z-index: 9999; box-shadow: 0 0 10px 2px rgba(245, 230, 200, 0.8);
-            animation: fadeOutTrail 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-        @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
-
-        /* === 欢迎信封（信函质感） === */
+        /* === 场景一：欢迎信函 === */
         #welcome-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-            background-image: 
-                radial-gradient(circle at center, #1c1c1c 0%, #050505 100%),
-                url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.05"/></svg>');
-            z-index: 100; transition: opacity 1.2s ease, visibility 1.2s ease;
+            position: fixed; inset: 0; display: flex; justify-content: center; align-items: center;
+            background: var(--bg-dark); z-index: 100; transition: opacity 1.5s ease, visibility 1.5s;
         }
         #welcome-screen.hidden { opacity: 0; visibility: hidden; }
 
         .envelope {
-            background: #131211; border: 1px solid #3a3024; padding: 4rem 3rem; max-width: 440px; width: 85%; text-align: center;
-            position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.95), inset 0 0 40px rgba(0,0,0,0.8); z-index: 2;
-            border-radius: 4px;
+            background: #151310; border: 1px solid var(--gold-dark); padding: 4rem 3rem; max-width: 440px; width: 85%;
+            text-align: center; position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.9);
         }
-        /* 信封边缘的缝线 */
-        .envelope::before { content: ''; position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; border: 1px dashed #5a4a2e; opacity: 0.5; pointer-events: none; }
-        
-        /* 火漆印章 */
+        .envelope::before { content: ''; position: absolute; inset: 12px; border: 1px dashed rgba(138,110,62,0.3); pointer-events: none; }
         .seal {
-            width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #8b2c2c 0%, #4a1515 100%);
-            border: 2px solid #6e2424; margin: 0 auto 2.5rem auto; display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,0,0,0.8);
-            transform: rotate(-5deg);
+            width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #6e2424 0%, #2a0808 100%);
+            margin: 0 auto 2rem; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.9), inset 0 0 10px rgba(0,0,0,0.8); transform: rotate(-5deg);
         }
-        .seal::after { content: '芥'; font-size: 1.6rem; font-weight: bold; color: #d1c5a8; font-family: "Songti SC", serif; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-
-        .env-to { color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.4rem; margin-bottom: 1.5rem; text-transform: uppercase; font-family: "Courier New", monospace; }
-        .env-title { color: #f5e6c8; font-size: 2rem; letter-spacing: 0.6rem; margin-bottom: 1.5rem; font-weight: normal; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .env-desc { color: #a89573; font-size: 0.95rem; line-height: 2.2; letter-spacing: 0.1rem; margin-bottom: 3rem; font-style: italic; }
-        
+        .seal::after { content: '芥'; color: #b8a57e; font-size: 1.6rem; font-family: "Songti SC", serif; text-shadow: 1px 1px 2px #000; }
+        .env-title { color: #f5e6c8; font-size: 1.8rem; letter-spacing: 0.5rem; margin-bottom: 1.5rem; }
+        .env-desc { color: #a89573; line-height: 2; font-size: 0.95rem; margin-bottom: 2.5rem; font-style: italic; }
         .open-btn {
-            display: inline-block; padding: 12px 35px; border: 1px solid #5a4a2e; color: #e8d5b5; font-size: 0.9rem; letter-spacing: 0.25rem; cursor: pointer;
-            background: rgba(20, 20, 20, 0.6); transition: all 0.4s ease; text-decoration: none;
+            display: inline-block; padding: 12px 30px; color: #e8d5b5; border: 1px solid var(--gold-dark);
+            text-decoration: none; letter-spacing: 0.2rem; transition: all 0.4s;
+        }
+        .open-btn:hover { background: rgba(207,168,97,0.1); border-color: var(--gold-light); color: #fff; }
+
+        /* === 场景二：平铺静物大厅 === */
+        #hall-screen {
+            position: absolute; inset: 0; display: flex; justify-content: center; align-items: center;
+            opacity: 0; transform: scale(0.98); pointer-events: none; transition: opacity 1.5s ease, transform 1.5s ease;
+            z-index: 10;
+        }
+        #welcome-screen.hidden + #hall-screen { opacity: 1; transform: scale(1); pointer-events: auto; }
+
+        /* 倾斜的长桌面 */
+        .desk-surface {
+            position: relative; width: 85%; max-width: 1100px; height: 70vh;
+            background: linear-gradient(135deg, rgba(25, 22, 18, 0.9), rgba(10, 8, 6, 0.95));
+            border: 1px solid rgba(90, 74, 46, 0.4);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.9), inset 0 0 100px rgba(0,0,0,0.8);
+            border-radius: 8px; display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap;
+            padding: 40px; box-sizing: border-box;
+        }
+
+        /* 桌面木纹背景 */
+        .desk-surface::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: repeating-linear-gradient(90deg, transparent 0, transparent 50px, rgba(0,0,0,0.1) 50px, rgba(0,0,0,0.1) 100px);
+            opacity: 0.5; pointer-events: none; border-radius: 8px;
+        }
+
+        .desk-item {
+            position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1); z-index: 10;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
-        .open-btn:hover { color: #fff; border-color: #cfa861; background: rgba(138, 110, 62, 0.2); box-shadow: 0 0 25px rgba(158,138,99,0.3); }
-        .env-footer { margin-top: 3rem; font-size: 0.75rem; color: #5a4a2e; letter-spacing: 0.15rem; font-family: "Courier New", monospace; }
 
-        /* === 主界面（大厅长廊） === */
-        #main-screen {
-            position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
-            opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 1.5s ease, transform 1.5s ease; z-index: 10;
+        /* 物品底座发光 */
+        .desk-item::after {
+            content: ''; position: absolute; bottom: -10px; width: 80px; height: 20px;
+            background: radial-gradient(ellipse, var(--gold-glow) 0%, transparent 70%);
+            opacity: 0.2; transition: all 0.5s; filter: blur(5px);
         }
-        #welcome-screen.hidden + #main-screen { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
-        .invitation {
-            position: relative; padding: 4rem 4rem; max-width: 520px; width: 90%; text-align: center;
-            background: linear-gradient(135deg, rgba(30, 30, 30, 0.9) 0%, rgba(15, 15, 15, 0.95) 100%);
-            border: 1px solid #3a3024; z-index: 1; transition: all 0.6s ease;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.95), inset 0 0 50px rgba(0,0,0,0.8);
-            border-radius: 6px;
-        }
-        
-        /* 华丽的角落装饰 */
-        .invitation::before, .invitation::after {
-            content: ''; position: absolute; width: 40px; height: 40px;
-            border: 2px solid #cfa861; opacity: 0.6; transition: all 0.6s ease; pointer-events: none;
-        }
-        .invitation::before { top: 15px; left: 15px; border-right: none; border-bottom: none; border-radius: 4px 0 0 0; }
-        .invitation::after { bottom: 15px; right: 15px; border-left: none; border-top: none; border-radius: 0 0 4px 0; }
-        .invitation:hover { border-color: #5a4a2e; box-shadow: 0 30px 80px rgba(0,0,0,1), inset 0 0 60px rgba(138,110,62,0.15); }
-        .invitation:hover::before, .invitation:hover::after { opacity: 1; width: 50px; height: 50px; border-color: #f5e6c8; }
+        .desk-item:hover { transform: translateY(-15px) scale(1.05); z-index: 20; }
+        .desk-item:hover::after { opacity: 1; width: 120px; height: 30px; }
 
-        .watermark { display: flex; justify-content: space-between; width: 80%; margin: 0 auto 3rem auto; transition: color 0.6s ease; }
-        .watermark span { color: #5a4a2e; font-size: 0.7rem; letter-spacing: 0.4rem; text-transform: uppercase; font-family: "Courier New", monospace; }
-        .invitation:hover .watermark span { color: #cfa861; }
-        
-        .main-text { color: #d1c5a8; font-size: 1rem; line-height: 2.2; letter-spacing: 0.1rem; margin-bottom: 3rem; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
-        
-        .btn-group { display: flex; flex-direction: column; gap: 18px; width: 100%; align-items: center; }
-        
-        /* 房间入口：黄铜门牌质感 */
-        .btn {
-            position: relative; display: flex; justify-content: space-between; align-items: center;
-            width: 88%; padding: 16px 24px; 
-            border: 1px solid #5a4a2e; 
-            color: #e8d5b5; 
-            background: linear-gradient(180deg, rgba(40, 35, 28, 0.8) 0%, rgba(20, 18, 15, 0.8) 100%);
-            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
-            font-size: 1rem; letter-spacing: 0.2rem; 
-            text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        /* === 物品 UI 设计 === */
+        .item-label {
+            margin-top: 25px; text-align: center; opacity: 0.6; transition: all 0.4s;
         }
-        .btn::before { 
-            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; 
-            background: #cfa861; transform: scaleY(0); transition: transform 0.3s ease; 
-        }
-        .btn:hover { 
-            color: #fff; border-color: #cfa861; background: rgba(158,138,99,0.15); 
-            padding-left: 30px; box-shadow: 0 0 25px rgba(207, 168, 97, 0.25), inset 0 0 10px rgba(207,168,97,0.1); 
-        }
-        .btn:hover::before { transform: scaleY(1); } 
-        .btn .num { color: #8a6e3e; font-size: 0.85rem; font-family: "Courier New", monospace; transition: color 0.3s; }
-        .btn:hover .num { color: #cfa861; }
+        .item-label .title { display: block; color: #f5e6c8; font-size: 1.2rem; letter-spacing: 0.2rem; margin-bottom: 5px; }
+        .item-label .sub { display: block; color: var(--gold); font-family: "Courier New", monospace; font-size: 0.75rem; letter-spacing: 0.1rem; }
+        .desk-item:hover .item-label { opacity: 1; transform: translateY(-5px); }
+        .desk-item:hover .item-label .title { text-shadow: 0 0 15px var(--gold-light); }
 
-        .reread-divider { width: 60%; border-top: 1px solid rgba(90, 74, 46, 0.4); margin: 2.5rem 0 1.5rem 0; }
-        
-        .reread-btn { font-size: 0.85rem; color: #8a6e3e; letter-spacing: 0.2rem; text-decoration: none; transition: all 0.3s; padding: 5px; cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important; }
-        .reread-btn:hover { color: #f5e6c8; text-shadow: 0 0 10px rgba(245,230,200,0.3); }
-
-        /* 离开按钮 */
-        .leave-manor-btn {
-            position: fixed; top: 30px; right: 40px; display: flex; align-items: center; gap: 8px;
-            padding: 10px 24px; color: #e8d5b5; font-size: 0.85rem; letter-spacing: 0.2rem;
-            border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8);
-            border-radius: 4px; cursor: pointer; z-index: 102; transition: all 0.3s ease;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        /* 1. 账房：老式墨水瓶与羽毛笔 */
+        .obj-ledger {
+            width: 90px; height: 90px; position: relative;
         }
-        .leave-manor-btn:hover { color: #fff; border-color: #f5e6c8; background: rgba(158,138,99,0.2); box-shadow: 0 0 20px rgba(245, 230, 200, 0.3); }
-
-        /* 弹窗（厚重档案卷宗） */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
-            display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 200;
+        .inkwell {
+            position: absolute; bottom: 0; left: 10px; width: 70px; height: 50px;
+            background: linear-gradient(135deg, #222 0%, #050505 100%);
+            border-radius: 10px 10px 5px 5px; box-shadow: inset 0 5px 10px rgba(255,255,255,0.1), 0 10px 20px #000;
+            border: 1px solid #333;
         }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .character-card {
-            background: #131211; border: 1px solid #5a4a2e; padding: 3rem 2.5rem; max-width: 480px; width: 85%; text-align: center; position: relative;
-            transform: scale(0.95) translateY(15px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 30px 80px rgba(0,0,0,0.95), inset 0 0 30px rgba(0,0,0,0.5);
-            border-radius: 4px;
+        .inkwell::before { content: ''; position: absolute; top: -10px; left: 15px; width: 40px; height: 15px; background: #111; border-radius: 50%; border: 2px solid #222; }
+        .feather {
+            position: absolute; bottom: 40px; left: 40px; width: 20px; height: 80px;
+            background: linear-gradient(to top, transparent, #f5e6c8);
+            border-radius: 50% 50% 0 0; transform: rotate(15deg);
+            clip-path: polygon(50% 0, 100% 40%, 50% 100%, 0 40%);
+            filter: drop-shadow(2px 2px 5px rgba(0,0,0,0.8));
         }
-        .character-card::before {
-            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
-            border: 1px solid rgba(90, 74, 46, 0.3); pointer-events: none;
+        .feather::after { content: ''; position: absolute; bottom: -10px; left: 8px; width: 2px; height: 40px; background: #cfa861; transform: rotate(-15deg); }
+
+        /* 2. 厨房：黄铜服务铃 */
+        .obj-kitchen {
+            width: 90px; height: 90px; position: relative;
         }
-        .modal-overlay.active .character-card { transform: scale(1) translateY(0); }
-
-        .file-number { position: absolute; top: 18px; left: 24px; font-size: 0.75rem; color: #8a6e3e; letter-spacing: 0.15rem; font-family: "Courier New", monospace; }
-        .close-btn { position: absolute; top: 12px; right: 20px; color: #8a6e3e; font-size: 1.5rem; transition: color 0.3s; cursor: pointer; z-index: 10; }
-        .close-btn:hover { color: #fff; }
-
-        .char-name { font-size: 2rem; color: #f5e6c8; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
-        .char-title { font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #a89573; letter-spacing: 0.15rem; margin-bottom: 2rem; text-transform: uppercase; }
-        
-        .char-content-box {
-            font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", Georgia, serif;
-            font-size: 1.05rem; color: #c9bda5; line-height: 2.1; margin-bottom: 2rem; text-align: justify;
-            padding-left: 20px; border-left: 2px solid #8a6e3e; max-height: 300px; overflow-y: auto;
-            transition: opacity 0.3s ease; letter-spacing: 0.02rem;
+        .bell {
+            position: absolute; bottom: 10px; left: 15px; width: 60px; height: 45px;
+            background: radial-gradient(circle at 30% 20%, #e8d5b5 0%, #8a6e3e 40%, #3a2b12 100%);
+            border-radius: 30px 30px 5px 5px; box-shadow: inset -5px -5px 15px rgba(0,0,0,0.8), 0 10px 20px #000;
         }
-        .char-content-box::-webkit-scrollbar { width: 4px; }
-        .char-content-box::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-        .char-content-box::-webkit-scrollbar-thumb { background: #5a4a2e; border-radius: 2px; }
+        .bell::before { content: ''; position: absolute; top: -8px; left: 27px; width: 10px; height: 10px; background: #cfa861; border-radius: 50%; box-shadow: 0 2px 4px #000; }
+        .bell::after { content: ''; position: absolute; bottom: -5px; left: -5px; width: 70px; height: 10px; background: #1a1a1a; border-radius: 5px; box-shadow: 0 2px 5px #000; }
 
-        .story-p { margin-top: 0; margin-bottom: 1.2em; }
-
-        .card-actions { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
-        .action-btn {
-            display: inline-block; font-size: 0.85rem; letter-spacing: 0.15rem; transition: all 0.3s; padding: 10px 20px; text-decoration: none; cursor: pointer;
-            color: #8a6e3e; border: 1px solid #3a3024; background: transparent;
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
+        /* 3. 研究室：发光的电子管 */
+        .obj-research {
+            width: 90px; height: 90px; position: relative; display: flex; justify-content: center; align-items: flex-end;
         }
-        .action-btn:hover { color: #fff; border-color: #cfa861; background: rgba(207,168,97,0.1); }
-        .action-btn.primary { background: rgba(207,168,97,0.15); color: #f5e6c8; border-color: #8a6e3e; }
-        .action-btn.primary:hover { background: rgba(207,168,97,0.25); border-color: #cfa861; }
+        .tube-base {
+            width: 40px; height: 30px; background: #222; border-radius: 5px 5px 0 0; border: 1px solid #444;
+        }
+        .tube-glass {
+            position: absolute; bottom: 25px; width: 34px; height: 60px;
+            background: rgba(100, 150, 200, 0.1);
+            border-radius: 17px 17px 5px 5px; border: 1px solid rgba(150, 200, 255, 0.4);
+            box-shadow: inset 0 0 10px rgba(100, 200, 255, 0.2); overflow: hidden;
+        }
+        .filament {
+            position: absolute; bottom: 10px; left: 14px; width: 4px; height: 30px;
+            background: #ffb347; border-radius: 2px; box-shadow: 0 0 15px #ffb347, 0 0 30px #ff8c00;
+            animation: flicker 2s infinite alternate;
+        }
+        @keyframes flicker { 0% { opacity: 0.8; } 100% { opacity: 1; box-shadow: 0 0 20px #ffb347, 0 0 40px #ff8c00; } }
 
-        /* === 场景过渡遮罩 === */
+        /* 4. 档案室：羊皮卷与红丝带 */
+        .obj-archive {
+            width: 90px; height: 90px; position: relative; display: flex; justify-content: center; align-items: center;
+        }
+        .scroll {
+            width: 70px; height: 50px; background: #d1c5a8;
+            border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            position: relative; transform: rotate(-5deg);
+        }
+        .scroll::before, .scroll::after {
+            content: ''; position: absolute; top: -5px; bottom: -5px; width: 12px;
+            background: #b8a57e; border-radius: 6px; box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+        }
+        .scroll::before { left: -6px; }
+        .scroll::after { right: -6px; }
+        .ribbon {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 15px; height: 70px; background: #8b2c2c; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        /* 5. 暗格（隐藏触发点） */
+        .secret-trigger {
+            position: absolute; bottom: 20px; right: 30px; width: 60px; height: 20px;
+            background: #0a0806; border-radius: 2px; z-index: 5;
+            border-bottom: 1px solid rgba(90, 74, 46, 0.2);
+            transition: all 0.4s; cursor: pointer;
+        }
+        .secret-trigger:hover {
+            border-bottom-color: var(--gold-light);
+            box-shadow: 0 5px 15px rgba(207, 168, 97, 0.4);
+        }
+        .secret-text {
+            position: absolute; bottom: -20px; right: 0; font-size: 0.65rem;
+            color: var(--gold); font-family: "Courier New", monospace; opacity: 0; transition: all 0.4s;
+            white-space: nowrap;
+        }
+        .secret-trigger:hover .secret-text { opacity: 1; bottom: 25px; }
+
+        /* 顶部返回/退出 */
+        .leave-btn {
+            position: fixed; top: 30px; right: 40px; padding: 10px 24px; color: #e8d5b5;
+            border: 1px solid var(--gold-dark); background: rgba(20,20,20,0.8);
+            font-size: 0.85rem; letter-spacing: 0.2rem; cursor: pointer; z-index: 102; transition: all 0.3s;
+        }
+        .leave-btn:hover { background: rgba(158,138,99,0.2); color: #fff; border-color: var(--gold); }
+
+        /* === 过渡遮罩 === */
         #transition-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #050505; z-index: 999;
+            position: fixed; inset: 0; background: #050505; z-index: 999;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 1s ease;
         }
         #transition-screen.active { opacity: 1; pointer-events: auto; }
-        
         .trans-text {
-            color: #8a6e3e; font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem;
+            color: var(--gold); font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem;
             opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s; text-align: center;
         }
         #transition-screen.active .trans-text { opacity: 1; transform: translateY(0); }
 
-        /* ==========================================================
-           移动端适配（< 900px）
-           ========================================================== */
+        /* === 移动端适配 === */
         @media (max-width: 900px) {
-            .hud-info { top: 12px; left: 12px; font-size: 0.65rem; gap: 8px; }
-            .hud-info span { border-bottom: none; padding-bottom: 0; }
-            .leave-manor-btn { top: 12px; right: 12px; padding: 6px 12px; font-size: 0.7rem; letter-spacing: 0.1rem; gap: 4px; }
-
-            #welcome-screen, #main-screen { display: block; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 64px 0 40px 0; box-sizing: border-box; }
-
-            .envelope { margin: 0 auto; width: 90%; padding: 2.5rem 1.5rem; box-sizing: border-box; }
-            .seal { width: 50px; height: 50px; margin-bottom: 1.5rem; }
-            .seal::after { font-size: 1.2rem; }
-            .env-to { font-size: 0.7rem; letter-spacing: 0.2rem; margin-bottom: 1rem; }
-            .env-title { font-size: 1.5rem; letter-spacing: 0.3rem; margin-bottom: 1rem; }
-            .env-desc { font-size: 0.85rem; line-height: 2; margin-bottom: 2rem; }
-            .open-btn { padding: 10px 22px; font-size: 0.8rem; letter-spacing: 0.15rem; }
-            .env-footer { margin-top: 2rem; font-size: 0.7rem; }
-
-            .invitation { margin: 0 auto; width: 92%; padding: 2rem 1.2rem; box-sizing: border-box; }
-            .invitation::before, .invitation::after { width: 20px; height: 20px; top: 10px; left: 10px; }
-            .invitation::after { bottom: 10px; right: 10px; top: auto; left: auto; }
-            .watermark { width: 100%; margin-bottom: 1.5rem; }
-            .watermark span { font-size: 0.6rem; letter-spacing: 0.2rem; }
-            .main-text { font-size: 0.85rem; line-height: 2; margin-bottom: 1.5rem; }
-            .btn-group { gap: 12px; }
-            .btn { width: 100%; padding: 12px 14px; font-size: 0.85rem; letter-spacing: 0.1rem; }
-            .btn:hover { padding-left: 14px; }
-            .btn .num { font-size: 0.72rem; }
-            .reread-divider { margin: 1.5rem 0 1rem 0; }
-            .reread-btn { font-size: 0.78rem; letter-spacing: 0.12rem; }
-
-            .modal-overlay { padding: 20px 0; box-sizing: border-box; }
-            .character-card { width: 90%; padding: 2.2rem 1.4rem; box-sizing: border-box; max-height: calc(100vh - 40px); }
-            .file-number { font-size: 0.65rem; top: 12px; left: 14px; }
-            .close-btn { top: 8px; right: 14px; font-size: 1.3rem; }
-            .char-name { font-size: 1.5rem; letter-spacing: 0.25rem; }
-            .char-title { font-size: 0.68rem; margin-bottom: 1.5rem; }
-            .char-content-box { font-size: 0.95rem; line-height: 1.9; max-height: 42vh; padding-left: 12px; margin-bottom: 1.5rem; }
-            .card-actions { gap: 10px; flex-wrap: wrap; }
-            .action-btn { font-size: 0.75rem; padding: 8px 14px; letter-spacing: 0.1rem; }
+            .hud-info { top: 12px; left: 12px; font-size: 0.65rem; }
+            .leave-btn { top: 12px; right: 12px; padding: 6px 12px; font-size: 0.7rem; }
             
-            .trans-text { width: 80%; max-width: 320px; text-align: center; font-size: 0.95rem; letter-spacing: 0.15rem; line-height: 1.8; padding: 0 16px; box-sizing: border-box; }
+            .desk-surface {
+                width: 92%; height: 80vh; flex-direction: column; flex-wrap: nowrap;
+                padding: 30px 10px; gap: 30px; overflow-y: auto; justify-content: flex-start;
+            }
+            .desk-item { margin-bottom: 10px; }
+            .secret-trigger { bottom: 10px; right: 15px; }
+            .secret-text { font-size: 0.6rem; }
         }
 
-        /* 触屏设备：禁用鼠标拖尾与自定义光标 */
         @media (pointer: coarse) {
             body { cursor: auto; }
-            .cursor-trail { display: none; }
+            .desk-item { cursor: pointer; }
         }
     </style>
 </head>
 <body>
     <div class="hud-info">
         <span id="current-time">00:00</span>
-        <span>13°C 阴雨</span>
+        <span>阴雨 · 低气压</span>
     </div>
 
+    <!-- 欢迎信函 -->
     <div id="welcome-screen">
         <div class="envelope">
             <div class="seal"></div>
-            <div class="env-to">To the Esteemed Guest</div>
             <div class="env-title">纸页与灰烬</div>
             <div class="env-desc">
                 在这座被雷雨与旧火包围的庄园里，<br>
                 纸页正在泛黄，灰烬仍有温热。<br>
-                请在此落款，或推开这扇尘封的门。
+                请落款，或拆开这封信件。
             </div>
-            <a href="javascript:void(0);" onclick="goToPrologue()" class="open-btn">[ 拆 开 信 件 ]</a>
-            <div class="env-footer">From Akutagawa Manor</div>
+            <a href="javascript:void(0);" onclick="openHall()" class="open-btn">[ 拆 开 信 件 ]</a>
         </div>
     </div>
 
-    <div id="main-screen">
-        <div class="leave-manor-btn" onclick="leaveManor()">
-            <span style="font-size: 1rem;">⎋</span> [ 离 开 庄 园 ]
-        </div>
-
-        <div class="invitation">
-            <div class="watermark">
-                <span>P A G E S</span><span>A N D</span><span>A S H E S</span>
-            </div>
-            
-            <div class="main-text">
-                致 芥川庄园的贵客：<br>
-                昨夜的雷雨已歇，茶点已备好。<br>
-                请选择您要前往的房间。
-            </div>
-
-            <div class="btn-group">
-                <!-- 账房入口 -->
-                <a href="javascript:void(0);" onclick="enterRoom('ledger.html', '穿过长廊，黄铜把手微微发凉。')" class="btn">
-                    <span>拜访账房</span><span class="num">[ 01 ]</span>
-                </a>
-                
-                <!-- 厨房入口 -->
-                <a href="javascript:void(0);" onclick="enterRoom('kitchen.html', '食物的香气盖过了灰尘的味道，炉火正旺。')" class="btn">
-                    <span>前往厨房</span><span class="num">[ 02 ]</span>
-                </a>
-                
-                <!-- 研究室入口 -->
-                <a href="javascript:void(0);" onclick="enterRoom('research.html', '属于机械与电波的冷冽气息迎面而来。')" class="btn">
-                    <span>探访研究室</span><span class="num">[ 03 ]</span>
-                </a>
-                
-                <!-- 档案室入口 -->
-                <a href="javascript:void(0);" onclick="enterRoom('archive.html', '沿着旋梯向上，灰尘在光柱中翻涌。')" class="btn">
-                    <span>前往档案室</span><span class="num">[ 04 ]</span>
-                </a>
-            </div>
-
-            <div class="reread-divider"></div>
-            
-            <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
-                <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
-                
-                <div>
-                    <span class="reread-btn" style="font-size: 0.7rem; color: #3a3024; cursor: pointer;" onclick="goToTreasure()">[ 开启不存在的暗格 ]</span>
+    <!-- 平铺静物大厅 -->
+    <div id="hall-screen">
+        <div class="leave-btn" onclick="leaveManor()">⎋ 离开</div>
+        
+        <div class="desk-surface">
+            <!-- 账房 -->
+            <div class="desk-item" onclick="enterRoom('ledger.html', '穿过长廊，黄铜把手微微发凉。')">
+                <div class="obj-ledger">
+                    <div class="inkwell"></div>
+                    <div class="feather"></div>
+                </div>
+                <div class="item-label">
+                    <span class="title">拜访账房</span>
+                    <span class="sub">LEDGER OFFICE</span>
                 </div>
             </div>
 
+            <!-- 厨房 -->
+            <div class="desk-item" onclick="enterRoom('kitchen.html', '食物的香气盖过了灰尘的味道。')">
+                <div class="obj-kitchen">
+                    <div class="bell"></div>
+                </div>
+                <div class="item-label">
+                    <span class="title">前往厨房</span>
+                    <span class="sub">KITCHEN</span>
+                </div>
+            </div>
+
+            <!-- 研究室 -->
+            <div class="desk-item" onclick="enterRoom('research.html', '属于机械与电波的冷冽气息迎面而来。')">
+                <div class="obj-research">
+                    <div class="tube-base"></div>
+                    <div class="tube-glass"><div class="filament"></div></div>
+                </div>
+                <div class="item-label">
+                    <span class="title">探访研究室</span>
+                    <span class="sub">RESEARCH LAB</span>
+                </div>
+            </div>
+
+            <!-- 档案室 -->
+            <div class="desk-item" onclick="enterRoom('archive.html', '沿着旋梯向上，灰尘在光柱中翻涌。')">
+                <div class="obj-archive">
+                    <div class="scroll"></div>
+                    <div class="ribbon"></div>
+                </div>
+                <div class="item-label">
+                    <span class="title">前往档案室</span>
+                    <span class="sub">ARCHIVES</span>
+                </div>
+            </div>
+
+            <!-- 隐藏的暗格 -->
+            <div class="secret-trigger" onclick="goToTreasure()">
+                <div class="secret-text">[ 开启不存在的暗格 ]</div>
+            </div>
         </div>
     </div>
 
@@ -353,60 +336,60 @@
         <div class="trans-text" id="trans-text"></div>
     </div>
 
-    <div class="modal-overlay" id="modal">
-        <div class="character-card">
-            <div class="file-number" id="m-file"></div>
-            <div class="close-btn" onclick="closeModal()">×</div>
-            
-            <h2 class="char-name" id="m-name"></h2>
-            <div class="char-title" id="m-title"></div>
-            
-            <div class="char-content-box" id="m-content"></div>
-            
-            <div class="card-actions">
-                <span class="action-btn" onclick="playBookOnShelfSound(); closeModal();">[ 合上卷宗 ]</span>
-                <span class="action-btn primary" id="btn-toggle-story" onclick="toggleStory()"></span>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // === 音效与跳转 ===
-        function playBookOnShelfSound() {
+        // === 基础系统 ===
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        }
+        setInterval(updateTime, 1000); updateTime();
+
+        // 灰烬飘浮
+        function createAsh() {
+            const ash = document.createElement('div'); ash.className = 'ash';
+            const size = Math.random() * 3 + 1; ash.style.width = size + 'px'; ash.style.height = size + 'px';
+            ash.style.left = Math.random() * 100 + 'vw';
+            ash.style.animationDuration = (Math.random() * 5 + 6) + 's';
+            document.body.appendChild(ash); setTimeout(() => { ash.remove(); }, 11000);
+        }
+        setInterval(createAsh, 400);
+
+        // === 音效引擎 ===
+        let sharedAudioCtx = null;
+        function getAudioCtx() {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContext) return null;
+            if (!sharedAudioCtx || sharedAudioCtx.state === 'closed') sharedAudioCtx = new AudioContext();
+            if (sharedAudioCtx.state === 'suspended') sharedAudioCtx.resume();
+            return sharedAudioCtx;
+        }
+
+        function playDoorOpenSound() {
             try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const audioCtx = new AudioContext();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-
+                const audioCtx = getAudioCtx(); if (!audioCtx) return; 
                 const now = audioCtx.currentTime;
-                const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.3, audioCtx.sampleRate);
-                const slideData = slideBuffer.getChannelData(0);
-                for (let i = 0; i < slideData.length; i++) { slideData[i] = Math.random() * 2 - 1; }
-                const slideSource = audioCtx.createBufferSource(); slideSource.buffer = slideBuffer;
-                const slideFilter = audioCtx.createBiquadFilter(); slideFilter.type = 'bandpass'; slideFilter.frequency.value = 800; slideFilter.Q.value = 1.5;
-                const slideGain = audioCtx.createGain(); slideGain.gain.setValueAtTime(0, now); slideGain.gain.linearRampToValueAtTime(0.1, now + 0.1); slideGain.gain.linearRampToValueAtTime(0.2, now + 0.25); slideGain.gain.linearRampToValueAtTime(0, now + 0.3);
-                slideSource.connect(slideFilter); slideFilter.connect(slideGain); slideGain.connect(audioCtx.destination); slideSource.start(now);
+                // 吱呀声
+                const creakBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.4, audioCtx.sampleRate);
+                const creakData = creakBuffer.getChannelData(0);
+                for (let i = 0; i < creakData.length; i++) { creakData[i] = Math.random() * 2 - 1; }
+                const creakSource = audioCtx.createBufferSource(); creakSource.buffer = creakBuffer;
+                const creakFilter = audioCtx.createBiquadFilter(); creakFilter.type = 'bandpass'; creakFilter.frequency.setValueAtTime(800, now); creakFilter.frequency.linearRampToValueAtTime(400, now + 0.4); creakFilter.Q.value = 2;
+                const creakGain = audioCtx.createGain(); creakGain.gain.setValueAtTime(0, now); creakGain.gain.linearRampToValueAtTime(0.08, now + 0.1); creakGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                creakSource.connect(creakFilter); creakFilter.connect(creakGain); creakGain.connect(audioCtx.destination); creakSource.start(now);
 
-                setTimeout(() => {
-                    const thudBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.2, audioCtx.sampleRate);
-                    const thudData = thudBuffer.getChannelData(0);
-                    for (let i = 0; i < thudData.length; i++) { thudData[i] = Math.random() * 2 - 1; }
-                    const thudSource = audioCtx.createBufferSource(); thudSource.buffer = thudBuffer;
-                    const thudFilter = audioCtx.createBiquadFilter(); thudFilter.type = 'lowpass'; thudFilter.frequency.value = 300;
-                    const thudGain = audioCtx.createGain(); thudGain.gain.setValueAtTime(0, audioCtx.currentTime); thudGain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.01); thudGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                    thudSource.connect(thudFilter); thudFilter.connect(thudGain); thudGain.connect(audioCtx.destination); thudSource.start();
-                }, 260);
+                // 脚步
+                for (let i = 0; i < 3; i++) {
+                    const stepTime = now + 0.2 + (i * 0.4);
+                    const stepOsc = audioCtx.createOscillator(); stepOsc.type = 'sine'; stepOsc.frequency.setValueAtTime(80, stepTime); stepOsc.frequency.exponentialRampToValueAtTime(30, stepTime + 0.1);
+                    const stepGain = audioCtx.createGain(); stepGain.gain.setValueAtTime(0, stepTime); stepGain.gain.linearRampToValueAtTime(0.2, stepTime + 0.02); stepGain.gain.exponentialRampToValueAtTime(0.01, stepTime + 0.15);
+                    stepOsc.connect(stepGain); stepGain.connect(audioCtx.destination); stepOsc.start(stepTime); stepOsc.stop(stepTime + 0.2);
+                }
             } catch (e) {}
         }
 
         function playVaultOpenSound() {
             try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const audioCtx = new AudioContext();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-
+                const audioCtx = getAudioCtx(); if (!audioCtx) return;
                 const now = audioCtx.currentTime;
                 const slideBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.8, audioCtx.sampleRate);
                 const slideData = slideBuffer.getChannelData(0);
@@ -417,238 +400,45 @@
                 slideSource.connect(slideFilter); slideFilter.connect(slideGain); slideGain.connect(audioCtx.destination); slideSource.start(now);
 
                 setTimeout(() => {
-                    const thudOsc = audioCtx.createOscillator(); thudOsc.type = 'sine';
-                    thudOsc.frequency.setValueAtTime(60, audioCtx.currentTime); thudOsc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.4);
+                    const thudOsc = audioCtx.createOscillator(); thudOsc.type = 'sine'; thudOsc.frequency.setValueAtTime(60, audioCtx.currentTime); thudOsc.frequency.exponentialRampToValueAtTime(20, audioCtx.currentTime + 0.4);
                     const thudGain = audioCtx.createGain(); thudGain.gain.setValueAtTime(0, audioCtx.currentTime); thudGain.gain.linearRampToValueAtTime(0.6, audioCtx.currentTime + 0.02); thudGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
                     thudOsc.connect(thudGain); thudGain.connect(audioCtx.destination); thudOsc.start(); thudOsc.stop(audioCtx.currentTime + 0.6);
                 }, 650);
             } catch (e) {}
         }
 
-        function playDoorOpenSound() {
-            try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                if (!AudioContext) return;
-                const audioCtx = new AudioContext();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-
-                const now = audioCtx.currentTime;
-                const creakBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.4, audioCtx.sampleRate);
-                const creakData = creakBuffer.getChannelData(0);
-                for (let i = 0; i < creakData.length; i++) { creakData[i] = Math.random() * 2 - 1; }
-                
-                const creakSource = audioCtx.createBufferSource(); 
-                creakSource.buffer = creakBuffer;
-                const creakFilter = audioCtx.createBiquadFilter(); 
-                creakFilter.type = 'bandpass'; 
-                creakFilter.frequency.setValueAtTime(800, now);
-                creakFilter.frequency.linearRampToValueAtTime(400, now + 0.4); 
-                creakFilter.Q.value = 2;
-                const creakGain = audioCtx.createGain(); 
-                creakGain.gain.setValueAtTime(0, now); 
-                creakGain.gain.linearRampToValueAtTime(0.08, now + 0.1); 
-                creakGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-                
-                creakSource.connect(creakFilter); 
-                creakFilter.connect(creakGain); 
-                creakGain.connect(audioCtx.destination); 
-                creakSource.start(now);
-
-                for (let i = 0; i < 3; i++) {
-                    const stepTime = now + 0.2 + (i * 0.4);
-                    const stepOsc = audioCtx.createOscillator();
-                    stepOsc.type = 'sine';
-                    stepOsc.frequency.setValueAtTime(80, stepTime);
-                    stepOsc.frequency.exponentialRampToValueAtTime(30, stepTime + 0.1);
-                    
-                    const stepGain = audioCtx.createGain();
-                    stepGain.gain.setValueAtTime(0, stepTime);
-                    stepGain.gain.linearRampToValueAtTime(0.2, stepTime + 0.02);
-                    stepGain.gain.exponentialRampToValueAtTime(0.01, stepTime + 0.15);
-                    
-                    stepOsc.connect(stepGain);
-                    stepGain.connect(audioCtx.destination);
-                    stepOsc.start(stepTime);
-                    stepOsc.stop(stepTime + 0.2);
-                }
-            } catch (e) {}
+        // === 核心交互 ===
+        function openHall() {
+            document.getElementById('welcome-screen').classList.add('hidden');
+            sessionStorage.setItem('rainPlaying', 'true');
         }
 
         function enterRoom(url, text) {
             playDoorOpenSound();
-
             document.getElementById('trans-text').innerText = text;
-            const screen = document.getElementById('transition-screen');
-            screen.classList.add('active');
-
-            setTimeout(() => {
-                window.location.href = url;
-            }, 1800);
-        }
-
-        function goToPrologue() {
-            sessionStorage.setItem('rainPlaying', 'true');
-            window.location.href = 'prologue.html';
+            document.getElementById('transition-screen').classList.add('active');
+            setTimeout(() => { window.location.href = url; }, 1800);
         }
 
         function goToTreasure() {
             playVaultOpenSound();
             document.getElementById('trans-text').innerText = '暗格开启，往昔的秘密在黑暗中低语。';
-            const screen = document.getElementById('transition-screen');
-            screen.classList.add('active');
-            setTimeout(() => { 
-                window.location.href = 'treasure.html'; 
-            }, 1800);
+            document.getElementById('transition-screen').classList.add('active');
+            setTimeout(() => { window.location.href = 'treasure.html'; }, 1800);
         }
 
         function leaveManor() {
             document.getElementById('welcome-screen').classList.remove('hidden');
-            closeModal();
             sessionStorage.removeItem('rainPlaying');
         }
 
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('current-time').textContent = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-        }
-        setInterval(updateTime, 1000); updateTime();
-
-        function createAsh() {
-            const ash = document.createElement('div');
-            ash.className = 'ash-particle';
-            const size = Math.random() * 3 + 2; 
-            ash.style.width = size + 'px'; ash.style.height = size + 'px';
-            ash.style.left = Math.random() * 100 + 'vw';
-            ash.style.animationDuration = (Math.random() * 5 + 6) + 's'; 
-            document.body.appendChild(ash);
-            setTimeout(() => { ash.remove(); }, 11000);
-        }
-        setInterval(createAsh, 400);
-
+        // 页面重载处理（比如从其他房间后退回来）
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const char = urlParams.get('char');
-            const open = urlParams.get('open');
-            
-            if (char) {
-                document.getElementById('welcome-screen').classList.add('hidden');
-                setTimeout(() => { openModal(char); }, 300);
-                window.history.replaceState({}, document.title, window.location.pathname);
-            } else if (open === 'true') {
+            if (urlParams.get('open') === 'true') {
                 document.getElementById('welcome-screen').classList.add('hidden');
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
-        });
-
-        let lastTrailTime = 0;
-        document.addEventListener('mousemove', function(e) {
-            const now = Date.now();
-            if (now - lastTrailTime > 30) { createParticle(e.clientX, e.clientY); lastTrailTime = now; }
-        });
-        function createParticle(x, y) {
-            const particle = document.createElement('div');
-            particle.className = 'cursor-trail';
-            const offsetX = (Math.random() - 0.5) * 8;
-            const offsetY = (Math.random() - 0.5) * 8;
-            particle.style.left = (x + offsetX) + 'px';
-            particle.style.top = (y + offsetY) + 'px';
-            const size = Math.random() * 4 + 2; 
-            particle.style.width = size + 'px'; particle.style.height = size + 'px';
-            document.body.appendChild(particle);
-            setTimeout(() => { particle.remove(); }, 800);
-        }
-
-        const characters = {
-            edmund: {
-                file: "FILE NO. 01 // FINANCE", name: "埃德蒙", title: "Chief Butler / Finance Office",
-                quote: `大小姐，来查账的话，文件在左手边第二格。要躲清静，热茶和薄荷饼干在桌上。至于莉薇娅小姐那边——您本来就在账房帮我核采买单，不是吗？`,
-                story: `
-                    <p class="story-p">账房里亮着一盏黄铜台灯。桌上摊着采买单和几页账，他那杯茶已经凉透了——他聊起温室里的薄荷时总这样。</p>
-                    <p class="story-p">听到脚步声，他推了一下眼镜，没抬头：“大小姐，如果是来核对下个月的采买，文件在左手边第二格。”</p>
-                    <p class="story-p">你伸手去碰桌上那叠旧账本，他先一步抽走，换了张空白的纸推到你面前。</p>
-                    <p class="story-p">“这些我来整理。”他抬起头，眼里带着笑意，“饼干刚出炉，我先替您尝过一块——上一块是检查，这一块是私心。”</p>
-                    <p class="story-p">你把来意说了。他听完，笑意没变，只把椅子往回挪了半步。</p>
-                    <p class="story-p">“躲清静？可以。”他重新低下头，“莉薇娅小姐那边我替您说——她非常专业，只是脾气像只炸毛的猫。这话她听了，大概能消停半个钟头。”</p>
-                    <p class="story-p">你问他刚才在想什么。</p>
-                    <p class="story-p">“在想账单。您要听哪一页？”</p>
-                `
-            },
-            livia: {
-                file: "FILE NO. 02 // KITCHEN", name: "莉薇娅", title: "Exclusive Maid / Yorkshire",
-                quote: `大小姐，这个点来厨房做什么？冷肉锁在柜子里，钥匙在我身上——您别想了。去餐桌坐着，我给您热杯牛奶。`,
-                story: `
-                    <p class="story-p">凌晨两点，厨房里还亮着灯。莉薇娅在擦一把银勺——擦银器这件事，她从来不看表。</p>
-                    <p class="story-p">听到脚步声，她没回头：“这个点来厨房做什么？冷肉锁在柜子里，钥匙在我身上。”</p>
-                    <p class="story-p">炉子上一直温着半壶牛奶。她说完才转过身，把杯子倒满，端到桌上，热气顶着杯沿：“只放了一点蜂蜜。糖别想——您那口牙。”</p>
-                    <p class="story-p">“谁特地给您热的。”她把软布折了一道，又展开，“……炉子上正好有。顺手。”</p>
-                    <p class="story-p">她站了一会儿，像有话要说，最后只落下半句：“明早要是再不吃饭——”</p>
-                    <p class="story-p">话咽了回去。她转身回了操作台，重新擦起那把早就干净的勺子：“……早点喝完。”</p>
-                `
-            },
-            shizuku: {
-                file: "FILE NO. 03 // RESEARCH", name: "星野雫", title: "Resident Researcher / Tech Advisor",
-                quote: `大小姐，实验数据刚好记录完。红茶和刚烤好的饼干在桌上，您先坐。如果是关于飞机的驾驶问题，或者庄园的技术维护，我随时可以。但如果是埃德蒙先生让您来劝我……换上那套衣服的，请容我礼貌地拒绝。`,
-                story: `
-                    <p class="story-p">研究室里的白炽灯有些刺眼，空气里混着淡淡的机油味和红茶的香气。工作台上散落着精密的齿轮和图纸，乱，但每一件都在它该在的位置。星野雫坐在高脚凳上，低头拿着一把极细的镊子。</p>
-                    <p class="story-p">听到脚步声，他停下手里的活。乌黑的长发用一根素色发绳松松绑着，几缕碎发垂在颈侧。一米八的个子在黑色长袖里显得空荡，瘦是真瘦——可桌上那台仪器，他刚才是一个人搬过来的。</p>
-                    <p class="story-p">“大小姐，您怎么来了。”他的声音很轻。转身时顺手拉了一下右袖，把手臂内侧那朵兰花遮回去；左手食指上那枚素银的单身戒在灯下闪了一下，右手腕的表还在走。</p>
-                    <p class="story-p">还没等你开口，他已经把温着的红茶递到面前，小碟里放着几块烤得刚好的饼干。</p>
-                    <p class="story-p">“数据刚好记录完。红茶和饼干是刚弄好的，您先坐。”</p>
-                    <p class="story-p">你看着他清瘦的脸和眼底那层淡淡的青，提起了那个只有你能用的特权。</p>
-                    <p class="story-p">他拿镊子的手微微一顿，垂下眼睫，轻轻叹了口气。</p>
-                    <p class="story-p">“如果是埃德蒙先生让您来当说客的，请他别费这个心——他要是真闲，让他自己来跟我说。”他抬起头，目光温和，最后还是那声妥协，“不过，既然是大小姐开口……等我把这组零件归位，就上去换。这组不能停，您等我十分钟。”</p>
-                    <p class="story-p">“您先把饼干吃了，别放凉了。”他转过身，重新面对那张乱中有序的工作台，背影单薄，却稳得像一根钉在屋子里的柱子。</p>
-                `
-            }
-        };
-
-        let currentCharId = null;
-        let isShowingStory = false;
-
-        function openModal(id) {
-            currentCharId = id;
-            isShowingStory = false;
-            const data = characters[id];
-            
-            document.getElementById('m-file').innerText = data.file;
-            document.getElementById('m-name').innerText = data.name;
-            document.getElementById('m-title').innerText = data.title;
-            document.getElementById('m-content').innerHTML = data.quote;
-            
-            const btnToggle = document.getElementById('btn-toggle-story');
-            btnToggle.innerText = "[ 窥探旧日往事 ]";
-            
-            document.getElementById('modal').classList.add('active');
-        }
-
-        function toggleStory() {
-            if (!currentCharId) return;
-            const data = characters[currentCharId];
-            const contentBox = document.getElementById('m-content');
-            const btnToggle = document.getElementById('btn-toggle-story');
-            
-            contentBox.style.opacity = 0;
-            setTimeout(() => {
-                if (isShowingStory) {
-                    contentBox.innerHTML = data.quote;
-                    btnToggle.innerText = "[ 窥探旧日往事 ]";
-                    isShowingStory = false;
-                } else {
-                    contentBox.innerHTML = data.story;
-                    btnToggle.innerText = "[ 从回忆中抽身 ]"; 
-                    isShowingStory = true;
-                }
-                contentBox.style.opacity = 1;
-                contentBox.scrollTop = 0; 
-            }, 300);
-        }
-
-        function closeModal() { 
-            document.getElementById('modal').classList.remove('active'); 
-        }
-        
-        document.getElementById('modal').addEventListener('click', function(e) { 
-            if (e.target === this) closeModal(); 
         });
     </script>
 </body>
