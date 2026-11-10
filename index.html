@@ -5,19 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>芥川庄园大厅 | 纸页与灰烬</title>
     <style>
-        /* === 基础页面 === */
+        /* === 基础页面：复古噪点与空间纵深 === */
         body {
             margin: 0; padding: 0; background-color: #0a0a0a; color: #c9bda5;
             font-family: Georgia, Garamond, "Noto Serif SC", "Songti SC", serif;
-            height: 100vh; display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;
             background-image: 
+                /* 顶部的微弱光束 */
+                radial-gradient(ellipse at 50% -20%, rgba(138, 110, 62, 0.15) 0%, transparent 60%),
+                /* 地板的微弱反光 */
+                linear-gradient(to bottom, transparent 80%, rgba(0,0,0,0.8) 100%),
+                /* 基础底色 */
                 radial-gradient(circle at center, #151515 0%, #050505 80%),
+                /* 噪点材质 */
                 url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.04"/></svg>');
-            background-blend-mode: overlay; overflow: hidden; -webkit-font-smoothing: antialiased;
-            transition: opacity 0.6s ease, filter 0.6s ease;
+            background-blend-mode: overlay, normal, normal, normal;
+            overflow: hidden; -webkit-font-smoothing: antialiased;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/></svg>') 2 22, auto;
         }
-        
+
         /* 灰烬飘浮特效 */
         .ash-particle {
             position: fixed; bottom: -10px; background: #8a6e3e; border-radius: 50%;
@@ -44,40 +50,47 @@
         }
         @keyframes fadeOutTrail { 0% { transform: scale(1) translateY(0); opacity: 1; } 100% { transform: scale(0) translateY(15px); opacity: 0; } }
 
-        /* === 欢迎信封 === */
+        /* === 欢迎信封（信函质感） === */
         #welcome-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            background-image: radial-gradient(circle at center, #1c1c1c 0%, #050505 100%);
+            background-image: 
+                radial-gradient(circle at center, #1c1c1c 0%, #050505 100%),
+                url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.05"/></svg>');
             z-index: 100; transition: opacity 1.2s ease, visibility 1.2s ease;
         }
         #welcome-screen.hidden { opacity: 0; visibility: hidden; }
 
         .envelope {
-            background: #151515; border: 1px solid #5a4a2e; padding: 4rem 3rem; max-width: 420px; width: 85%; text-align: center;
-            position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.9); z-index: 2;
+            background: #131211; border: 1px solid #3a3024; padding: 4rem 3rem; max-width: 440px; width: 85%; text-align: center;
+            position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.95), inset 0 0 40px rgba(0,0,0,0.8); z-index: 2;
+            border-radius: 4px;
         }
-        .envelope::before { content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; border: 1px solid #2a2213; pointer-events: none; }
+        /* 信封边缘的缝线 */
+        .envelope::before { content: ''; position: absolute; top: 12px; left: 12px; right: 12px; bottom: 12px; border: 1px dashed #5a4a2e; opacity: 0.5; pointer-events: none; }
+        
+        /* 火漆印章 */
         .seal {
-            width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, #4a3c22 0%, #1a140b 100%);
-            border: 1px solid #9e8a63; margin: 0 auto 2rem auto; display: flex; justify-content: center; align-items: center;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 5px 15px rgba(0,0,0,0.5);
+            width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #8b2c2c 0%, #4a1515 100%);
+            border: 2px solid #6e2424; margin: 0 auto 2.5rem auto; display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.9), inset 0 0 15px rgba(0,0,0,0.8);
+            transform: rotate(-5deg);
         }
-        .seal::after { content: '芥'; font-size: 1.4rem; font-weight: bold; color: #b8a57e; font-family: "Songti SC", serif; }
+        .seal::after { content: '芥'; font-size: 1.6rem; font-weight: bold; color: #d1c5a8; font-family: "Songti SC", serif; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
 
-        .env-to { color: #9e8a63; font-size: 0.8rem; letter-spacing: 0.3rem; margin-bottom: 2rem; text-transform: uppercase; font-family: "Courier New", monospace; }
-        .env-title { color: #e8d5b5; font-size: 1.8rem; letter-spacing: 0.5rem; margin-bottom: 1.5rem; font-weight: normal; }
-        .env-desc { color: #b8a57e; font-size: 0.95rem; line-height: 2.2; letter-spacing: 0.1rem; margin-bottom: 3rem; font-style: italic; }
+        .env-to { color: #8a6e3e; font-size: 0.8rem; letter-spacing: 0.4rem; margin-bottom: 1.5rem; text-transform: uppercase; font-family: "Courier New", monospace; }
+        .env-title { color: #f5e6c8; font-size: 2rem; letter-spacing: 0.6rem; margin-bottom: 1.5rem; font-weight: normal; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .env-desc { color: #a89573; font-size: 0.95rem; line-height: 2.2; letter-spacing: 0.1rem; margin-bottom: 3rem; font-style: italic; }
         
         .open-btn {
-            display: inline-block; padding: 12px 30px; border: 1px solid #5a4a2e; color: #e8d5b5; font-size: 0.9rem; letter-spacing: 0.2rem; cursor: pointer;
-            background: transparent; transition: all 0.4s ease; text-decoration: none;
+            display: inline-block; padding: 12px 35px; border: 1px solid #5a4a2e; color: #e8d5b5; font-size: 0.9rem; letter-spacing: 0.25rem; cursor: pointer;
+            background: rgba(20, 20, 20, 0.6); transition: all 0.4s ease; text-decoration: none;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
-        .open-btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); box-shadow: 0 0 20px rgba(158,138,99,0.2); }
-        .env-footer { margin-top: 3rem; font-size: 0.75rem; color: #5a4a2e; letter-spacing: 0.1rem; font-family: "Courier New", monospace; }
+        .open-btn:hover { color: #fff; border-color: #cfa861; background: rgba(138, 110, 62, 0.2); box-shadow: 0 0 25px rgba(158,138,99,0.3); }
+        .env-footer { margin-top: 3rem; font-size: 0.75rem; color: #5a4a2e; letter-spacing: 0.15rem; font-family: "Courier New", monospace; }
 
-        /* === 主界面 === */
+        /* === 主界面（大厅长廊） === */
         #main-screen {
             position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;
             opacity: 0; transform: translateY(20px); pointer-events: none; transition: opacity 1.5s ease, transform 1.5s ease; z-index: 10;
@@ -85,75 +98,99 @@
         #welcome-screen.hidden + #main-screen { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
         .invitation {
-            border: 1px solid #5a4a2e; padding: 3rem 3rem; max-width: 480px; width: 85%; text-align: center;
-            position: relative; background: rgba(30, 30, 30, 0.85); z-index: 1; transition: all 0.6s ease;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.9);
+            position: relative; padding: 4rem 4rem; max-width: 520px; width: 90%; text-align: center;
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.9) 0%, rgba(15, 15, 15, 0.95) 100%);
+            border: 1px solid #3a3024; z-index: 1; transition: all 0.6s ease;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.95), inset 0 0 50px rgba(0,0,0,0.8);
+            border-radius: 6px;
         }
-        .invitation:hover { border-color: #9e8a63; box-shadow: 0 15px 50px rgba(0,0,0,0.9), 0 0 25px rgba(158,138,99,0.2); }
         
-        .inner-border { border: 1px dashed #5a4a2e; padding: 2.5rem 1rem; display: flex; flex-direction: column; align-items: center; transition: border-color 0.6s ease; }
-        .invitation:hover .inner-border { border-color: #8a6e3e; }
+        /* 华丽的角落装饰 */
+        .invitation::before, .invitation::after {
+            content: ''; position: absolute; width: 40px; height: 40px;
+            border: 2px solid #cfa861; opacity: 0.6; transition: all 0.6s ease; pointer-events: none;
+        }
+        .invitation::before { top: 15px; left: 15px; border-right: none; border-bottom: none; border-radius: 4px 0 0 0; }
+        .invitation::after { bottom: 15px; right: 15px; border-left: none; border-top: none; border-radius: 0 0 4px 0; }
+        .invitation:hover { border-color: #5a4a2e; box-shadow: 0 30px 80px rgba(0,0,0,1), inset 0 0 60px rgba(138,110,62,0.15); }
+        .invitation:hover::before, .invitation:hover::after { opacity: 1; width: 50px; height: 50px; border-color: #f5e6c8; }
 
-        .watermark { display: flex; justify-content: space-between; width: 80%; margin-top: 0; margin-bottom: 3rem; transition: color 0.6s ease; }
-        .watermark span { color: #6b5a3e; font-size: 0.7rem; letter-spacing: 0.3rem; text-transform: uppercase; font-family: "Courier New", monospace; }
-        .invitation:hover .watermark span { color: #b8a57e; }
+        .watermark { display: flex; justify-content: space-between; width: 80%; margin: 0 auto 3rem auto; transition: color 0.6s ease; }
+        .watermark span { color: #5a4a2e; font-size: 0.7rem; letter-spacing: 0.4rem; text-transform: uppercase; font-family: "Courier New", monospace; }
+        .invitation:hover .watermark span { color: #cfa861; }
         
-        .main-text { color: #e0d0b0; font-size: 0.95rem; line-height: 2.2; letter-spacing: 0.1rem; margin-bottom: 2.5rem; }
+        .main-text { color: #d1c5a8; font-size: 1rem; line-height: 2.2; letter-spacing: 0.1rem; margin-bottom: 3rem; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
         
-        .btn-group { display: flex; flex-direction: column; gap: 15px; width: 100%; align-items: center; }
+        .btn-group { display: flex; flex-direction: column; gap: 18px; width: 100%; align-items: center; }
+        
+        /* 房间入口：黄铜门牌质感 */
         .btn {
             position: relative; display: flex; justify-content: space-between; align-items: center;
-            width: 85%; padding: 14px 20px; border: 1px solid #5a4a2e; color: #e8d5b5; transition: all 0.4s ease; 
-            font-size: 0.95rem; letter-spacing: 0.15rem; background: rgba(255,255,255,0.03); overflow: hidden;
-            text-decoration: none;
+            width: 88%; padding: 16px 24px; 
+            border: 1px solid #5a4a2e; 
+            color: #e8d5b5; 
+            background: linear-gradient(180deg, rgba(40, 35, 28, 0.8) 0%, rgba(20, 18, 15, 0.8) 100%);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); 
+            font-size: 1rem; letter-spacing: 0.2rem; 
+            text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
-        .btn::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 3px; background-color: #f5e6c8; transform: scaleY(0); transition: transform 0.3s ease; }
-        .btn:hover { color: #fff; border-color: #9e8a63; background: rgba(158,138,99,0.1); padding-left: 25px; box-shadow: 0 0 20px rgba(158,138,99,0.2); }
+        .btn::before { 
+            content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; 
+            background: #cfa861; transform: scaleY(0); transition: transform 0.3s ease; 
+        }
+        .btn:hover { 
+            color: #fff; border-color: #cfa861; background: rgba(158,138,99,0.15); 
+            padding-left: 30px; box-shadow: 0 0 25px rgba(207, 168, 97, 0.25), inset 0 0 10px rgba(207,168,97,0.1); 
+        }
         .btn:hover::before { transform: scaleY(1); } 
-        .btn .num { color: #9e8a63; font-size: 0.8rem; font-family: "Courier New", monospace; transition: color 0.3s; }
-        .btn:hover .num { color: #fff; }
+        .btn .num { color: #8a6e3e; font-size: 0.85rem; font-family: "Courier New", monospace; transition: color 0.3s; }
+        .btn:hover .num { color: #cfa861; }
 
-        .reread-divider { width: 60%; border-top: 1px dashed #3a3024; margin: 2rem 0 1rem 0; }
+        .reread-divider { width: 60%; border-top: 1px solid rgba(90, 74, 46, 0.4); margin: 2.5rem 0 1.5rem 0; }
         
         .reread-btn { font-size: 0.85rem; color: #8a6e3e; letter-spacing: 0.2rem; text-decoration: none; transition: all 0.3s; padding: 5px; cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important; }
         .reread-btn:hover { color: #f5e6c8; text-shadow: 0 0 10px rgba(245,230,200,0.3); }
 
+        /* 离开按钮 */
         .leave-manor-btn {
             position: fixed; top: 30px; right: 40px; display: flex; align-items: center; gap: 8px;
             padding: 10px 24px; color: #e8d5b5; font-size: 0.85rem; letter-spacing: 0.2rem;
             border: 1px solid #5a4a2e; background: rgba(30, 30, 30, 0.8);
             border-radius: 4px; cursor: pointer; z-index: 102; transition: all 0.3s ease;
-            animation: pulseBorder 2.5s infinite alternate;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
-        @keyframes pulseBorder { 0% { border-color: #5a4a2e; box-shadow: 0 0 5px rgba(158,138,99,0.1); } 100% { border-color: #9e8a63; box-shadow: 0 0 15px rgba(158,138,99,0.4); } }
-        .leave-manor-btn:hover { color: #fff; border-color: #f5e6c8; background: rgba(158,138,99,0.2); box-shadow: 0 0 20px rgba(245, 230, 200, 0.4); animation: none; }
+        .leave-manor-btn:hover { color: #fff; border-color: #f5e6c8; background: rgba(158,138,99,0.2); box-shadow: 0 0 20px rgba(245, 230, 200, 0.3); }
 
-        /* 弹窗 */
+        /* 弹窗（厚重档案卷宗） */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
             display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; z-index: 200;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .character-card {
-            background: #1a1a1a; border: 1px solid #9e8a63; padding: 3rem 2.5rem; max-width: 480px; width: 85%; text-align: center; position: relative;
+            background: #131211; border: 1px solid #5a4a2e; padding: 3rem 2.5rem; max-width: 480px; width: 85%; text-align: center; position: relative;
             transform: scale(0.95) translateY(15px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 25px 70px rgba(0,0,0,0.95);
+            box-shadow: 0 30px 80px rgba(0,0,0,0.95), inset 0 0 30px rgba(0,0,0,0.5);
+            border-radius: 4px;
+        }
+        .character-card::before {
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px solid rgba(90, 74, 46, 0.3); pointer-events: none;
         }
         .modal-overlay.active .character-card { transform: scale(1) translateY(0); }
 
-        .file-number { position: absolute; top: 15px; left: 20px; font-size: 0.75rem; color: #9e8a63; letter-spacing: 0.15rem; font-family: "Courier New", monospace; }
-        .close-btn { position: absolute; top: 12px; right: 20px; color: #9e8a63; font-size: 1.5rem; transition: color 0.3s; cursor: pointer; }
+        .file-number { position: absolute; top: 18px; left: 24px; font-size: 0.75rem; color: #8a6e3e; letter-spacing: 0.15rem; font-family: "Courier New", monospace; }
+        .close-btn { position: absolute; top: 12px; right: 20px; color: #8a6e3e; font-size: 1.5rem; transition: color 0.3s; cursor: pointer; z-index: 10; }
         .close-btn:hover { color: #fff; }
 
-        .char-name { font-size: 2rem; color: #f5e6c8; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; }
-        .char-title { font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #c9bda5; letter-spacing: 0.15rem; margin-bottom: 2.5rem; text-transform: uppercase; }
+        .char-name { font-size: 2rem; color: #f5e6c8; letter-spacing: 0.4rem; margin-bottom: 0.5rem; font-weight: normal; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        .char-title { font-family: "Courier New", Courier, monospace; font-size: 0.75rem; color: #a89573; letter-spacing: 0.15rem; margin-bottom: 2rem; text-transform: uppercase; }
         
         .char-content-box {
             font-family: "Songti SC", "STSong", "SimSun", "Noto Serif SC", Georgia, serif;
-            font-size: 1.05rem; color: #d1c5a8; line-height: 2.1; margin-bottom: 2rem; text-align: left;
-            padding-left: 15px; border-left: 2px solid #5a4a2e; max-height: 300px; overflow-y: auto;
+            font-size: 1.05rem; color: #c9bda5; line-height: 2.1; margin-bottom: 2rem; text-align: justify;
+            padding-left: 20px; border-left: 2px solid #8a6e3e; max-height: 300px; overflow-y: auto;
             transition: opacity 0.3s ease; letter-spacing: 0.02rem;
         }
         .char-content-box::-webkit-scrollbar { width: 4px; }
@@ -165,11 +202,12 @@
         .card-actions { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
         .action-btn {
             display: inline-block; font-size: 0.85rem; letter-spacing: 0.15rem; transition: all 0.3s; padding: 10px 20px; text-decoration: none; cursor: pointer;
-            color: #9e8a63; border: 1px solid #5a4a2e; background: transparent;
+            color: #8a6e3e; border: 1px solid #3a3024; background: transparent;
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%23f5e6c8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>') 11 11, pointer !important;
         }
-        .action-btn:hover { color: #fff; border-color: #8a6e3e; background: rgba(158,138,99,0.1); }
-        .action-btn.primary { background: rgba(158,138,99,0.2); color: #fff; border-color: #9e8a63; }
+        .action-btn:hover { color: #fff; border-color: #cfa861; background: rgba(207,168,97,0.1); }
+        .action-btn.primary { background: rgba(207,168,97,0.15); color: #f5e6c8; border-color: #8a6e3e; }
+        .action-btn.primary:hover { background: rgba(207,168,97,0.25); border-color: #cfa861; }
 
         /* === 场景过渡遮罩 === */
         #transition-screen {
@@ -182,113 +220,53 @@
         
         .trans-text {
             color: #8a6e3e; font-family: "Songti SC", serif; font-size: 1.2rem; letter-spacing: 0.3rem;
-            opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s;
+            opacity: 0; transform: translateY(10px); transition: all 1s ease 0.3s; text-align: center;
         }
-        #transition-screen.active .trans-text {
-            opacity: 1; transform: translateY(0);
-        }
+        #transition-screen.active .trans-text { opacity: 1; transform: translateY(0); }
 
         /* ==========================================================
            移动端适配（< 900px）
            ========================================================== */
         @media (max-width: 900px) {
-
-            /* 1. 顶部 HUD 与离开按钮缩小，避免互相挤压 */
-            .hud-info {
-                top: 12px; left: 12px;
-                font-size: 0.65rem; gap: 8px;
-            }
+            .hud-info { top: 12px; left: 12px; font-size: 0.65rem; gap: 8px; }
             .hud-info span { border-bottom: none; padding-bottom: 0; }
+            .leave-manor-btn { top: 12px; right: 12px; padding: 6px 12px; font-size: 0.7rem; letter-spacing: 0.1rem; gap: 4px; }
 
-            .leave-manor-btn {
-                top: 12px; right: 12px;
-                padding: 6px 12px;
-                font-size: 0.7rem; letter-spacing: 0.1rem;
-                gap: 4px;
-            }
+            #welcome-screen, #main-screen { display: block; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 64px 0 40px 0; box-sizing: border-box; }
 
-            /* 2. 两个全屏容器改为可纵向滚动，内容不再被裁切 */
-            #welcome-screen, #main-screen {
-                display: block;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-                padding: 64px 0 40px 0;
-                box-sizing: border-box;
-            }
-
-            /* 3. 欢迎信封 */
-            .envelope {
-                margin: 0 auto;
-                width: 90%;
-                padding: 2.2rem 1.4rem;
-                box-sizing: border-box;
-            }
-            .seal { width: 48px; height: 48px; margin-bottom: 1.5rem; }
-            .seal::after { font-size: 1.15rem; }
-            .env-to { font-size: 0.7rem; letter-spacing: 0.2rem; margin-bottom: 1.2rem; }
-            .env-title { font-size: 1.4rem; letter-spacing: 0.3rem; margin-bottom: 1rem; }
+            .envelope { margin: 0 auto; width: 90%; padding: 2.5rem 1.5rem; box-sizing: border-box; }
+            .seal { width: 50px; height: 50px; margin-bottom: 1.5rem; }
+            .seal::after { font-size: 1.2rem; }
+            .env-to { font-size: 0.7rem; letter-spacing: 0.2rem; margin-bottom: 1rem; }
+            .env-title { font-size: 1.5rem; letter-spacing: 0.3rem; margin-bottom: 1rem; }
             .env-desc { font-size: 0.85rem; line-height: 2; margin-bottom: 2rem; }
             .open-btn { padding: 10px 22px; font-size: 0.8rem; letter-spacing: 0.15rem; }
             .env-footer { margin-top: 2rem; font-size: 0.7rem; }
 
-            /* 4. 主邀请函 */
-            .invitation {
-                margin: 0 auto;
-                width: 90%;
-                max-width: 480px;
-                padding: 1.6rem 1.2rem;
-                box-sizing: border-box;
-            }
-            .inner-border { padding: 1.6rem 0.8rem; }
-            .watermark { width: 100%; margin-bottom: 1.8rem; }
+            .invitation { margin: 0 auto; width: 92%; padding: 2rem 1.2rem; box-sizing: border-box; }
+            .invitation::before, .invitation::after { width: 20px; height: 20px; top: 10px; left: 10px; }
+            .invitation::after { bottom: 10px; right: 10px; top: auto; left: auto; }
+            .watermark { width: 100%; margin-bottom: 1.5rem; }
             .watermark span { font-size: 0.6rem; letter-spacing: 0.2rem; }
-            .main-text { font-size: 0.85rem; line-height: 2; margin-bottom: 1.8rem; }
+            .main-text { font-size: 0.85rem; line-height: 2; margin-bottom: 1.5rem; }
             .btn-group { gap: 12px; }
-            .btn {
-                width: 100%;
-                padding: 12px 14px;
-                font-size: 0.85rem;
-                letter-spacing: 0.1rem;
-            }
-            /* 触屏点按后 hover 状态会残留，覆盖掉左移效果避免错位 */
+            .btn { width: 100%; padding: 12px 14px; font-size: 0.85rem; letter-spacing: 0.1rem; }
             .btn:hover { padding-left: 14px; }
             .btn .num { font-size: 0.72rem; }
-            .reread-divider { margin: 1.6rem 0 1rem 0; }
+            .reread-divider { margin: 1.5rem 0 1rem 0; }
             .reread-btn { font-size: 0.78rem; letter-spacing: 0.12rem; }
 
-            /* 5. 角色弹窗：限制总高度，长文本在内部滚动 */
             .modal-overlay { padding: 20px 0; box-sizing: border-box; }
-            .character-card {
-                width: 90%;
-                padding: 2.2rem 1.4rem;
-                box-sizing: border-box;
-                max-height: calc(100vh - 40px);
-            }
+            .character-card { width: 90%; padding: 2.2rem 1.4rem; box-sizing: border-box; max-height: calc(100vh - 40px); }
             .file-number { font-size: 0.65rem; top: 12px; left: 14px; }
             .close-btn { top: 8px; right: 14px; font-size: 1.3rem; }
             .char-name { font-size: 1.5rem; letter-spacing: 0.25rem; }
             .char-title { font-size: 0.68rem; margin-bottom: 1.5rem; }
-            .char-content-box {
-                font-size: 0.95rem;
-                line-height: 1.9;
-                max-height: 42vh;
-                padding-left: 12px;
-                margin-bottom: 1.5rem;
-            }
+            .char-content-box { font-size: 0.95rem; line-height: 1.9; max-height: 42vh; padding-left: 12px; margin-bottom: 1.5rem; }
             .card-actions { gap: 10px; flex-wrap: wrap; }
             .action-btn { font-size: 0.75rem; padding: 8px 14px; letter-spacing: 0.1rem; }
             
-            /* 6. 过渡文字手机端适配 */
-            .trans-text {
-                width: 80%;
-                max-width: 320px;
-                text-align: center;
-                font-size: 0.95rem;
-                letter-spacing: 0.15rem;
-                line-height: 1.8;
-                padding: 0 16px;
-                box-sizing: border-box;
-            }
+            .trans-text { width: 80%; max-width: 320px; text-align: center; font-size: 0.95rem; letter-spacing: 0.15rem; line-height: 1.8; padding: 0 16px; box-sizing: border-box; }
         }
 
         /* 触屏设备：禁用鼠标拖尾与自定义光标 */
@@ -325,50 +303,48 @@
         </div>
 
         <div class="invitation">
-            <div class="inner-border">
-                <div class="watermark">
-                    <span>P A G E S</span><span>A N D</span><span>A S H E S</span>
-                </div>
-                
-                <div class="main-text">
-                    致 芥川庄园的贵客：<br>
-                    昨夜的雷雨已歇，茶点已备好。<br>
-                    请选择您要前往的房间。
-                </div>
-
-                <div class="btn-group">
-                    <!-- 账房入口 -->
-                    <a href="javascript:void(0);" onclick="enterRoom('ledger.html', '穿过长廊，黄铜把手微微发凉。')" class="btn">
-                        <span>拜访账房</span><span class="num">[ 01 ]</span>
-                    </a>
-                    
-                    <!-- 💡 厨房入口 -->
-                    <a href="javascript:void(0);" onclick="enterRoom('kitchen.html', '食物的香气盖过了灰尘的味道，炉火正旺。')" class="btn">
-                        <span>前往厨房</span><span class="num">[ 02 ]</span>
-                    </a>
-                    
-                    <!-- 研究室入口 -->
-                    <a href="javascript:void(0);" onclick="enterRoom('research.html', '属于机械与电波的冷冽气息迎面而来。')" class="btn">
-                        <span>探访研究室</span><span class="num">[ 03 ]</span>
-                    </a>
-                    
-                    <!-- 档案室入口 -->
-                    <a href="javascript:void(0);" onclick="enterRoom('archive.html', '沿着旋梯向上，灰尘在光柱中翻涌。')" class="btn">
-                        <span>前往档案室</span><span class="num">[ 04 ]</span>
-                    </a>
-                </div>
-
-                <div class="reread-divider"></div>
-                
-                <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
-                    <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
-                    
-                    <div>
-                        <span class="reread-btn" style="font-size: 0.7rem; color: #3a3024; cursor: pointer;" onclick="goToTreasure()">[ 开启不存在的暗格 ]</span>
-                    </div>
-                </div>
-
+            <div class="watermark">
+                <span>P A G E S</span><span>A N D</span><span>A S H E S</span>
             </div>
+            
+            <div class="main-text">
+                致 芥川庄园的贵客：<br>
+                昨夜的雷雨已歇，茶点已备好。<br>
+                请选择您要前往的房间。
+            </div>
+
+            <div class="btn-group">
+                <!-- 账房入口 -->
+                <a href="javascript:void(0);" onclick="enterRoom('ledger.html', '穿过长廊，黄铜把手微微发凉。')" class="btn">
+                    <span>拜访账房</span><span class="num">[ 01 ]</span>
+                </a>
+                
+                <!-- 厨房入口 -->
+                <a href="javascript:void(0);" onclick="enterRoom('kitchen.html', '食物的香气盖过了灰尘的味道，炉火正旺。')" class="btn">
+                    <span>前往厨房</span><span class="num">[ 02 ]</span>
+                </a>
+                
+                <!-- 研究室入口 -->
+                <a href="javascript:void(0);" onclick="enterRoom('research.html', '属于机械与电波的冷冽气息迎面而来。')" class="btn">
+                    <span>探访研究室</span><span class="num">[ 03 ]</span>
+                </a>
+                
+                <!-- 档案室入口 -->
+                <a href="javascript:void(0);" onclick="enterRoom('archive.html', '沿着旋梯向上，灰尘在光柱中翻涌。')" class="btn">
+                    <span>前往档案室</span><span class="num">[ 04 ]</span>
+                </a>
+            </div>
+
+            <div class="reread-divider"></div>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                <a href="prologue.html" class="reread-btn">[ 重温那个雷雨之夜 ]</a>
+                
+                <div>
+                    <span class="reread-btn" style="font-size: 0.7rem; color: #3a3024; cursor: pointer;" onclick="goToTreasure()">[ 开启不存在的暗格 ]</span>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -449,7 +425,6 @@
             } catch (e) {}
         }
 
-        // === 进入房间的推门过渡音效 ===
         function playDoorOpenSound() {
             try {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -458,21 +433,17 @@
                 if (audioCtx.state === 'suspended') audioCtx.resume();
 
                 const now = audioCtx.currentTime;
-                
-                // 木门推开的“吱呀”声
                 const creakBuffer = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.4, audioCtx.sampleRate);
                 const creakData = creakBuffer.getChannelData(0);
                 for (let i = 0; i < creakData.length; i++) { creakData[i] = Math.random() * 2 - 1; }
                 
                 const creakSource = audioCtx.createBufferSource(); 
                 creakSource.buffer = creakBuffer;
-                
                 const creakFilter = audioCtx.createBiquadFilter(); 
                 creakFilter.type = 'bandpass'; 
                 creakFilter.frequency.setValueAtTime(800, now);
                 creakFilter.frequency.linearRampToValueAtTime(400, now + 0.4); 
                 creakFilter.Q.value = 2;
-                
                 const creakGain = audioCtx.createGain(); 
                 creakGain.gain.setValueAtTime(0, now); 
                 creakGain.gain.linearRampToValueAtTime(0.08, now + 0.1); 
@@ -483,7 +454,6 @@
                 creakGain.connect(audioCtx.destination); 
                 creakSource.start(now);
 
-                // 脚步声（三下闷响）
                 for (let i = 0; i < 3; i++) {
                     const stepTime = now + 0.2 + (i * 0.4);
                     const stepOsc = audioCtx.createOscillator();
@@ -504,7 +474,6 @@
             } catch (e) {}
         }
 
-        // 核心过渡跳转函数
         function enterRoom(url, text) {
             playDoorOpenSound();
 
@@ -522,7 +491,6 @@
             window.location.href = 'prologue.html';
         }
 
-        // 统一暗格的过场方式
         function goToTreasure() {
             playVaultOpenSound();
             document.getElementById('trans-text').innerText = '暗格开启，往昔的秘密在黑暗中低语。';
